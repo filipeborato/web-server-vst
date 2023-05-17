@@ -10,10 +10,9 @@
 
 //==============================================================================
 int main (int argc, char* argv[])
-{
-
+{    
     // ..your code goes here!
-
+    printf("hello world");
 
     return 0;
 }
