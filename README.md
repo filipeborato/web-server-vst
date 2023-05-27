@@ -11,7 +11,7 @@ version 1.0.0
 ### For Building Follow the List:
 
 1. Download the latest version of the Juce framework
-2. Open Projucer and go to openFile and choose the CompressorAndSplit.jucer file
+2. Open Projucer and go to openFile and choose the web-server-vst.jucer file
 3. Open project with build button in Visual Studio or Xcode
 4. Build
 
