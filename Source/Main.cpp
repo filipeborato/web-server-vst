@@ -1,14 +1,3 @@
-/*
-  ==============================================================================
-
-    This file contains the basic startup code for a JUCE application.
-
-  ==============================================================================
-*/
-
-//#include <JuceHeader.h>
-//#include "vstsdk2.4/pluginterfaces/vst2.x/aeffect.h"
-//#include "vstsdk2.4/public.sdk/source/vst2.x/audioeffect.h"
 #include <windows.h>
 
 #include "vstsdk2.4/public.sdk/source/vst2.x/audioeffectx.h" // Include the VST2 SDK header
@@ -84,7 +73,7 @@ void PluginHost::setParameter(int index, float value)
 // Main function
 int main()
 {
-    PluginHost host("path/to/your/plugin.dll"); // Replace with the path to your VST2 plugin
+    PluginHost host("C:/Program Files/VSTPlugIns/AQ1 Stereo.dll"); // Replace with the path to your VST2 plugin
 
     host.initialize();
 
