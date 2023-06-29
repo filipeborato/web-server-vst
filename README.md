@@ -25,5 +25,5 @@ vstsdk2.4
 Framework Juce v7.0.5
 ```
 
-
+### VST2 Host - DLL
 
