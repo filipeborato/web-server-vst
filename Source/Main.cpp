@@ -73,8 +73,8 @@ void PluginHost::setParameter(int index, float value)
 // Main function
 int main()
 {
-    PluginHost host("C:/Program Files/VSTPlugIns/AQ1 Stereo.dll"); // Replace with the path to your VST2 plugin
-
+    PluginHost host("C:/Users/filip/Desktop/projetos/again/again.dll"); // Replace with the path to your VST2 plugin
+    
     host.initialize();
 
     // Process audio samples
