@@ -27,3 +27,5 @@ Framework Juce v7.0.5
 
 ### VST2 Host - DLL
 
+This service hosts different types of plugins and processes each initiated request in parallel.
+
