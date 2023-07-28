@@ -17,6 +17,7 @@ public:
     PluginHost(const char* pluginPath);
     ~PluginHost();
     void initialize();
+    void pluginCategory(AEffect* plugin);
     void processAudio(float* buffer, int numSamples);
     void setParameter(int index, float value);
 
@@ -38,6 +39,7 @@ PluginHost::PluginHost(const char* pluginPath)
             AEffect* plugin;
             plugin = create(hostCallback); // Instantiate the plugin
             plugin->dispatcher(plugin, effOpen, 0, 0, NULL, 0.0f);  // Open the plugin
+            PluginHost::pluginCategory(plugin);
         }
     }
 }
@@ -74,6 +76,52 @@ void PluginHost::setParameter(int index, float value)
     if (plugin != nullptr)
     {
         plugin->setParameter(index, value); // Set a plugin parameter
+    }
+}
+
+void PluginHost::pluginCategory(AEffect* plugin) {
+    printf("Category: ");
+    VstInt32 pluginCategory = plugin->dispatcher(plugin, effGetPlugCategory, 0, 0, NULL, 0.0f); // strangely enough this query returns either kPlugCategSynth or kPlugCategUnknown only so the rest of the switch statement is ineffective
+    switch (pluginCategory) {
+    case kPlugCategUnknown:
+        printf("Unknown, category not implemented.\n");
+        break;
+    case kPlugCategEffect:
+        printf("Simple Effect.\n");
+        break;
+    case kPlugCategSynth:
+        printf("VST Instrument (Synths, samplers, etc.)\n");
+        break;
+    case kPlugCategAnalysis:
+        printf("Scope, Tuner, etc.\n");
+        break;
+    case kPlugCategMastering:
+        printf("Dynamics, etc.\n");
+        break;
+    case kPlugCategSpacializer:
+        printf("Panners, etc.\n");
+        break;
+    case kPlugCategRoomFx:
+        printf("Delays and Reverbs.\n");
+        break;
+    case kPlugSurroundFx:
+        printf("Dedicated surround processor.\n");
+        break;
+    case kPlugCategRestoration:
+        printf("Denoiser, etc.\n");
+        break;
+    case kPlugCategOfflineProcess:
+        printf("Offline Process.\n");
+        break;
+    case kPlugCategShell:
+        printf("Plug-in is container of other plug-ins (shell plug-in).\n");
+        break;
+    case kPlugCategGenerator:
+        printf("Tone Generator.\n");
+        break;
+    default:
+        printf("Plugin type: other, category %d.\n", pluginCategory);
+        break;
     }
 }
 
