@@ -1,5 +1,7 @@
 #include <windows.h>
 #include <iostream>
+#include <string>
+#include <sndfile.h>
 #include "vstsdk2.4/public.sdk/source/vst2.x/audioeffect.h" 
 #include "vstsdk2.4/public.sdk/source/vst2.x/audioeffectx.h" // Include the VST2 SDK header
 
@@ -21,6 +23,7 @@ public:
     void processAudio(float* buffer, int numSamples);
     void setParameter(int index, float value);
     void loadAudioFile(const std::string& filePath, float* audioBuffer, int bufferSize);
+    void saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
 
 private:
     AudioEffect* plugin; // Pointer to the loaded VST2 plugin
@@ -77,6 +80,26 @@ void PluginHost::loadAudioFile(const std::string& filePath, float* audioBuffer, 
     }
 }
 
+/*
+void PluginHost::saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize) {
+    SF_INFO sfInfo;
+    sfInfo.channels = 1; // Mono audio
+    sfInfo.samplerate = 44100; // Sample rate (adjust as per your requirements)
+    sfInfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; // 16-bit PCM WAV file format
+
+    SNDFILE* file = sf_open(filePath.c_str(), SFM_WRITE, &sfInfo);
+    if (!file) {
+        std::cerr << "Error opening the output file: " << filePath << std::endl;
+        return;
+    }
+
+    // Write the audio data to the file
+    sf_writef_float(file, audioBuffer, bufferSize);
+
+    // Close the file
+    sf_close(file);
+}
+*/
 
 void PluginHost::processAudio(float* buffer, int numSamples)
 {
@@ -159,6 +182,10 @@ int main()
 
     // Set a plugin parameter
     host.setParameter(0, 0.75f);
+
+    // Save the processed audio to a new .wav file
+    //std::string outputFilePath = "C:/Users/filip/Desktop/file.wav"; // Replace this with the desired output path
+    //host.saveAudioToFile(outputFilePath, audioBuffer, bufferSize);
 
     return 0;
 }
