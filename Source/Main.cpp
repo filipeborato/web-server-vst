@@ -80,7 +80,7 @@ void PluginHost::loadAudioFile(const std::string& filePath, float* audioBuffer, 
     }
 }
 
-/*
+
 void PluginHost::saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize) {
     SF_INFO sfInfo;
     sfInfo.channels = 1; // Mono audio
@@ -99,7 +99,7 @@ void PluginHost::saveAudioToFile(const std::string& filePath, const float* audio
     // Close the file
     sf_close(file);
 }
-*/
+
 
 void PluginHost::processAudio(float* buffer, int numSamples)
 {
@@ -184,8 +184,8 @@ int main()
     host.setParameter(0, 0.75f);
 
     // Save the processed audio to a new .wav file
-    //std::string outputFilePath = "C:/Users/filip/Desktop/file.wav"; // Replace this with the desired output path
-    //host.saveAudioToFile(outputFilePath, audioBuffer, bufferSize);
+    std::string outputFilePath = "C:/Users/filip/Desktop/file.wav"; // Replace this with the desired output path
+    host.saveAudioToFile(outputFilePath, audioBuffer, bufferSize);
 
     return 0;
 }
