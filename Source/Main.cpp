@@ -1,6 +1,8 @@
 #include <windows.h>
 #include <iostream>
 #include <string>
+#include <algorithm>
+#include <fstream>
 #include <sndfile.h>
 #include "vstsdk2.4/public.sdk/source/vst2.x/audioeffect.h" 
 #include "vstsdk2.4/public.sdk/source/vst2.x/audioeffectx.h" // Include the VST2 SDK header
@@ -68,16 +70,38 @@ void PluginHost::initialize()
 }
 // Function to load audio file and fill the audio buffer
 void PluginHost::loadAudioFile(const std::string& filePath, float* audioBuffer, int bufferSize) {
-    // Here, you would implement the code to read the audio file and fill the audio buffer.
-    // For this example, let's assume you're reading from a file and filling the buffer with zeros.
-    // Replace this part with actual audio file reading code as per your requirement.
-    // Below is a placeholder example.
-
-    // Assuming filePath points to a valid audio file (e.g., WAV or MP3)
-    // Read the audio file and fill the audio buffer with zeros for demonstration purposes
-    for (int i = 0; i < bufferSize; ++i) {
-        audioBuffer[i] = 0.0f;
+    // Open the audio file
+    std::ifstream inputFile(filePath, std::ios::binary);
+    if (!inputFile) {
+        std::cerr << "Error opening the input file: " << filePath << std::endl;
+        return;
     }
+
+    // Check if the file is a WAV file
+    char header[44];
+    inputFile.read(header, sizeof(header));
+    
+    if (memcmp(header, "RIFF", 4) != 0 || memcmp(header + 8, "WAVE", 4) != 0 ||
+        memcmp(header + 12, "fmt ", 4) != 0 || memcmp(header + 36, "data", 4) != 0) {
+        std::cerr << "Unsupported audio format. Only WAV files are supported." << std::endl;
+        return;
+    }
+    
+    // Read audio data from the WAV file
+    const int bytesPerSample = 2; // Assuming 16-bit audio
+    const int numChannels = header[22];
+    const int sampleRate = *reinterpret_cast<int*>(header + 24);
+    const int numSamples = *reinterpret_cast<int*>(header + 40) / bytesPerSample;
+    const int totalSamples = min(numSamples, bufferSize);
+
+    for (int i = 0; i < totalSamples; ++i) {
+        char buffer[2];
+        inputFile.read(buffer, bytesPerSample);
+        audioBuffer[i] = static_cast<float>(*reinterpret_cast<short*>(buffer)) / 32768.0f;
+    }
+
+    // Close the audio file
+    inputFile.close();
 }
 
 
@@ -94,7 +118,11 @@ void PluginHost::saveAudioToFile(const std::string& filePath, const float* audio
     }
 
     // Write the audio data to the file
-    sf_writef_float(file, audioBuffer, bufferSize);
+    sf_count_t framesWritten = sf_writef_float(file, audioBuffer, bufferSize);
+
+    if (framesWritten != bufferSize) {
+        std::cerr << "Error writing audio data to the file: " << filePath << std::endl;
+    }
 
     // Close the file
     sf_close(file);
@@ -174,7 +202,7 @@ int main()
     float audioBuffer[bufferSize];
 
     // Load the audio file and fill the audio buffer
-    std::string audioFilePath = "C:/Users/filip/Desktop/Um Amontoado de Gente.wav"; // Replace this with the actual audio file path
+    std::string audioFilePath = "C:/Users/filip/Desktop/Rabizetto.wav"; // Replace this with the actual audio file path
     host.loadAudioFile(audioFilePath, audioBuffer, bufferSize);
 
     // Process audio samples
