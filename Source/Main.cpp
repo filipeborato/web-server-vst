@@ -82,7 +82,7 @@ void PluginHost::loadAudioFile(const std::string& filePath, float* audioBuffer, 
     inputFile.read(header, sizeof(header));
     
     if (memcmp(header, "RIFF", 4) != 0 || memcmp(header + 8, "WAVE", 4) != 0 ||
-        memcmp(header + 12, "fmt ", 4) != 0 || memcmp(header + 36, "data", 4) != 0) {
+        memcmp(header + 12, "fmt ", 4) != 0 ) {
         std::cerr << "Unsupported audio format. Only WAV files are supported." << std::endl;
         return;
     }
@@ -202,7 +202,7 @@ int main()
     float audioBuffer[bufferSize];
 
     // Load the audio file and fill the audio buffer
-    std::string audioFilePath = "C:/Users/filip/Desktop/Rabizetto.wav"; // Replace this with the actual audio file path
+    std::string audioFilePath = "C:/Users/filip/Desktop/test.wav"; // Replace this with the actual audio file path
     host.loadAudioFile(audioFilePath, audioBuffer, bufferSize);
 
     // Process audio samples
