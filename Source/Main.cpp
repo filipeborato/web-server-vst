@@ -70,38 +70,17 @@ void PluginHost::initialize()
 }
 // Function to load audio file and fill the audio buffer
 void PluginHost::loadAudioFile(const std::string& filePath, float* audioBuffer, int bufferSize) {
-    // Open the audio file
-    std::ifstream inputFile(filePath, std::ios::binary);
-    if (!inputFile) {
+    SF_INFO sfInfo;
+    SNDFILE* file = sf_open(filePath.c_str(), SFM_READ, &sfInfo);
+
+    if (!file) {
         std::cerr << "Error opening the input file: " << filePath << std::endl;
         return;
     }
 
-    // Check if the file is a WAV file
-    char header[44];
-    inputFile.read(header, sizeof(header));
-    
-    if (memcmp(header, "RIFF", 4) != 0 || memcmp(header + 8, "WAVE", 4) != 0 ||
-        memcmp(header + 12, "fmt ", 4) != 0 ) {
-        std::cerr << "Unsupported audio format. Only WAV files are supported." << std::endl;
-        return;
-    }
-    
-    // Read audio data from the WAV file
-    const int bytesPerSample = 2; // Assuming 16-bit audio
-    const int numChannels = header[22];
-    const int sampleRate = *reinterpret_cast<int*>(header + 24);
-    const int numSamples = *reinterpret_cast<int*>(header + 40) / bytesPerSample;
-    const int totalSamples = min(numSamples, bufferSize);
+    sf_readf_float(file, audioBuffer, bufferSize);
 
-    for (int i = 0; i < totalSamples; ++i) {
-        char buffer[2];
-        inputFile.read(buffer, bytesPerSample);
-        audioBuffer[i] = static_cast<float>(*reinterpret_cast<short*>(buffer)) / 32768.0f;
-    }
-
-    // Close the audio file
-    inputFile.close();
+    sf_close(file);
 }
 
 
@@ -198,7 +177,7 @@ int main()
     
     host.initialize();
 
-    const int bufferSize = 512;
+    const int bufferSize = 44100;
     float audioBuffer[bufferSize];
 
     // Load the audio file and fill the audio buffer
