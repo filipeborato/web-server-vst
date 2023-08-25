@@ -1,8 +1,9 @@
-#include <windows.h>
 #include <iostream>
 #include <string>
 #include <algorithm>
-#include <fstream>
+#include "AudioFileReader.h"
+
+#include <windows.h>
 #include <sndfile.h>
 #include "vstsdk2.4/public.sdk/source/vst2.x/audioeffect.h" 
 #include "vstsdk2.4/public.sdk/source/vst2.x/audioeffectx.h" // Include the VST2 SDK header
@@ -26,6 +27,7 @@ public:
     void setParameter(int index, float value);
     void loadAudioFile(const std::string& filePath, float* audioBuffer, int bufferSize);
     void saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
+
 
 private:
     AudioEffect* plugin; // Pointer to the loaded VST2 plugin
@@ -108,6 +110,7 @@ void PluginHost::saveAudioToFile(const std::string& filePath, const float* audio
 }
 
 
+
 void PluginHost::processAudio(float* buffer, int numSamples)
 {
     if (plugin != nullptr)
@@ -182,7 +185,13 @@ int main()
 
     // Load the audio file and fill the audio buffer
     std::string audioFilePath = "C:/Users/filip/Desktop/test.wav"; // Replace this with the actual audio file path
-    host.loadAudioFile(audioFilePath, audioBuffer, bufferSize);
+    AudioFileReader audioReader(audioFilePath);
+
+    const int totalSamples = audioReader.getTotalSamples();
+    std::cout << "Total samples in the audio file: " << totalSamples << std::endl;
+    
+    //host.loadAudioFile(audioFilePath, audioBuffer, bufferSize);
+    audioReader.readSamples(audioBuffer, bufferSize);
 
     // Process audio samples
     host.processAudio(audioBuffer, bufferSize);
