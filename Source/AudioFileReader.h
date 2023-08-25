@@ -21,4 +21,5 @@ private:
     int bitDepth;
     int numChannels;
     int totalSamples;
+    int dataChunkOffset;
 };

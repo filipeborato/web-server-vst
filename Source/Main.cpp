@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include <iostream>
 #include <string>
 #include <algorithm>
@@ -180,7 +181,7 @@ int main()
     
     host.initialize();
 
-    const int bufferSize = 44100;
+    const int bufferSize = 512;
     float audioBuffer[bufferSize];
 
     // Load the audio file and fill the audio buffer
@@ -188,13 +189,28 @@ int main()
     AudioFileReader audioReader(audioFilePath);
 
     const int totalSamples = audioReader.getTotalSamples();
-    std::cout << "Total samples in the audio file: " << totalSamples << std::endl;
+    
+    int processedSamples = 0;
+
+    while (processedSamples < totalSamples)
+    {
+        int samplesToRead = std::min(bufferSize, totalSamples - processedSamples);
+
+        // Read audio chunk from the file
+        audioReader.readSamples(audioBuffer, samplesToRead);
+
+        // Process audio samples
+        host.processAudio(audioBuffer, samplesToRead);
+
+        processedSamples += samplesToRead;
+    }
+
     
     //host.loadAudioFile(audioFilePath, audioBuffer, bufferSize);
-    audioReader.readSamples(audioBuffer, bufferSize);
+    //audioReader.readSamples(audioBuffer, bufferSize);
 
     // Process audio samples
-    host.processAudio(audioBuffer, bufferSize);
+    //host.processAudio(audioBuffer, bufferSize);
 
     // Set a plugin parameter
     host.setParameter(0, 0.75f);
