@@ -12,6 +12,7 @@ public:
 
     void readSamples(float* buffer, int numSamples);
     int getTotalSamples() const;
+    void saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
 
 private:
     void readAudioMetadata();
