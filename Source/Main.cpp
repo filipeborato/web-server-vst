@@ -1,8 +1,10 @@
-#include <windows.h>
+#define NOMINMAX
 #include <iostream>
 #include <string>
 #include <algorithm>
-#include <fstream>
+#include "AudioFileReader.h"
+
+#include <windows.h>
 #include <sndfile.h>
 #include "vstsdk2.4/public.sdk/source/vst2.x/audioeffect.h" 
 #include "vstsdk2.4/public.sdk/source/vst2.x/audioeffectx.h" // Include the VST2 SDK header
@@ -26,6 +28,7 @@ public:
     void setParameter(int index, float value);
     void loadAudioFile(const std::string& filePath, float* audioBuffer, int bufferSize);
     void saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
+
 
 private:
     AudioEffect* plugin; // Pointer to the loaded VST2 plugin
@@ -108,6 +111,7 @@ void PluginHost::saveAudioToFile(const std::string& filePath, const float* audio
 }
 
 
+
 void PluginHost::processAudio(float* buffer, int numSamples)
 {
     if (plugin != nullptr)
@@ -177,15 +181,36 @@ int main()
     
     host.initialize();
 
-    const int bufferSize = 44100;
+    const int bufferSize = 512;
     float audioBuffer[bufferSize];
 
     // Load the audio file and fill the audio buffer
     std::string audioFilePath = "C:/Users/filip/Desktop/test.wav"; // Replace this with the actual audio file path
-    host.loadAudioFile(audioFilePath, audioBuffer, bufferSize);
+    AudioFileReader audioReader(audioFilePath);
+
+    const int totalSamples = audioReader.getTotalSamples();
+    
+    int processedSamples = 0;
+
+    while (processedSamples < totalSamples)
+    {
+        int samplesToRead = std::min(bufferSize, totalSamples - processedSamples);
+
+        // Read audio chunk from the file
+        audioReader.readSamples(audioBuffer, samplesToRead);
+
+        // Process audio samples
+        host.processAudio(audioBuffer, samplesToRead);
+
+        processedSamples += samplesToRead;
+    }
+
+    
+    //host.loadAudioFile(audioFilePath, audioBuffer, bufferSize);
+    //audioReader.readSamples(audioBuffer, bufferSize);
 
     // Process audio samples
-    host.processAudio(audioBuffer, bufferSize);
+    //host.processAudio(audioBuffer, bufferSize);
 
     // Set a plugin parameter
     host.setParameter(0, 0.75f);
