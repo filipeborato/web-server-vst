@@ -160,17 +160,17 @@ int main()
         audioReader.readSamples(audioBuffer, samplesToRead);
 
         // Process audio samples
-        host.processAudio(audioBuffer, samplesToRead);
+        host.processAudio(audioBuffer, samplesToRead);        
 
         processedSamples += samplesToRead;
-    }
+    }  
 
     // Set a plugin parameter
     host.setParameter(0, 0.75f);
 
     // Save the processed audio to a new .wav file
-    std::string outputFilePath = "C:/Users/filip/Desktop/file.wav"; // Replace this with the desired output path
-    audioReader.saveAudioToFile(outputFilePath, audioBuffer, bufferSize);
+    const std::string outputFilePath = "C:/Users/filip/Desktop/file.wav"; // Replace this with the desired output path
+    audioReader.saveAudioToFile(outputFilePath, audioBuffer, totalSamples);
 
     return 0;
 }

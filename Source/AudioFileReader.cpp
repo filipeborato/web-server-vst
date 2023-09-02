@@ -62,6 +62,28 @@ int AudioFileReader::getTotalSamples() const {
     return totalSamples;
 }
 
+void AudioFileReader::saveAudioToFile(const std::string& filePath, const float* buffer, int numSamples) {
+    std::ofstream outputFile(filePath, std::ios::binary);
+
+    if (outputFile.is_open()) {
+        // Convert float audio samples to 16-bit PCM format
+        std::vector<short> pcmSamples(numSamples * numChannels);
+        for (int i = 0; i < numSamples * numChannels; ++i) {
+            pcmSamples[i] = static_cast<short>(buffer[i] * 32767.0f); // Convert to short range
+        }
+
+        // Write the PCM samples to the output file
+        outputFile.write(reinterpret_cast<const char*>(pcmSamples.data()), sizeof(short) * numSamples * numChannels);
+
+        outputFile.close();
+        std::cout << "Saved audio to " << filePath << std::endl;
+    }
+    else {
+        std::cerr << "Failed to open output file." << std::endl;
+    }
+}
+
+/*
 void AudioFileReader::saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize) {
     SF_INFO sfInfo;
     sfInfo.channels = 1; // Mono audio
@@ -84,3 +106,4 @@ void AudioFileReader::saveAudioToFile(const std::string& filePath, const float* 
     // Close the file
     sf_close(file);
 }
+*/
