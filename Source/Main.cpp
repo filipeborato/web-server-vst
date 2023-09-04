@@ -71,46 +71,6 @@ void PluginHost::initialize()
         plugin->setBlockSize(512); // Set the block size
     }
 }
-// Function to load audio file and fill the audio buffer
-void PluginHost::loadAudioFile(const std::string& filePath, float* audioBuffer, int bufferSize) {
-    SF_INFO sfInfo;
-    SNDFILE* file = sf_open(filePath.c_str(), SFM_READ, &sfInfo);
-
-    if (!file) {
-        std::cerr << "Error opening the input file: " << filePath << std::endl;
-        return;
-    }
-
-    sf_readf_float(file, audioBuffer, bufferSize);
-
-    sf_close(file);
-}
-
-
-void PluginHost::saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize) {
-    SF_INFO sfInfo;
-    sfInfo.channels = 1; // Mono audio
-    sfInfo.samplerate = 44100; // Sample rate (adjust as per your requirements)
-    sfInfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; // 16-bit PCM WAV file format
-
-    SNDFILE* file = sf_open(filePath.c_str(), SFM_WRITE, &sfInfo);
-    if (!file) {
-        std::cerr << "Error opening the output file: " << filePath << std::endl;
-        return;
-    }
-
-    // Write the audio data to the file
-    sf_count_t framesWritten = sf_writef_float(file, audioBuffer, bufferSize);
-
-    if (framesWritten != bufferSize) {
-        std::cerr << "Error writing audio data to the file: " << filePath << std::endl;
-    }
-
-    // Close the file
-    sf_close(file);
-}
-
-
 
 void PluginHost::processAudio(float* buffer, int numSamples)
 {
@@ -200,24 +160,17 @@ int main()
         audioReader.readSamples(audioBuffer, samplesToRead);
 
         // Process audio samples
-        host.processAudio(audioBuffer, samplesToRead);
+        host.processAudio(audioBuffer, samplesToRead);        
 
         processedSamples += samplesToRead;
-    }
-
-    
-    //host.loadAudioFile(audioFilePath, audioBuffer, bufferSize);
-    //audioReader.readSamples(audioBuffer, bufferSize);
-
-    // Process audio samples
-    //host.processAudio(audioBuffer, bufferSize);
+    }  
 
     // Set a plugin parameter
     host.setParameter(0, 0.75f);
 
     // Save the processed audio to a new .wav file
-    std::string outputFilePath = "C:/Users/filip/Desktop/file.wav"; // Replace this with the desired output path
-    host.saveAudioToFile(outputFilePath, audioBuffer, bufferSize);
+    const std::string outputFilePath = "C:/Users/filip/Desktop/file.wav"; // Replace this with the desired output path
+    audioReader.saveAudioToFile(outputFilePath, audioBuffer, totalSamples);
 
     return 0;
 }

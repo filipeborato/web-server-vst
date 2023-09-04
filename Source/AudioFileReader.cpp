@@ -61,3 +61,49 @@ void AudioFileReader::readAudioMetadata() {
 int AudioFileReader::getTotalSamples() const {
     return totalSamples;
 }
+
+void AudioFileReader::saveAudioToFile(const std::string& filePath, const float* buffer, int numSamples) {
+    std::ofstream outputFile(filePath, std::ios::binary);
+
+    if (outputFile.is_open()) {
+        // Convert float audio samples to 16-bit PCM format
+        std::vector<short> pcmSamples(numSamples * numChannels);
+        for (int i = 0; i < numSamples * numChannels; ++i) {
+            pcmSamples[i] = static_cast<short>(buffer[i] * 32767.0f); // Convert to short range
+        }
+
+        // Write the PCM samples to the output file
+        outputFile.write(reinterpret_cast<const char*>(pcmSamples.data()), sizeof(short) * numSamples * numChannels);
+
+        outputFile.close();
+        std::cout << "Saved audio to " << filePath << std::endl;
+    }
+    else {
+        std::cerr << "Failed to open output file." << std::endl;
+    }
+}
+
+/*
+void AudioFileReader::saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize) {
+    SF_INFO sfInfo;
+    sfInfo.channels = 1; // Mono audio
+    sfInfo.samplerate = 44100; // Sample rate (adjust as per your requirements)
+    sfInfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; // 16-bit PCM WAV file format
+
+    SNDFILE* file = sf_open(filePath.c_str(), SFM_WRITE, &sfInfo);
+    if (!file) {
+        std::cerr << "Error opening the output file: " << filePath << std::endl;
+        return;
+    }
+
+    // Write the audio data to the file
+    sf_count_t framesWritten = sf_writef_float(file, audioBuffer, bufferSize);
+
+    if (framesWritten != bufferSize) {
+        std::cerr << "Error writing audio data to the file: " << filePath << std::endl;
+    }
+
+    // Close the file
+    sf_close(file);
+}
+*/
