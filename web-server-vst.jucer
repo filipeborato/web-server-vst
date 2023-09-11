@@ -9,6 +9,8 @@
       <FILE id="Tg6tc6" name="AudioFileReader.h" compile="0" resource="0"
             file="Source/AudioFileReader.h"/>
       <FILE id="mPJbxV" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="pEmh4B" name="PluginHost.cpp" compile="1" resource="0" file="Source/PluginHost.cpp"/>
+      <FILE id="n7vYoF" name="PluginHost.h" compile="0" resource="0" file="Source/PluginHost.h"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
