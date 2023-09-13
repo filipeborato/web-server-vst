@@ -3,7 +3,7 @@
 
     PluginHost.cpp
     Created: 8 Sep 2023 9:33:20am
-    Author:  filip
+    Author:  Filipe Borato
 
   ==============================================================================
 */
@@ -12,9 +12,6 @@
 #include "PluginHost.h"
 #include <windows.h>
 
-extern "C" {
-    VstIntPtr VSTCALLBACK hostCallback(AEffect* effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, void* ptr, float opt);
-}
 //==============================================================================
 PluginHost::PluginHost(const char* pluginPath)
 {
