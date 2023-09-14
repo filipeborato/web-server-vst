@@ -3,7 +3,7 @@
 
     PluginHost.h
     Created: 8 Sep 2023 9:33:20am
-    Author:  filip
+    Author:  Filipe Borato
 
   ==============================================================================
 */
@@ -33,3 +33,7 @@ public:
 private:
     AudioEffect* plugin; // Pointer to the loaded VST2 plugin
 };
+
+extern "C" {
+    VstIntPtr VSTCALLBACK hostCallback(AEffect* effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, void* ptr, float opt);
+}

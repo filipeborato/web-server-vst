@@ -23,6 +23,7 @@ int main()
     const int totalSamples = audioReader.getTotalSamples();
     
     int processedSamples = 0;
+    float* audio = new float[totalSamples];
 
     while (processedSamples < totalSamples)
     {
@@ -32,7 +33,9 @@ int main()
         audioReader.readSamples(audioBuffer, samplesToRead);
 
         // Process audio samples
-        host.processAudio(audioBuffer, samplesToRead);        
+        host.processAudio(audioBuffer, samplesToRead);
+
+        audio = audioReader.createAudio(audio, audioBuffer, samplesToRead, processedSamples);
 
         processedSamples += samplesToRead;
     }  
@@ -42,7 +45,7 @@ int main()
 
     // Save the processed audio to a new .wav file
     const std::string outputFilePath = "C:/Users/filip/Desktop/file.wav"; // Replace this with the desired output path
-    audioReader.saveAudioToFile(outputFilePath, audioBuffer, totalSamples);
+    audioReader.saveAudioToFile(outputFilePath, audio, totalSamples);
 
     return 0;
 }

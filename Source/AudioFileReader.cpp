@@ -83,10 +83,11 @@ void AudioFileReader::saveAudioToFile(const std::string& filePath, const float* 
     }
 }
 
-float* AudioFileReader::createAudio(const float* buffer, const int samples){
-    float* audio;
-    for (int i = 0; i < samples; i++) {
-        
+float* AudioFileReader::createAudio(float* audio, const float* buffer, int samples, int offset){
+    int j = 0;
+    for (int i = offset; i < (offset + samples); i++) {
+        audio[i] = buffer[j];
+        j++;
     }
     return audio;
 }
