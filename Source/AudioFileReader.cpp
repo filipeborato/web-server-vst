@@ -83,11 +83,34 @@ void AudioFileReader::saveAudioToFile(const std::string& filePath, const float* 
     }
 }
 
-float* AudioFileReader::createAudio(float* audio, const float* buffer, int samples, int offset){
+float* AudioFileReader::createAudio(float *audio, const float* audioBuffer, int samples, int offset) {
     int j = 0;
     for (int i = offset; i < (offset + samples); i++) {
-        audio[i] = buffer[j];
+        audio[i] = audioBuffer[j];
         j++;
     }
     return audio;
+}
+
+void AudioFileReader::saveAudioToSNDFile(const std::string& filePath, const float* audio, int bufferSize) {
+    SF_INFO sfInfo;
+    sfInfo.channels = 1; // Mono audio
+    sfInfo.samplerate = 22050; // Sample rate (adjust as per your requirements)
+    sfInfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; // 16-bit PCM WAV file format
+
+    SNDFILE* file = sf_open(filePath.c_str(), SFM_WRITE, &sfInfo);
+    if (!file) {
+        std::cerr << "Error opening the output file: " << filePath << std::endl;
+        return;
+    }
+
+    // Write the audio data to the file
+    sf_count_t framesWritten = sf_writef_float(file, audio, bufferSize);
+
+    if (framesWritten != bufferSize) {
+        std::cerr << "Error writing audio data to the file: " << filePath << std::endl;
+    }
+
+    // Close the file
+    sf_close(file);
 }
