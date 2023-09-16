@@ -23,8 +23,8 @@ int main()
     const int totalSamples = audioReader.getTotalSamples();
     
     int processedSamples = 0;
-    float* audio = new float[totalSamples];
-
+    float *audio = new float[totalSamples];
+    
     while (processedSamples < totalSamples)
     {
         int samplesToRead = std::min(bufferSize, totalSamples - processedSamples);
@@ -35,17 +35,19 @@ int main()
         // Process audio samples
         host.processAudio(audioBuffer, samplesToRead);
 
-        audio = audioReader.createAudio(audio, audioBuffer, samplesToRead, processedSamples);
+        // Set a plugin parameter
+        host.setParameter(0, 0.75f);
+
+        std::memcpy(audio + processedSamples, audioBuffer, samplesToRead * sizeof(float));        
 
         processedSamples += samplesToRead;
-    }  
-
-    // Set a plugin parameter
-    host.setParameter(0, 0.75f);
+    }     
 
     // Save the processed audio to a new .wav file
     const std::string outputFilePath = "C:/Users/filip/Desktop/file.wav"; // Replace this with the desired output path
-    audioReader.saveAudioToFile(outputFilePath, audio, totalSamples);
+    audioReader.saveAudioToSNDFile(outputFilePath, audio, totalSamples);
+
+    delete[] audio;
 
     return 0;
 }
