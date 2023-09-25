@@ -102,8 +102,8 @@ float* AudioFileReader::cpyTotalAudio(float* audio, float* buffer, int samples, 
 
 void AudioFileReader::saveAudioToSNDFile(const std::string& filePath, const float* audio, int bufferSize) {
     SF_INFO sfInfo;
-    sfInfo.channels = 1; // Mono audio
-    sfInfo.samplerate = 22050; // Sample rate (adjust as per your requirements)
+    sfInfo.channels = numChannels; // Mono audio
+    sfInfo.samplerate = sampleRate; // Sample rate (adjust as per your requirements)
     sfInfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; // 16-bit PCM WAV file format
 
     SNDFILE* file = sf_open(filePath.c_str(), SFM_WRITE, &sfInfo);
