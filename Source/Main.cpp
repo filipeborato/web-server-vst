@@ -38,8 +38,8 @@ int main()
         // Set a plugin parameter
         host.setParameter(0, 0.75f);
 
-        std::memcpy(audio + processedSamples, audioBuffer, samplesToRead * sizeof(float));        
-
+        audioReader.cpyTotalAudio(audio, audioBuffer, samplesToRead, processedSamples);
+        
         processedSamples += samplesToRead;
     }     
 

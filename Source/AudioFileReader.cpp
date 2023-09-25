@@ -41,7 +41,7 @@ void AudioFileReader::readAudioMetadata() {
 
     if (inputFile.is_open()) {
         // Assuming 16-bit PCM audio for simplicity
-        inputFile.seekg(dataChunkOffset + offset); // Seek to the beginning of audio data
+        inputFile.seekg(dataChunkOffset + (offset*2)); // Seek to the beginning of audio data, why to X2
 
         // Read audio samples and convert to float (-1.0 to 1.0 range)
         std::vector<short> sampleBuffer(numSamples * numChannels);
@@ -83,11 +83,19 @@ void AudioFileReader::saveAudioToFile(const std::string& filePath, const float* 
     }
 }
 
-float* AudioFileReader::createAudio(float *audio, const float* audioBuffer, int samples, int offset) {
+float* AudioFileReader::makeAudio(float *audio, const float* audioBuffer, int samples, int offset) {
     int j = 0;
     for (int i = offset; i < (offset + samples); i++) {
         audio[i] = audioBuffer[j];
         j++;
+    }
+    return audio;
+}
+
+float* AudioFileReader::cpyTotalAudio(float* audio, float* buffer, int samples, int offset) {
+    // Verifique os limites dos arrays para evitar acessos inválidos
+    if (audio && buffer && offset >= 0 && offset + samples <= totalSamples) {
+        memcpy(audio + offset, buffer, samples * sizeof(float));
     }
     return audio;
 }
