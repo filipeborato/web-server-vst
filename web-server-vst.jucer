@@ -4,7 +4,13 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="HAZNNx" name="web-server-vst">
     <GROUP id="{1C0CD7C4-E56E-341F-358A-D21D2D6EEFFD}" name="Source">
+      <FILE id="LV5hRv" name="AudioFileReader.cpp" compile="1" resource="0"
+            file="Source/AudioFileReader.cpp"/>
+      <FILE id="Tg6tc6" name="AudioFileReader.h" compile="0" resource="0"
+            file="Source/AudioFileReader.h"/>
       <FILE id="mPJbxV" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="pEmh4B" name="PluginHost.cpp" compile="1" resource="0" file="Source/PluginHost.cpp"/>
+      <FILE id="n7vYoF" name="PluginHost.h" compile="0" resource="0" file="Source/PluginHost.h"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
