@@ -10,7 +10,7 @@ public:
         readAudioMetadata();
     }
 
-    void readSamples(float* buffer, int numSamples);
+    void readSamples(float* buffer, int numSamples, int offset);
     int getTotalSamples() const;
     void saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
     void saveAudioToSNDFile(const std::string& filePath, const float* audioBuffer, int bufferSize);

@@ -36,12 +36,12 @@ void AudioFileReader::readAudioMetadata() {
 }
 
 
-    void AudioFileReader::readSamples(float* buffer, int numSamples){
+    void AudioFileReader::readSamples(float* buffer, int numSamples, int offset){
     std::ifstream inputFile(filePath, std::ios::binary);
 
     if (inputFile.is_open()) {
         // Assuming 16-bit PCM audio for simplicity
-        inputFile.seekg(dataChunkOffset); // Seek to the beginning of audio data
+        inputFile.seekg(dataChunkOffset + offset); // Seek to the beginning of audio data
 
         // Read audio samples and convert to float (-1.0 to 1.0 range)
         std::vector<short> sampleBuffer(numSamples * numChannels);

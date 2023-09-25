@@ -30,7 +30,7 @@ int main()
         int samplesToRead = std::min(bufferSize, totalSamples - processedSamples);
 
         // Read audio chunk from the file
-        audioReader.readSamples(audioBuffer, samplesToRead);
+        audioReader.readSamples(audioBuffer, samplesToRead, processedSamples);
 
         // Process audio samples
         host.processAudio(audioBuffer, samplesToRead);
