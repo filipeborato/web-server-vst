@@ -30,7 +30,7 @@ int main()
         int samplesToRead = std::min(bufferSize, totalSamples - processedSamples);
 
         // Read audio chunk from the file
-        audioReader.readSamples(audioBuffer, samplesToRead);
+        audioReader.readSamples(audioBuffer, samplesToRead, processedSamples);
 
         // Process audio samples
         host.processAudio(audioBuffer, samplesToRead);
@@ -38,8 +38,8 @@ int main()
         // Set a plugin parameter
         host.setParameter(0, 0.75f);
 
-        std::memcpy(audio + processedSamples, audioBuffer, samplesToRead * sizeof(float));        
-
+        audioReader.cpyTotalAudio(audio, audioBuffer, samplesToRead, processedSamples);
+        
         processedSamples += samplesToRead;
     }     
 
