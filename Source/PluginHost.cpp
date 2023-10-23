@@ -23,9 +23,9 @@ PluginHost::PluginHost(const char* pluginPath)
     {
         pluginFuncPtr create = (pluginFuncPtr)GetProcAddress(hInstance, "VSTPluginMain");
         if (create != nullptr)
-        {
-            AEffect* host;
-            host = create(hostCallback); // Instantiate the plugin
+        {            
+            host = create(hostCallback); // Instantiate the plugin      
+            plugin = (AudioEffect*)host;
             host->dispatcher(host, effOpen, 0, 0, NULL, 0.0f);  // Open the plugin
             PluginHost::pluginCategory(host);
         }
