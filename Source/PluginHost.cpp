@@ -15,7 +15,6 @@
 //==============================================================================
 PluginHost::PluginHost(const char* pluginPath)
 {
-    plugin = nullptr;
     effect = nullptr;
 
     // Load the VST2 plugin
