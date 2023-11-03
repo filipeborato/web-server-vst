@@ -32,7 +32,7 @@ public:
 
 private:
     AudioEffect* plugin; // Pointer to the loaded VST2 plugin
-    AEffect* host;
+    AEffect* effect;
 };
 
 extern "C" {
