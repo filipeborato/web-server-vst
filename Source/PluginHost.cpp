@@ -53,17 +53,17 @@ void PluginHost::initialize()
 
 void PluginHost::processAudio(float* buffer, int numSamples)
 {
-    if (plugin != nullptr)
+    if (effect != nullptr)
     {
-        plugin->processReplacing(&buffer, nullptr, numSamples); // Process audio
+        effect->processReplacing(effect, &buffer, nullptr, numSamples); // Process audio
     }
 }
 
 void PluginHost::setParameter(int index, float value)
 {
-    if (plugin != nullptr)
+    if (effect != nullptr)
     {
-        plugin->setParameter(index, value); // Set a plugin parameter
+        effect->setParameter(effect, index, value); // Set a plugin parameter
     }
 }
 
