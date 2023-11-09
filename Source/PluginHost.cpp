@@ -55,7 +55,7 @@ void PluginHost::processAudio(float* buffer, int numSamples)
 {
     if (effect != nullptr)
     {
-        effect->processReplacing(effect, &buffer, nullptr, numSamples); // Process audio
+        effect->processReplacing(effect, &buffer, NULL, numSamples); // Process audio
     }
 }
 
