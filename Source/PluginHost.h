@@ -23,6 +23,7 @@ public:
     PluginHost(const char* pluginPath);
     ~PluginHost();
     void initialize();
+    void suspend();
     void pluginCategory(AEffect* plugin);
     void processAudio(float* buffer, int numSamples);
     void setParameter(int index, float value);
