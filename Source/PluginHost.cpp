@@ -35,6 +35,7 @@ PluginHost::~PluginHost()
 {
     if (effect != nullptr)
     {
+        suspend();
         effect->dispatcher(effect, effClose, 0, 0, NULL, 0.0f); // Close the plugin
         delete plugin;
     }
@@ -55,7 +56,7 @@ void PluginHost::processAudio(float* buffer, int numSamples)
 {
     if (effect != nullptr)
     {
-        effect->processReplacing(effect, &buffer, NULL, numSamples); // Process audio
+        effect->processReplacing(effect, NULL, NULL, numSamples); // Process audio
     }
 }
 
@@ -65,6 +66,15 @@ void PluginHost::setParameter(int index, float value)
     {
         effect->setParameter(effect, index, value); // Set a plugin parameter
     }
+}
+
+void PluginHost::suspend()
+{
+	if (effect != nullptr)
+	{
+		effect->dispatcher(effect, effMainsChanged, 0, 0, NULL, 0.0f); // Set a plugin program
+        effect->dispatcher(effect, effStopProcess, 0, 0, NULL, 0.0f);
+	}
 }
 
 void PluginHost::pluginCategory(AEffect* plugin) {
