@@ -15,7 +15,7 @@
 //==============================================================================
 PluginHost::PluginHost(const char* pluginPath)
 {
-    plugin = nullptr;
+    effect = nullptr;
 
     // Load the VST2 plugin
     HINSTANCE hInstance = LoadLibrary(pluginPath);
@@ -23,48 +23,58 @@ PluginHost::PluginHost(const char* pluginPath)
     {
         pluginFuncPtr create = (pluginFuncPtr)GetProcAddress(hInstance, "VSTPluginMain");
         if (create != nullptr)
-        {
-            AEffect* plugin;
-            plugin = create(hostCallback); // Instantiate the plugin
-            plugin->dispatcher(plugin, effOpen, 0, 0, NULL, 0.0f);  // Open the plugin
-            PluginHost::pluginCategory(plugin);
+        {            
+            effect = create(hostCallback); // Instantiate the plugin                  
+            effect->dispatcher(effect, effOpen, 0, 0, NULL, 0.0f);  // Open the host            
+            PluginHost::pluginCategory(effect);
         }
     }
 }
 
 PluginHost::~PluginHost()
 {
-    if (plugin != nullptr)
+    if (effect != nullptr)
     {
-        plugin->dispatcher(effClose, 0, 0, nullptr, 0.0f); // Close the plugin
+        suspend();
+        effect->dispatcher(effect, effClose, 0, 0, NULL, 0.0f); // Close the plugin
         delete plugin;
     }
 }
 
 void PluginHost::initialize()
 {
-    if (plugin != nullptr)
+    if (effect != nullptr)
     {
-        plugin->setParameterAutomated(0, 0.5f); // Set a parameter (index 0) to a value (0.5f)
-        plugin->setSampleRate(44100.0f); // Set the sample rate
-        plugin->setBlockSize(512); // Set the block size
+        effect->dispatcher(effect, effOpen, 0, 0, NULL, 0.0f);
+        effect->dispatcher(effect, effSetSampleRate, 0, 0, NULL, 44100.0);   // hard-coded for now
+        effect->dispatcher(effect, effSetBlockSize, 0, 512, NULL, 0.0f);   // hard-coded for now
+        
     }
 }
 
 void PluginHost::processAudio(float* buffer, int numSamples)
 {
-    if (plugin != nullptr)
+    if (effect != nullptr)
     {
-        plugin->processReplacing(&buffer, nullptr, numSamples); // Process audio
+        effect->processReplacing(effect, NULL, NULL, numSamples); // Process audio
     }
 }
 
 void PluginHost::setParameter(int index, float value)
 {
-    if (plugin != nullptr)
+    if (effect != nullptr)
     {
-        plugin->setParameter(index, value); // Set a plugin parameter
+        effect->setParameter(effect, index, value); // Set a plugin parameter
     }
+}
+
+void PluginHost::suspend()
+{
+	if (effect != nullptr)
+	{
+		effect->dispatcher(effect, effMainsChanged, 0, 0, NULL, 0.0f); // Set a plugin program
+        effect->dispatcher(effect, effStopProcess, 0, 0, NULL, 0.0f);
+	}
 }
 
 void PluginHost::pluginCategory(AEffect* plugin) {

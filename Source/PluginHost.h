@@ -23,6 +23,7 @@ public:
     PluginHost(const char* pluginPath);
     ~PluginHost();
     void initialize();
+    void suspend();
     void pluginCategory(AEffect* plugin);
     void processAudio(float* buffer, int numSamples);
     void setParameter(int index, float value);
@@ -32,6 +33,7 @@ public:
 
 private:
     AudioEffect* plugin; // Pointer to the loaded VST2 plugin
+    AEffect* effect;
 };
 
 extern "C" {
