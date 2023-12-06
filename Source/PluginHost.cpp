@@ -37,7 +37,7 @@ PluginHost::~PluginHost()
     {
         suspend();
         effect->dispatcher(effect, effClose, 0, 0, NULL, 0.0f); // Close the plugin
-        delete plugin;
+        //delete plugin;
     }
 }
 
@@ -52,7 +52,7 @@ void PluginHost::initialize()
     }
 }
 
-void PluginHost::processAudio(float* buffer, int numSamples)
+void PluginHost::processAudio(float** buffer, int numSamples)
 {
     if (effect != nullptr)
     {
