@@ -11,8 +11,6 @@ int main()
 {
     PluginHost host("C:/Program Files/VSTPlugIns/AQ1 Stereo.dll"); // Replace with the path to your VST2 plugin
     
-    host.initialize();
-
     const int bufferSize = 512;
     float audioBuffer[bufferSize];
 
@@ -24,6 +22,8 @@ int main()
     
     int processedSamples = 0;
     float *audio = new float[totalSamples];
+    float **audioForProcess = new float*[bufferSize];
+    float **audioProcessed = new float*[totalSamples];
     
     while (processedSamples < totalSamples)
     {
@@ -32,11 +32,17 @@ int main()
         // Read audio chunk from the file
         audioReader.readSamples(audioBuffer, samplesToRead, processedSamples);
 
+        host.initialize();
+
+        memcpy(audioForProcess, audioBuffer, samplesToRead);
+
         // Process audio samples
-        host.processAudio(audioBuffer, samplesToRead);
+        host.processAudio(audioForProcess, samplesToRead);
 
         // Set a plugin parameter
         host.setParameter(0, 0.75f);
+
+        host.suspend();
 
         audioReader.cpyTotalAudio(audio, audioBuffer, samplesToRead, processedSamples);
         
