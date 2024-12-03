@@ -9,9 +9,8 @@
 */
 
 #pragma once
-#include "vstsdk2.4/public.sdk/source/vst2.x/audioeffect.h" 
-#include "vstsdk2.4/public.sdk/source/vst2.x/audioeffectx.h"
-#include <JuceHeader.h>
+#include "audioeffect.h" 
+#include "audioeffectx.h"
 
 typedef AEffect* (*pluginFuncPtr)(audioMasterCallback host);
 //==============================================================================
