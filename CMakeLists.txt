@@ -12,7 +12,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Add the executable target (main.cpp is in the Source directory)
-add_executable(${PROJECT_NAME} Source/main.cpp)
+#add_executable(${PROJECT_NAME} Source/main.cpp)
+
+add_executable(${PROJECT_NAME} Source/main.cpp Source/PluginHost.cpp Source/AudioFileReader.cpp)
 
 # Include directories for external libraries and VST SDK
 include_directories(${CMAKE_SOURCE_DIR}/external/vstsdk2.4/public.sdk/source/vst2.x)
@@ -28,4 +30,4 @@ include_directories(
 find_library(SNDFILE_LIBRARY sndfile PATHS ${LIBSNDFILE_DIR}/lib REQUIRED)
 
 # Link libraries to the target
-target_link_libraries(${PROJECT_NAME} PRIVATE ${SNDFILE_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${SNDFILE_LIBRARY} dl)

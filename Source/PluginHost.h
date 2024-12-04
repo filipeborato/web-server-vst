@@ -11,6 +11,7 @@
 #pragma once
 #include "audioeffect.h" 
 #include "audioeffectx.h"
+#include <string>  // Add this line
 
 typedef AEffect* (*pluginFuncPtr)(audioMasterCallback host);
 //==============================================================================

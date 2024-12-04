@@ -4,6 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/workspaces/web-server-vst/Source/AudioFileReader.cpp" "/workspaces/web-server-vst/CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.o"
+  "/workspaces/web-server-vst/Source/PluginHost.cpp" "/workspaces/web-server-vst/CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o"
   "/workspaces/web-server-vst/Source/main.cpp" "/workspaces/web-server-vst/CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

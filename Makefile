@@ -123,6 +123,60 @@ AudioProcessingProject/fast:
 	$(MAKE) -f CMakeFiles/AudioProcessingProject.dir/build.make CMakeFiles/AudioProcessingProject.dir/build
 .PHONY : AudioProcessingProject/fast
 
+Source/AudioFileReader.o: Source/AudioFileReader.cpp.o
+
+.PHONY : Source/AudioFileReader.o
+
+# target to build an object file
+Source/AudioFileReader.cpp.o:
+	$(MAKE) -f CMakeFiles/AudioProcessingProject.dir/build.make CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.o
+.PHONY : Source/AudioFileReader.cpp.o
+
+Source/AudioFileReader.i: Source/AudioFileReader.cpp.i
+
+.PHONY : Source/AudioFileReader.i
+
+# target to preprocess a source file
+Source/AudioFileReader.cpp.i:
+	$(MAKE) -f CMakeFiles/AudioProcessingProject.dir/build.make CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.i
+.PHONY : Source/AudioFileReader.cpp.i
+
+Source/AudioFileReader.s: Source/AudioFileReader.cpp.s
+
+.PHONY : Source/AudioFileReader.s
+
+# target to generate assembly for a file
+Source/AudioFileReader.cpp.s:
+	$(MAKE) -f CMakeFiles/AudioProcessingProject.dir/build.make CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.s
+.PHONY : Source/AudioFileReader.cpp.s
+
+Source/PluginHost.o: Source/PluginHost.cpp.o
+
+.PHONY : Source/PluginHost.o
+
+# target to build an object file
+Source/PluginHost.cpp.o:
+	$(MAKE) -f CMakeFiles/AudioProcessingProject.dir/build.make CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o
+.PHONY : Source/PluginHost.cpp.o
+
+Source/PluginHost.i: Source/PluginHost.cpp.i
+
+.PHONY : Source/PluginHost.i
+
+# target to preprocess a source file
+Source/PluginHost.cpp.i:
+	$(MAKE) -f CMakeFiles/AudioProcessingProject.dir/build.make CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.i
+.PHONY : Source/PluginHost.cpp.i
+
+Source/PluginHost.s: Source/PluginHost.cpp.s
+
+.PHONY : Source/PluginHost.s
+
+# target to generate assembly for a file
+Source/PluginHost.cpp.s:
+	$(MAKE) -f CMakeFiles/AudioProcessingProject.dir/build.make CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.s
+.PHONY : Source/PluginHost.cpp.s
+
 Source/main.o: Source/main.cpp.o
 
 .PHONY : Source/main.o
@@ -159,6 +213,12 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... AudioProcessingProject"
+	@echo "... Source/AudioFileReader.o"
+	@echo "... Source/AudioFileReader.i"
+	@echo "... Source/AudioFileReader.s"
+	@echo "... Source/PluginHost.o"
+	@echo "... Source/PluginHost.i"
+	@echo "... Source/PluginHost.s"
 	@echo "... Source/main.o"
 	@echo "... Source/main.i"
 	@echo "... Source/main.s"

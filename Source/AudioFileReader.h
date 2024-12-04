@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <sndfile.h>
+#include <cstring>
 
 class AudioFileReader {
 public:

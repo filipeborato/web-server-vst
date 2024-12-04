@@ -6,6 +6,10 @@
 
 #IncludeRegexTransform: 
 
+/workspaces/web-server-vst/Source/AudioFileReader.cpp
+AudioFileReader.h
+/workspaces/web-server-vst/Source/AudioFileReader.h
+
 /workspaces/web-server-vst/Source/AudioFileReader.h
 iostream
 -
@@ -15,12 +19,24 @@ vector
 -
 sndfile.h
 -
+cstring
+-
+
+/workspaces/web-server-vst/Source/PluginHost.cpp
+PluginHost.h
+/workspaces/web-server-vst/Source/PluginHost.h
+iostream
+-
+dlfcn.h
+-
 
 /workspaces/web-server-vst/Source/PluginHost.h
 audioeffect.h
 /workspaces/web-server-vst/Source/audioeffect.h
 audioeffectx.h
 /workspaces/web-server-vst/Source/audioeffectx.h
+string
+-
 
 /workspaces/web-server-vst/Source/main.cpp
 iostream
@@ -33,7 +49,7 @@ AudioFileReader.h
 /workspaces/web-server-vst/Source/AudioFileReader.h
 PluginHost.h
 /workspaces/web-server-vst/Source/PluginHost.h
-windows.h
+dlfcn.h
 -
 
 external/vstsdk2.4/pluginterfaces/vst2.x/aeffect.h
