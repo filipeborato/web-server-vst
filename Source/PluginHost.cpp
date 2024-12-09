@@ -74,7 +74,8 @@ void PluginHost::initialize()
         effect->dispatcher(effect, effOpen, 0, 0, NULL, 0.0f);
         effect->dispatcher(effect, effSetSampleRate, 0, 0, NULL, 44100.0);   // hard-coded for now
         effect->dispatcher(effect, effSetBlockSize, 0, 512, NULL, 0.0f);   // hard-coded for now
-        
+        effect->setParameter(effect, 0, 0.75f); // Example: Set parameter 0 to 75%
+        effect->setParameter(effect, 1, 0.5f);  // Example: Set parameter 1 to 50%        
     }
 }
 
@@ -82,9 +83,7 @@ void PluginHost::processAudio(float** inBuffer, float** outBuffer, int numSample
 {
     if (effect != nullptr && inBuffer != nullptr)    
     {   
-        // Log buffer information
-        std::cout << "Processing " << numSamples << " samples." << std::endl;
-        std::cout << "Input Buffer[0]: " << inBuffer[0] << ", Output Buffer[0]: " << outBuffer[0] << std::endl;    
+        // Log buffer information       
         effect->processReplacing(effect, inBuffer, outBuffer, numSamples); // Process audio
     }
 }
@@ -101,6 +100,19 @@ void PluginHost::suspend()
 {
 	if (effect != nullptr)
 	{
+        for (int paramIndex = 0; paramIndex < effect->numParams; ++paramIndex)
+        {
+            char paramDisplay[32];
+            char paramLabel[32];
+
+            // Retrieve the display value of the parameter
+            effect->dispatcher(effect, effGetParamDisplay, paramIndex, 0, paramDisplay, 0.0f);
+
+            // Retrieve the unit/label of the parameter (e.g., "Hz", "dB")
+            effect->dispatcher(effect, effGetParamLabel, paramIndex, 0, paramLabel, 0.0f);
+
+            std::cout << "Parameter " << paramIndex << ": " << paramDisplay << " " << paramLabel << std::endl;
+        }
 		effect->dispatcher(effect, effMainsChanged, 0, 1, NULL, 0.0f); // Set a plugin program
         effect->dispatcher(effect, effStopProcess, 0, 0, NULL, 0.0f);
 	}
