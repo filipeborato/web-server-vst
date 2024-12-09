@@ -11,7 +11,8 @@
 #pragma once
 #include "audioeffect.h" 
 #include "audioeffectx.h"
-#include <string>  // Add this line
+//#include <string>  // Add this line
+#include <iostream>
 
 typedef AEffect* (*pluginFuncPtr)(audioMasterCallback host);
 //==============================================================================
@@ -25,7 +26,7 @@ public:
     void initialize();
     void suspend();
     void pluginCategory(AEffect* plugin);
-    void processAudio(float** buffer, int numSamples);
+    void processAudio(float** inBuffer, float** outBuffer, int numSamples);
     void setParameter(int index, float value);
     void loadAudioFile(const std::string& filePath, float* audioBuffer, int bufferSize);
     void saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
