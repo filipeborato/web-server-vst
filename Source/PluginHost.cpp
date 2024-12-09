@@ -9,7 +9,6 @@
 */
 #include "PluginHost.h"
 //#include <windows.h>
-#include <iostream>
 #include <dlfcn.h>  // Header for dynamic loading in Linux
 
 //==============================================================================
@@ -18,7 +17,21 @@ PluginHost::PluginHost(const char* pluginPath)
     effect = nullptr;
 
     // Load the VST2 plugin
-    void* pluginHandle = dlopen(pluginPath, RTLD_LAZY);  // Load the shared library
+    void* pluginHandle = dlopen(pluginPath, RTLD_LAZY);
+    if (!pluginHandle) {
+        std::cerr << "Error loading plugin: " << dlerror() << std::endl;
+        return ;
+    }
+    
+    // Procura a função VSTPluginMain
+    auto vstPluginMain = (AEffect* (*)(audioMasterCallback))dlsym(pluginHandle, "VSTPluginMain");
+    if (!vstPluginMain) {
+        std::cerr << "Error: VSTPluginMain not found!" << std::endl;
+        dlclose(pluginHandle);
+        return;
+    }
+    
+      // Load the shared library
     if (pluginHandle != nullptr)
     {
         // Get the address of the VST plugin main entry point
@@ -27,7 +40,7 @@ PluginHost::PluginHost(const char* pluginPath)
         if (create != nullptr)
         {            
             effect = create(hostCallback); // Instantiate the plugin                  
-            effect->dispatcher(effect, effOpen, 0, 0, NULL, 0.0f);  // Open the host            
+            effect->dispatcher(effect, effOpen, 0, 0, nullptr, 0.0f); // Open the host            
             PluginHost::pluginCategory(effect);
         }
         else
@@ -65,11 +78,11 @@ void PluginHost::initialize()
     }
 }
 
-void PluginHost::processAudio(float** buffer, int numSamples)
+void PluginHost::processAudio(float** inBuffer, float** outBuffer, int numSamples)
 {
-    if (effect != nullptr)
-    {
-        effect->processReplacing(effect, NULL, NULL, numSamples); // Process audio
+    if (effect != nullptr && inBuffer != nullptr)    
+    {       
+        effect->processReplacing(effect, inBuffer, outBuffer, numSamples); // Process audio
     }
 }
 
@@ -85,7 +98,7 @@ void PluginHost::suspend()
 {
 	if (effect != nullptr)
 	{
-		effect->dispatcher(effect, effMainsChanged, 0, 0, NULL, 0.0f); // Set a plugin program
+		effect->dispatcher(effect, effMainsChanged, 0, 1, NULL, 0.0f); // Set a plugin program
         effect->dispatcher(effect, effStopProcess, 0, 0, NULL, 0.0f);
 	}
 }
@@ -158,8 +171,8 @@ extern "C" {
         default:
             printf("\nPlugin requested value of opcode %d.\n", opcode);
         }
-#if TRACE
-        printf("\nOpcode %d was requested by the plugin.\n", opcode);
-#endif  // TRACE
+        #if TRACE
+                printf("\nOpcode %d was requested by the plugin.\n", opcode);
+        #endif  // TRACE
     }
 }

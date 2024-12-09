@@ -3,59 +3,50 @@
 #include <algorithm>
 #include "AudioFileReader.h"
 #include "PluginHost.h"
-#include <dlfcn.h>  // For dynamic library loading on Linux
 
-// Main function
 int main()
 {
-    // Replace with the correct path to your VST2 plugin in Linux (use a .so file)
-    std::string pluginPath = "/path/to/your/plugin/AQ1_Stereo.so";  // Linux version of the plugin path
-    
-    PluginHost host(pluginPath.c_str()); // PluginHost constructor takes path to shared library
+    std::string pluginPath = "/workspaces/web-server-vst/TheFunction.so";  // Path to VST2 plugin
+    PluginHost host(pluginPath.c_str());
 
-    const int bufferSize = 512;
-    float audioBuffer[bufferSize];
+    const int bufferSize = 512;  // Block size
+    const int totalSamples = 44100 * 10;  // Example: 10 seconds of audio at 44.1 kHz
+    AudioFileReader audioReader("/workspaces/web-server-vst/Alesis-Sanctuary-QCard-Tines-Aahs-C4.wav");
 
-    // Update path for Linux
-    std::string audioFilePath = "/home/user/Desktop/test.wav"; // Replace with the actual audio file path in Linux
-    AudioFileReader audioReader(audioFilePath);
+    float* audio[2] = {new float[totalSamples], new float[totalSamples]};
+    float* audioForProcess[2] = {new float[bufferSize], new float[bufferSize]};
+    float* processedAudio[2] = {new float[bufferSize], new float[bufferSize]};
 
-    const int totalSamples = audioReader.getTotalSamples();
+    host.initialize();
 
     int processedSamples = 0;
-    float *audio = new float[totalSamples];
-    float **audioForProcess = new float*[bufferSize];
-    float **audioProcessed = new float*[totalSamples];
-
     while (processedSamples < totalSamples)
     {
         int samplesToRead = std::min(bufferSize, totalSamples - processedSamples);
+        audioReader.readSamples(audioForProcess[0], samplesToRead, processedSamples);
 
-        // Read audio chunk from the file
-        audioReader.readSamples(audioBuffer, samplesToRead, processedSamples);
+        // Duplicate mono input for stereo processing
+        std::copy(audioForProcess[0], audioForProcess[0] + samplesToRead, audioForProcess[1]);
 
-        host.initialize();
+        host.processAudio(audioForProcess, processedAudio, samplesToRead);
 
-        memcpy(audioForProcess, audioBuffer, samplesToRead);
+        // Copy processed audio back to the main audio buffer
+        std::copy(processedAudio[0], processedAudio[0] + samplesToRead, audio[0] + processedSamples);
+        std::copy(processedAudio[1], processedAudio[1] + samplesToRead, audio[1] + processedSamples);
 
-        // Process audio samples
-        host.processAudio(audioForProcess, samplesToRead);
-
-        // Set a plugin parameter
-        host.setParameter(0, 0.75f);
-
-        host.suspend();
-
-        audioReader.cpyTotalAudio(audio, audioBuffer, samplesToRead, processedSamples);
-        
         processedSamples += samplesToRead;
     }
 
-    // Save the processed audio to a new .wav file
-    const std::string outputFilePath = "/home/user/Desktop/file.wav"; // Replace with the desired output path for Linux
-    audioReader.saveAudioToSNDFile(outputFilePath, audio, totalSamples);
+    // Save processed audio
+    //audioReader.saveAudioToSNDFile("/workspaces/web-server-vst/test/output.wav", audio, totalSamples);
 
-    delete[] audio;
+    // Cleanup
+    delete[] audio[0];
+    delete[] audio[1];
+    delete[] audioForProcess[0];
+    delete[] audioForProcess[1];
+    delete[] processedAudio[0];
+    delete[] processedAudio[1];
 
     return 0;
 }
