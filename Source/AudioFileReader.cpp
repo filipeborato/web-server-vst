@@ -93,7 +93,7 @@ float* AudioFileReader::makeAudio(float *audio, const float* audioBuffer, int sa
 }
 
 float* AudioFileReader::cpyTotalAudio(float* audio, float* buffer, int samples, int offset) {
-    // Verifique os limites dos arrays para evitar acessos inválidos
+    // Verifique os limites dos arrays para evitar acessos invï¿½lidos
     if (audio && buffer && offset >= 0 && offset + samples <= totalSamples) {
         memcpy(audio + offset, buffer, samples * sizeof(float));
     }

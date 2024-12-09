@@ -81,7 +81,10 @@ void PluginHost::initialize()
 void PluginHost::processAudio(float** inBuffer, float** outBuffer, int numSamples)
 {
     if (effect != nullptr && inBuffer != nullptr)    
-    {       
+    {   
+        // Log buffer information
+        std::cout << "Processing " << numSamples << " samples." << std::endl;
+        std::cout << "Input Buffer[0]: " << inBuffer[0] << ", Output Buffer[0]: " << outBuffer[0] << std::endl;    
         effect->processReplacing(effect, inBuffer, outBuffer, numSamples); // Process audio
     }
 }

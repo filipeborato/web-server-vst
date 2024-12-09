@@ -10,9 +10,11 @@ int main()
     PluginHost host(pluginPath.c_str());
 
     const int bufferSize = 512;  // Block size
-    const int totalSamples = 44100 * 10;  // Example: 10 seconds of audio at 44.1 kHz
+    //const int totalSamples = 44100 * 10;  // Example: 10 seconds of audio at 44.1 kHz
+    
     AudioFileReader audioReader("/workspaces/web-server-vst/Alesis-Sanctuary-QCard-Tines-Aahs-C4.wav");
-
+    const int totalSamples = audioReader.getTotalSamples();
+    
     float* audio[2] = {new float[totalSamples], new float[totalSamples]};
     float* audioForProcess[2] = {new float[bufferSize], new float[bufferSize]};
     float* processedAudio[2] = {new float[bufferSize], new float[bufferSize]};
@@ -38,7 +40,7 @@ int main()
     }
 
     // Save processed audio
-    //audioReader.saveAudioToSNDFile("/workspaces/web-server-vst/test/output.wav", audio, totalSamples);
+    audioReader.saveAudioToSNDFile("/workspaces/web-server-vst/test/output.wav", *audio, totalSamples);
 
     // Cleanup
     delete[] audio[0];
