@@ -36,7 +36,8 @@ void AudioFileReader::readAudioMetadata() {
 }
 
 
-    void AudioFileReader::readSamples(float* buffer, int numSamples, int offset){
+void AudioFileReader::readSamples(float* buffer, int numSamples, int offset)
+{
     std::ifstream inputFile(filePath, std::ios::binary);
 
     if (inputFile.is_open()) {
@@ -60,6 +61,10 @@ void AudioFileReader::readAudioMetadata() {
 
 int AudioFileReader::getTotalSamples() const {
     return totalSamples;
+}
+
+int AudioFileReader::getNumChannels() const {
+    return numChannels;
 }
 
 void AudioFileReader::saveAudioToFile(const std::string& filePath, const float* buffer, int numSamples) {

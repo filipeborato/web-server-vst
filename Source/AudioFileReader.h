@@ -13,6 +13,7 @@ public:
 
     void readSamples(float* buffer, int numSamples, int offset);
     int getTotalSamples() const;
+    int getNumChannels() const; 
     void saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
     void saveAudioToSNDFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
     float* makeAudio(float* audio, const float* audioBuffer, int samples, int offset);
