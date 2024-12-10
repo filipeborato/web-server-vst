@@ -133,6 +133,34 @@ std::string PluginHost::getEffectName() {
     }
 }
 
+
+void PluginHost::printParameterProperties() {
+    if (!effect) {
+        std::cerr << "Plugin not loaded!" << std::endl;
+        return;
+    }
+
+    for (int i = 0; i < effect->numParams; ++i) {
+        VstParameterProperties properties;
+        std::memset(&properties, 0, sizeof(VstParameterProperties)); // Certifique-se de inicializar
+
+        // Chamada ao dispatcher para obter as propriedades
+        int result = effect->dispatcher(effect, effGetParameterProperties, i, 0, &properties, 0.0f);
+
+        if (result == 1) { // Verifica se a função retornou sucesso
+            std::cout << "Parameter " << i << ":" << std::endl;
+            std::cout << "  Label: " << properties.label << std::endl;
+            std::cout << "  Automatable: " << ((properties.flags & kVstParameterIsAutomatable) ? "Yes" : "No") << std::endl;
+            std::cout << "  Discrete: " << ((properties.flags & kVstParameterIsDiscrete) ? "Yes" : "No") << std::endl;
+            std::cout << "  Category: " << static_cast<int>(properties.category) << std::endl;
+            std::cout << "  Short Label: " << properties.shortLabel << std::endl;
+        } else {
+            std::cerr << "Failed to retrieve properties for parameter " << i << "." << std::endl;
+        }
+    }
+}
+
+
 void PluginHost::pluginCategory(AEffect* plugin) {
     printf("Category: ");
     VstInt32 pluginCategory = plugin->dispatcher(plugin, effGetPlugCategory, 0, 0, NULL, 0.0f); // strangely enough this query returns either kPlugCategSynth or kPlugCategUnknown only so the rest of the switch statement is ineffective

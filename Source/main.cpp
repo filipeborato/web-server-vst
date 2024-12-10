@@ -11,6 +11,7 @@ int main() {
     // Obter e imprimir o nome do efeito
     std::string effectName = host.getEffectName();
     std::cout << "Loaded Effect: " << effectName << std::endl;
+    host.printParameterProperties();
     
     const int bufferSize = 512;  // Tamanho do bloco
     AudioFileReader audioReader("/workspaces/web-server-vst/Alesis-Sanctuary-QCard-Tines-Aahs-C4.wav");

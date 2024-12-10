@@ -9,13 +9,16 @@
 */
 
 #pragma once
-#include "audioeffect.h" 
-#include "audioeffectx.h"
+#include "public.sdk/source/vst2.x/audioeffect.h" 
+#include "public.sdk/source/vst2.x/audioeffectx.h"
+#include "pluginterfaces/vst2.x/aeffectx.h"
 //#include <string>  // Add this line
 #include <iostream>
 #include <cstring>
 
 typedef AEffect* (*pluginFuncPtr)(audioMasterCallback host);
+constexpr int kVstParameterIsAutomatable = 1 << 2; // Automatable parameter flag
+constexpr int kVstParameterIsDiscrete = 1 << 6;    // Discrete parameter flag
 //==============================================================================
 /*
 */
@@ -30,6 +33,7 @@ public:
     void processAudio(float** inBuffer, float** outBuffer, int numSamples);
     void setParameter(int index, float value);
     std::string getEffectName();
+    void printParameterProperties();
     void loadAudioFile(const std::string& filePath, float* audioBuffer, int bufferSize);
     void saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
 

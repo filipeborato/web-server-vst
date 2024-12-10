@@ -17,14 +17,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 add_executable(${PROJECT_NAME} Source/main.cpp Source/PluginHost.cpp Source/AudioFileReader.cpp)
 
 # Include directories for external libraries and VST SDK
-include_directories(${CMAKE_SOURCE_DIR}/external/vstsdk2.4/public.sdk/source/vst2.x)
+include_directories(${CMAKE_SOURCE_DIR}/external/vstsdk2.4)
 #include_directories(${LIBSNDFILE_DIR}/include)
 
 # Add include directories for VST SDK
-include_directories(
-    external/vstsdk2.4
-    external/vstsdk2.4/public.sdk/pluginterfaces/vst2.x
-)
+
 
 # Link libsndfile from the external directory
 find_library(SNDFILE_LIBRARY sndfile PATHS ${LIBSNDFILE_DIR}/lib REQUIRED)
