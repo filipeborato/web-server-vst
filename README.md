@@ -22,7 +22,7 @@ vstsdk2.4
 ```
 
 ```
-Framework Juce v7.0.5
+SNDFile
 ```
 
 ### VST2 Host - DLL
