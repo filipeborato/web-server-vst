@@ -13,6 +13,7 @@
 #include "audioeffectx.h"
 //#include <string>  // Add this line
 #include <iostream>
+#include <cstring>
 
 typedef AEffect* (*pluginFuncPtr)(audioMasterCallback host);
 //==============================================================================
@@ -28,6 +29,7 @@ public:
     void pluginCategory(AEffect* plugin);
     void processAudio(float** inBuffer, float** outBuffer, int numSamples);
     void setParameter(int index, float value);
+    std::string getEffectName();
     void loadAudioFile(const std::string& filePath, float* audioBuffer, int bufferSize);
     void saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
 

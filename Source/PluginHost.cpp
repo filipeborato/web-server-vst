@@ -63,7 +63,7 @@ PluginHost::~PluginHost()
     {
         suspend();
         effect->dispatcher(effect, effClose, 0, 0, NULL, 0.0f); // Close the plugin
-        //delete plugin;
+        delete plugin;
     }
 }
 
@@ -116,6 +116,21 @@ void PluginHost::suspend()
 		effect->dispatcher(effect, effMainsChanged, 0, 1, NULL, 0.0f); // Set a plugin program
         effect->dispatcher(effect, effStopProcess, 0, 0, NULL, 0.0f);
 	}
+}
+
+std::string PluginHost::getEffectName() {
+    if (effect == nullptr) {
+        return "No Plugin Loaded";
+    }
+    char effectName[256]; // Buffer para o nome do efeito
+    std::memset(effectName, 0, sizeof(effectName)); // Garante que o buffer seja inicializado com 0
+
+    // Chama o dispatcher do plugin para obter o nome do efeito
+    if (effect->dispatcher(effect, effGetEffectName, 0, 0, static_cast<void*>(effectName), 0.0f) != 0){
+        return std::string(effectName); // Retorna o nome do efeito
+    } else {
+        return "Unknown Effect"; // Caso a chamada falhe
+    }
 }
 
 void PluginHost::pluginCategory(AEffect* plugin) {

@@ -8,6 +8,10 @@ int main() {
     std::string pluginPath = "/workspaces/web-server-vst/TheFunction.so";  // Caminho para o plugin VST2
     PluginHost host(pluginPath.c_str());
 
+    // Obter e imprimir o nome do efeito
+    std::string effectName = host.getEffectName();
+    std::cout << "Loaded Effect: " << effectName << std::endl;
+    
     const int bufferSize = 512;  // Tamanho do bloco
     AudioFileReader audioReader("/workspaces/web-server-vst/Alesis-Sanctuary-QCard-Tines-Aahs-C4.wav");
 

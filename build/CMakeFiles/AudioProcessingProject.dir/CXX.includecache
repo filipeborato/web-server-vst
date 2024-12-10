@@ -38,12 +38,20 @@ sndfile.h
 cstring
 -
 
+/workspaces/web-server-vst/Source/PluginHost.cpp
+PluginHost.h
+/workspaces/web-server-vst/Source/PluginHost.h
+dlfcn.h
+-
+
 /workspaces/web-server-vst/Source/PluginHost.h
 audioeffect.h
 /workspaces/web-server-vst/Source/audioeffect.h
 audioeffectx.h
 /workspaces/web-server-vst/Source/audioeffectx.h
 iostream
+-
+cstring
 -
 
 /workspaces/web-server-vst/Source/main.cpp
