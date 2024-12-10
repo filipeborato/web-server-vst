@@ -33,12 +33,6 @@
 				"file" : 0,
 				"line" : 20,
 				"parent" : 0
-			},
-			{
-				"command" : 1,
-				"file" : 0,
-				"line" : 24,
-				"parent" : 0
 			}
 		]
 	},
@@ -58,15 +52,7 @@
 			[
 				{
 					"backtrace" : 2,
-					"path" : "/workspaces/web-server-vst/external/vstsdk2.4/public.sdk/source/vst2.x"
-				},
-				{
-					"backtrace" : 3,
 					"path" : "/workspaces/web-server-vst/external/vstsdk2.4"
-				},
-				{
-					"backtrace" : 3,
-					"path" : "/workspaces/web-server-vst/external/vstsdk2.4/public.sdk/pluginterfaces/vst2.x"
 				}
 			],
 			"language" : "CXX",

@@ -1,17 +1,17 @@
 [
 {
   "directory": "/workspaces/web-server-vst/build",
-  "command": "/usr/bin/g++   -I/workspaces/web-server-vst/external/vstsdk2.4/public.sdk/source/vst2.x -I/workspaces/web-server-vst/external/vstsdk2.4 -I/workspaces/web-server-vst/external/vstsdk2.4/public.sdk/pluginterfaces/vst2.x  -g   -std=gnu++17 -o CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o -c /workspaces/web-server-vst/Source/main.cpp",
+  "command": "/usr/bin/g++   -I/workspaces/web-server-vst/external/vstsdk2.4  -g   -std=gnu++17 -o CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o -c /workspaces/web-server-vst/Source/main.cpp",
   "file": "/workspaces/web-server-vst/Source/main.cpp"
 },
 {
   "directory": "/workspaces/web-server-vst/build",
-  "command": "/usr/bin/g++   -I/workspaces/web-server-vst/external/vstsdk2.4/public.sdk/source/vst2.x -I/workspaces/web-server-vst/external/vstsdk2.4 -I/workspaces/web-server-vst/external/vstsdk2.4/public.sdk/pluginterfaces/vst2.x  -g   -std=gnu++17 -o CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o -c /workspaces/web-server-vst/Source/PluginHost.cpp",
+  "command": "/usr/bin/g++   -I/workspaces/web-server-vst/external/vstsdk2.4  -g   -std=gnu++17 -o CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o -c /workspaces/web-server-vst/Source/PluginHost.cpp",
   "file": "/workspaces/web-server-vst/Source/PluginHost.cpp"
 },
 {
   "directory": "/workspaces/web-server-vst/build",
-  "command": "/usr/bin/g++   -I/workspaces/web-server-vst/external/vstsdk2.4/public.sdk/source/vst2.x -I/workspaces/web-server-vst/external/vstsdk2.4 -I/workspaces/web-server-vst/external/vstsdk2.4/public.sdk/pluginterfaces/vst2.x  -g   -std=gnu++17 -o CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.o -c /workspaces/web-server-vst/Source/AudioFileReader.cpp",
+  "command": "/usr/bin/g++   -I/workspaces/web-server-vst/external/vstsdk2.4  -g   -std=gnu++17 -o CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.o -c /workspaces/web-server-vst/Source/AudioFileReader.cpp",
   "file": "/workspaces/web-server-vst/Source/AudioFileReader.cpp"
 }
 ]

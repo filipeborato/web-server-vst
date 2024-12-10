@@ -6,5 +6,5 @@ CXX_FLAGS = -g   -std=gnu++17
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/workspaces/web-server-vst/external/vstsdk2.4/public.sdk/source/vst2.x -I/workspaces/web-server-vst/external/vstsdk2.4 -I/workspaces/web-server-vst/external/vstsdk2.4/public.sdk/pluginterfaces/vst2.x 
+CXX_INCLUDES = -I/workspaces/web-server-vst/external/vstsdk2.4 
 
