@@ -4,45 +4,62 @@
 #include "AudioFileReader.h"
 #include "PluginHost.h"
 
-int main()
-{
-    std::string pluginPath = "/workspaces/web-server-vst/TheFunction.so";  // Path to VST2 plugin
+int main() {
+    std::string pluginPath = "/workspaces/web-server-vst/TheFunction.so";  // Caminho para o plugin VST2
     PluginHost host(pluginPath.c_str());
 
-    const int bufferSize = 512;  // Block size
-    const int totalSamples = 44100 * 10;  // Example: 10 seconds of audio at 44.1 kHz
+    const int bufferSize = 512;  // Tamanho do bloco
     AudioFileReader audioReader("/workspaces/web-server-vst/Alesis-Sanctuary-QCard-Tines-Aahs-C4.wav");
 
-    float* audio[2] = {new float[totalSamples], new float[totalSamples]};
+    const int totalSamples = audioReader.getTotalSamples();
+    const int numChannels = audioReader.getNumChannels();
+
+    if (totalSamples <= 0 || numChannels <= 0) {
+        std::cerr << "Error: Invalid audio file or metadata." << std::endl;
+        return 1;
+    }
+
+    // Alocar buffer principal para todos os canais
+    float* audio = new float[totalSamples * numChannels];  // Buffer principal
     float* audioForProcess[2] = {new float[bufferSize], new float[bufferSize]};
     float* processedAudio[2] = {new float[bufferSize], new float[bufferSize]};
 
     host.initialize();
 
     int processedSamples = 0;
-    while (processedSamples < totalSamples)
-    {
+    while (processedSamples < totalSamples) {
         int samplesToRead = std::min(bufferSize, totalSamples - processedSamples);
+
+        // Ler os dados do primeiro canal
         audioReader.readSamples(audioForProcess[0], samplesToRead, processedSamples);
 
-        // Duplicate mono input for stereo processing
-        std::copy(audioForProcess[0], audioForProcess[0] + samplesToRead, audioForProcess[1]);
+        if (numChannels == 1) {
+            // Mono: duplicar para o segundo canal
+            std::copy(audioForProcess[0], audioForProcess[0] + samplesToRead, audioForProcess[1]);
+        } else {
+            // Estéreo: Ler o segundo canal
+            audioReader.readSamples(audioForProcess[1], samplesToRead, processedSamples);
+        }
 
+        // Processar o áudio
         host.processAudio(audioForProcess, processedAudio, samplesToRead);
 
-        // Copy processed audio back to the main audio buffer
-        std::copy(processedAudio[0], processedAudio[0] + samplesToRead, audio[0] + processedSamples);
-        std::copy(processedAudio[1], processedAudio[1] + samplesToRead, audio[1] + processedSamples);
+        // Copiar o áudio processado de volta para o buffer principal
+        for (int i = 0; i < samplesToRead; ++i) {
+            audio[(processedSamples + i) * numChannels] = processedAudio[0][i]; // Canal esquerdo
+            if (numChannels > 1) {
+                audio[(processedSamples + i) * numChannels + 1] = processedAudio[1][i]; // Canal direito
+            }
+        }
 
         processedSamples += samplesToRead;
     }
 
-    // Save processed audio
-    //audioReader.saveAudioToSNDFile("/workspaces/web-server-vst/test/output.wav", audio, totalSamples);
+    // Salvar o áudio processado
+    audioReader.saveAudioToSNDFile("/workspaces/web-server-vst/test/output.wav", audio, totalSamples * numChannels);
 
-    // Cleanup
-    delete[] audio[0];
-    delete[] audio[1];
+    // Liberar memória
+    delete[] audio;
     delete[] audioForProcess[0];
     delete[] audioForProcess[1];
     delete[] processedAudio[0];

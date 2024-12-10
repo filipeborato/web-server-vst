@@ -2,17 +2,17 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug with XVFB",
+      "name": "Debug AudioProcessingProject",
       "type": "cppdbg",
       "request": "launch",
-      "program": "/usr/bin/xvfb-run",
-      "args": [
-        "${workspaceFolder}/build/bin/AudioProcessingProject"
-      ],
+      "program": "${workspaceFolder}/build/bin/AudioProcessingProject",
+      "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}/build/bin",
-      "environment": [],
-      "externalConsole": true,
+      "environment": [
+        { "name": "DISPLAY", "value": ":99" } // Configuração do DISPLAY
+      ],
+      "externalConsole": false,
       "MIMode": "gdb",
       "miDebuggerPath": "/usr/bin/gdb",
       "setupCommands": [
