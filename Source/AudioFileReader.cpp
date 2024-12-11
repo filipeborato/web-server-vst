@@ -80,6 +80,15 @@ void AudioFileReader::readSamples(float* buffer, int numSamples, int offset) {
     sf_close(file);
 }
 
+bool AudioFileReader::verifyAudioType(const std::string& filePath) {
+    SF_INFO sfinfo;
+    SNDFILE* file = sf_open(filePath.c_str(), SFM_READ, &sfinfo);
+    if (!file) {
+        return false; // Arquivo inválido
+    }
+    sf_close(file);
+    return true;
+}
 
 int AudioFileReader::getTotalSamples() const {
     return totalSamples;
