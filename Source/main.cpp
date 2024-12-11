@@ -60,8 +60,8 @@ int main() {
         processedSamples += samplesToRead;
     }
 
-    // Salvar o áudio processado
-    audioReader.saveAudioToSNDFile("/workspaces/web-server-vst/test/output.wav", audio, totalSamples * numChannels);
+    // Salvar o áudio processado    
+    audioReader.saveAudioToSNDFile("/workspaces/web-server-vst/test/processed_audio", audio, totalSamples * numChannels);
 
     // Liberar memória
     delete[] audio;
