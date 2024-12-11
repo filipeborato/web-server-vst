@@ -6,25 +6,9 @@
 
 #IncludeRegexTransform: 
 
-../external/vstsdk2.4/pluginterfaces/vst2.x/aeffect.h
-string.h
--
-stdint.h
--
-
-../external/vstsdk2.4/pluginterfaces/vst2.x/aeffectx.h
-aeffect.h
-../external/vstsdk2.4/pluginterfaces/vst2.x/aeffect.h
-
-../external/vstsdk2.4/public.sdk/source/vst2.x/audioeffect.h
-pluginterfaces/vst2.x/aeffect.h
-../external/vstsdk2.4/public.sdk/source/vst2.x/pluginterfaces/vst2.x/aeffect.h
-
-../external/vstsdk2.4/public.sdk/source/vst2.x/audioeffectx.h
-audioeffect.h
-../external/vstsdk2.4/public.sdk/source/vst2.x/audioeffect.h
-pluginterfaces/vst2.x/aeffectx.h
-../external/vstsdk2.4/public.sdk/source/vst2.x/pluginterfaces/vst2.x/aeffectx.h
+/workspaces/web-server-vst/Source/AudioFileReader.cpp
+AudioFileReader.h
+/workspaces/web-server-vst/Source/AudioFileReader.h
 
 /workspaces/web-server-vst/Source/AudioFileReader.h
 iostream
@@ -37,24 +21,4 @@ sndfile.h
 -
 cstring
 -
-
-/workspaces/web-server-vst/Source/PluginHost.h
-audioeffect.h
-/workspaces/web-server-vst/Source/audioeffect.h
-audioeffectx.h
-/workspaces/web-server-vst/Source/audioeffectx.h
-iostream
--
-
-/workspaces/web-server-vst/Source/main.cpp
-iostream
--
-string
--
-algorithm
--
-AudioFileReader.h
-/workspaces/web-server-vst/Source/AudioFileReader.h
-PluginHost.h
-/workspaces/web-server-vst/Source/PluginHost.h
 

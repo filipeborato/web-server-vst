@@ -63,7 +63,7 @@ PluginHost::~PluginHost()
     {
         suspend();
         effect->dispatcher(effect, effClose, 0, 0, NULL, 0.0f); // Close the plugin
-        //delete plugin;
+        delete plugin;
     }
 }
 
@@ -117,6 +117,49 @@ void PluginHost::suspend()
         effect->dispatcher(effect, effStopProcess, 0, 0, NULL, 0.0f);
 	}
 }
+
+std::string PluginHost::getEffectName() {
+    if (effect == nullptr) {
+        return "No Plugin Loaded";
+    }
+    char effectName[256]; // Buffer para o nome do efeito
+    std::memset(effectName, 0, sizeof(effectName)); // Garante que o buffer seja inicializado com 0
+
+    // Chama o dispatcher do plugin para obter o nome do efeito
+    if (effect->dispatcher(effect, effGetEffectName, 0, 0, static_cast<void*>(effectName), 0.0f) != 0){
+        return std::string(effectName); // Retorna o nome do efeito
+    } else {
+        return "Unknown Effect"; // Caso a chamada falhe
+    }
+}
+
+
+void PluginHost::printParameterProperties() {
+    if (!effect) {
+        std::cerr << "Plugin not loaded!" << std::endl;
+        return;
+    }
+
+    for (int i = 0; i < effect->numParams; ++i) {
+        VstParameterProperties properties;
+        std::memset(&properties, 0, sizeof(VstParameterProperties)); // Certifique-se de inicializar
+
+        // Chamada ao dispatcher para obter as propriedades
+        int result = effect->dispatcher(effect, effGetParameterProperties, i, 0, &properties, 0.0f);
+
+        if (result == 1) { // Verifica se a função retornou sucesso
+            std::cout << "Parameter " << i << ":" << std::endl;
+            std::cout << "  Label: " << properties.label << std::endl;
+            std::cout << "  Automatable: " << ((properties.flags & kVstParameterIsAutomatable) ? "Yes" : "No") << std::endl;
+            std::cout << "  Discrete: " << ((properties.flags & kVstParameterIsDiscrete) ? "Yes" : "No") << std::endl;
+            std::cout << "  Category: " << static_cast<int>(properties.category) << std::endl;
+            std::cout << "  Short Label: " << properties.shortLabel << std::endl;
+        } else {
+            std::cerr << "Failed to retrieve properties for parameter " << i << "." << std::endl;
+        }
+    }
+}
+
 
 void PluginHost::pluginCategory(AEffect* plugin) {
     printf("Category: ");

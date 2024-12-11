@@ -16,11 +16,13 @@ void AudioFileReader::readAudioMetadata() {
     std::cout << "Sample Rate: " << sfinfo.samplerate << std::endl;
     std::cout << "Channels: " << sfinfo.channels << std::endl;
     std::cout << "Frames: " << sfinfo.frames << std::endl;
+    std::cout << "Format: " << sfinfo.format << std::endl;
 
     // Atribuir os valores às variáveis da classe
     sampleRate = sfinfo.samplerate;
     numChannels = sfinfo.channels;
     totalSamples = sfinfo.frames * sfinfo.channels;
+    format = sfinfo.format;
 
     sf_close(file);
 }
@@ -79,6 +81,15 @@ void AudioFileReader::readSamples(float* buffer, int numSamples, int offset) {
     sf_close(file);
 }
 
+bool AudioFileReader::verifyAudioType(const std::string& filePath) {
+    SF_INFO sfinfo;
+    SNDFILE* file = sf_open(filePath.c_str(), SFM_READ, &sfinfo);
+    if (!file) {
+        return false; // Arquivo inválido
+    }
+    sf_close(file);
+    return true;
+}
 
 int AudioFileReader::getTotalSamples() const {
     return totalSamples;
@@ -137,12 +148,39 @@ void AudioFileReader::saveAudioToSNDFile(const std::string& filePath, const floa
         return;
     }
 
+    // Determinar a extensão com base no formato de áudio
+    // Determine the extension based on the main format
+    std::string extension;
+    int mainFormat = format & SF_FORMAT_TYPEMASK; // Extract main format
+
+    switch (mainFormat) {
+        case SF_FORMAT_WAV: 
+            extension = ".wav"; 
+            break;
+        case SF_FORMAT_AIFF: 
+            extension = ".aiff"; 
+            break;
+        case SF_FORMAT_FLAC: 
+            extension = ".flac"; 
+            break;
+        case SF_FORMAT_OGG: 
+            extension = ".OGG"; 
+            break;
+        default:
+            std::cerr << "Unsupported format: " << mainFormat << ". Cannot determine file extension." << std::endl;
+            return;
+    }
+
+
+    // Adicionar a extensão ao caminho do arquivo, se necessário
+    std::string fullFilePath = filePath + extension;
+
     SF_INFO sfinfo = {0}; // Inicializar com zeros para evitar valores aleatórios
     sfinfo.samplerate = sampleRate;         // Taxa de amostragem do áudio
     sfinfo.channels = numChannels;         // Número de canais (mono ou estéreo)
-    sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; // Formato de saída: WAV PCM de 16 bits
+    sfinfo.format = format;                // Formato de saída
 
-    SNDFILE* file = sf_open(filePath.c_str(), SFM_WRITE, &sfinfo);
+    SNDFILE* file = sf_open(fullFilePath.c_str(), SFM_WRITE, &sfinfo);
     if (!file) {
         std::cerr << "Failed to open output file: " << sf_strerror(file) << std::endl;
         return;
@@ -163,4 +201,5 @@ void AudioFileReader::saveAudioToSNDFile(const std::string& filePath, const floa
     }
 
     sf_close(file);
+    std::cout << "Audio file saved successfully: " << fullFilePath << std::endl;
 }

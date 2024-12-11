@@ -13,7 +13,8 @@ public:
 
     void readSamples(float* buffer, int numSamples, int offset);
     int getTotalSamples() const;
-    int getNumChannels() const; 
+    int getNumChannels() const;
+    bool verifyAudioType(const std::string& filePath );
     void saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
     void saveAudioToSNDFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
     float* makeAudio(float* audio, const float* audioBuffer, int samples, int offset);
@@ -23,6 +24,7 @@ private:
     void readAudioMetadata();
 
     std::string filePath;
+    int format;
     int sampleRate;
     int bitDepth;
     int numChannels;
