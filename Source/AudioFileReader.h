@@ -23,6 +23,7 @@ private:
     void readAudioMetadata();
 
     std::string filePath;
+    int format;
     int sampleRate;
     int bitDepth;
     int numChannels;

@@ -21,6 +21,7 @@ void AudioFileReader::readAudioMetadata() {
     sampleRate = sfinfo.samplerate;
     numChannels = sfinfo.channels;
     totalSamples = sfinfo.frames * sfinfo.channels;
+    format = sfinfo.format;
 
     sf_close(file);
 }
@@ -140,7 +141,7 @@ void AudioFileReader::saveAudioToSNDFile(const std::string& filePath, const floa
     SF_INFO sfinfo = {0}; // Inicializar com zeros para evitar valores aleatórios
     sfinfo.samplerate = sampleRate;         // Taxa de amostragem do áudio
     sfinfo.channels = numChannels;         // Número de canais (mono ou estéreo)
-    sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; // Formato de saída: WAV PCM de 16 bits
+    sfinfo.format = format; // Formato de saída: WAV PCM de 16 bits
 
     SNDFILE* file = sf_open(filePath.c_str(), SFM_WRITE, &sfinfo);
     if (!file) {
