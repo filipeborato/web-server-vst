@@ -163,6 +163,9 @@ void AudioFileReader::saveAudioToSNDFile(const std::string& filePath, const floa
         case SF_FORMAT_FLAC: 
             extension = ".flac"; 
             break;
+        case SF_FORMAT_OGG: 
+            extension = ".OGG"; 
+            break;
         default:
             std::cerr << "Unsupported format: " << mainFormat << ". Cannot determine file extension." << std::endl;
             return;
