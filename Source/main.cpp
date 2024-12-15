@@ -6,15 +6,8 @@
 
 const char* PROJECT_DIR="/workspaces/web-server-vst";
 
-int main() {
-    const char* projectDir = std::getenv("PROJECT_DIR");
-    if (projectDir == nullptr) {
-        std::cerr << "PROJECT_DIR is not set!" << std::endl;
-        return 1;
-    }else{
-        projectDir = PROJECT_DIR;
-    }
-    std::string pluginPath = std::string(projectDir) + "/vst/TheFunction.so";
+int main() {    
+    std::string pluginPath = std::string(PROJECT_DIR) + "/vst/TheFunction.so";
     PluginHost host(pluginPath.c_str());
 
     // Obter e imprimir o nome do efeito
@@ -23,7 +16,7 @@ int main() {
     host.printParameterProperties();
     
     const int bufferSize = 512;  // Tamanho do bloco
-    AudioFileReader audioReader( std::string(projectDir)+"/Alesis-Sanctuary-QCard-Tines-Aahs-C4.wav");
+    AudioFileReader audioReader( std::string(PROJECT_DIR)+"/Alesis-Sanctuary-QCard-Tines-Aahs-C4.wav");
 
     const int totalSamples = audioReader.getTotalSamples();
     const int numChannels = audioReader.getNumChannels();
@@ -70,7 +63,7 @@ int main() {
     }
 
     // Salvar o áudio processado    
-    audioReader.saveAudioToSNDFile(std::string(projectDir)+"/test/processed_audio", audio, totalSamples * numChannels);
+    audioReader.saveAudioToSNDFile(std::string(PROJECT_DIR)+"/test/processed_audio", audio, totalSamples * numChannels);
 
     // Liberar memória
     delete[] audio;
