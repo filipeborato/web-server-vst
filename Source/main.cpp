@@ -4,8 +4,10 @@
 #include "AudioFileReader.h"
 #include "PluginHost.h"
 
-int main() {
-    std::string pluginPath = "/workspaces/web-server-vst/TheFunction.so";  // Caminho para o plugin VST2
+const char* PROJECT_DIR="/workspaces/web-server-vst";
+
+int main() {    
+    std::string pluginPath = std::string(PROJECT_DIR) + "/vst/TheFunction.so";
     PluginHost host(pluginPath.c_str());
 
     // Obter e imprimir o nome do efeito
@@ -14,7 +16,7 @@ int main() {
     host.printParameterProperties();
     
     const int bufferSize = 512;  // Tamanho do bloco
-    AudioFileReader audioReader("/workspaces/web-server-vst/Alesis-Sanctuary-QCard-Tines-Aahs-C4.wav");
+    AudioFileReader audioReader( std::string(PROJECT_DIR)+"/Alesis-Sanctuary-QCard-Tines-Aahs-C4.wav");
 
     const int totalSamples = audioReader.getTotalSamples();
     const int numChannels = audioReader.getNumChannels();
@@ -61,7 +63,7 @@ int main() {
     }
 
     // Salvar o áudio processado    
-    audioReader.saveAudioToSNDFile("/workspaces/web-server-vst/test/processed_audio", audio, totalSamples * numChannels);
+    audioReader.saveAudioToSNDFile(std::string(PROJECT_DIR)+"/test/processed_audio", audio, totalSamples * numChannels);
 
     // Liberar memória
     delete[] audio;

@@ -43,3 +43,5 @@ echo "Verificando o status do serviço..."
 sudo systemctl status $SERVICE_NAME
 
 echo "Configuração do $SERVICE_NAME concluída com sucesso!"
+
+export PROJECT_DIR=/workspaces/web-server-vst
