@@ -562,15 +562,9 @@ stdint.h
 aeffect.h
 ../external/vstsdk2.4/pluginterfaces/vst2.x/aeffect.h
 
-../external/vstsdk2.4/public.sdk/source/vst2.x/audioeffect.h
-pluginterfaces/vst2.x/aeffect.h
-../external/vstsdk2.4/public.sdk/source/vst2.x/pluginterfaces/vst2.x/aeffect.h
-
-../external/vstsdk2.4/public.sdk/source/vst2.x/audioeffectx.h
-audioeffect.h
-../external/vstsdk2.4/public.sdk/source/vst2.x/audioeffect.h
-pluginterfaces/vst2.x/aeffectx.h
-../external/vstsdk2.4/public.sdk/source/vst2.x/pluginterfaces/vst2.x/aeffectx.h
+/workspaces/web-server-vst/Source/AudioFileReader.cpp
+AudioFileReader.h
+/workspaces/web-server-vst/Source/AudioFileReader.h
 
 /workspaces/web-server-vst/Source/AudioFileReader.h
 iostream
@@ -609,16 +603,14 @@ dlfcn.h
 -
 
 /workspaces/web-server-vst/Source/PluginHost.h
-public.sdk/source/vst2.x/audioeffect.h
-/workspaces/web-server-vst/Source/public.sdk/source/vst2.x/audioeffect.h
-public.sdk/source/vst2.x/audioeffectx.h
-/workspaces/web-server-vst/Source/public.sdk/source/vst2.x/audioeffectx.h
-pluginterfaces/vst2.x/aeffectx.h
-/workspaces/web-server-vst/Source/pluginterfaces/vst2.x/aeffectx.h
+string
+-
 iostream
 -
 cstring
 -
+pluginterfaces/vst2.x/aeffectx.h
+/workspaces/web-server-vst/Source/pluginterfaces/vst2.x/aeffectx.h
 
 /workspaces/web-server-vst/Source/main.cpp
 Host.h

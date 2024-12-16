@@ -6,8 +6,6 @@ CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.o: ../Source/Au
 
 CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o: ../external/vstsdk2.4/pluginterfaces/vst2.x/aeffect.h
 CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o: ../external/vstsdk2.4/pluginterfaces/vst2.x/aeffectx.h
-CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o: ../external/vstsdk2.4/public.sdk/source/vst2.x/audioeffect.h
-CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o: ../external/vstsdk2.4/public.sdk/source/vst2.x/audioeffectx.h
 CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o: ../Source/AudioFileReader.h
 CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o: ../Source/Host.cpp
 CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o: ../Source/Host.h
@@ -15,8 +13,6 @@ CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o: ../Source/PluginHost.h
 
 CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o: ../external/vstsdk2.4/pluginterfaces/vst2.x/aeffect.h
 CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o: ../external/vstsdk2.4/pluginterfaces/vst2.x/aeffectx.h
-CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o: ../external/vstsdk2.4/public.sdk/source/vst2.x/audioeffect.h
-CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o: ../external/vstsdk2.4/public.sdk/source/vst2.x/audioeffectx.h
 CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o: ../Source/PluginHost.cpp
 CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o: ../Source/PluginHost.h
 
@@ -52,8 +48,6 @@ CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o: ../external/Crow/includ
 CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o: ../external/Crow/include/crow/websocket.h
 CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o: ../external/vstsdk2.4/pluginterfaces/vst2.x/aeffect.h
 CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o: ../external/vstsdk2.4/pluginterfaces/vst2.x/aeffectx.h
-CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o: ../external/vstsdk2.4/public.sdk/source/vst2.x/audioeffect.h
-CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o: ../external/vstsdk2.4/public.sdk/source/vst2.x/audioeffectx.h
 CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o: ../Source/AudioFileReader.h
 CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o: ../Source/Host.h
 CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o: ../Source/PluginHost.h
