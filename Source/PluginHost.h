@@ -34,15 +34,14 @@ public:
     void setParameter(int index, float value);
     std::string getEffectName();
     void printParameterProperties();
-    void loadAudioFile(const std::string& filePath, float* audioBuffer, int bufferSize);
-    void saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
-
 
 private:
     AudioEffect* plugin; // Pointer to the loaded VST2 plugin
     AEffect* effect;
+    void* pluginHandle; // Para armazenar o handle do plugin
 };
 
 extern "C" {
     VstIntPtr VSTCALLBACK hostCallback(AEffect* effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, void* ptr, float opt);
 }
+

@@ -16,7 +16,7 @@ public:
     int getNumChannels() const;
     bool verifyAudioType(const std::string& filePath );
     void saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
-    void saveAudioToSNDFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
+    bool saveAudioToSNDFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
     float* makeAudio(float* audio, const float* audioBuffer, int samples, int offset);
     float* cpyTotalAudio(float* audio, float* buffer, int samples, int offset);
 

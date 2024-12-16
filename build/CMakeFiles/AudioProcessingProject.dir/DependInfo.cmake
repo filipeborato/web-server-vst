@@ -5,14 +5,21 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/workspaces/web-server-vst/Source/AudioFileReader.cpp" "/workspaces/web-server-vst/build/CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.o"
+  "/workspaces/web-server-vst/Source/Host.cpp" "/workspaces/web-server-vst/build/CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o"
   "/workspaces/web-server-vst/Source/PluginHost.cpp" "/workspaces/web-server-vst/build/CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o"
   "/workspaces/web-server-vst/Source/main.cpp" "/workspaces/web-server-vst/build/CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
+# Preprocessor definitions for this target.
+set(CMAKE_TARGET_DEFINITIONS_CXX
+  "ASIO_STANDALONE"
+  )
+
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../external/vstsdk2.4"
+  "../external/Crow/include"
   )
 
 # Targets to which this target links.

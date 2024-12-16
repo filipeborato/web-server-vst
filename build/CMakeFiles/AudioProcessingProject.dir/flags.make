@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/g++
 CXX_FLAGS = -g   -std=gnu++17
 
-CXX_DEFINES = 
+CXX_DEFINES = -DASIO_STANDALONE
 
-CXX_INCLUDES = -I/workspaces/web-server-vst/external/vstsdk2.4 
+CXX_INCLUDES = -I/workspaces/web-server-vst/external/vstsdk2.4 -I/workspaces/web-server-vst/external/Crow/include 
 

@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.o"
+  "CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o"
   "CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o"
   "CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o"
   "bin/AudioProcessingProject"

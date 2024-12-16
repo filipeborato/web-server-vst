@@ -58,6 +58,14 @@
         "ratio": "cpp",
         "iomanip": "cpp",
         "mutex": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "regex": "cpp",
+        "shared_mutex": "cpp",
+        "typeindex": "cpp",
+        "csignal": "cpp",
+        "charconv": "cpp",
+        "complex": "cpp",
+        "future": "cpp",
+        "variant": "cpp"
     }
 }

@@ -56,6 +56,63 @@ CMAKE_BINARY_DIR = /workspaces/web-server-vst/build
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
+
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
+
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
+# Special rule for the target package_source
+package_source:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool for source..."
+	/usr/bin/cpack --config ./CPackSourceConfig.cmake /workspaces/web-server-vst/build/CPackSourceConfig.cmake
+.PHONY : package_source
+
+# Special rule for the target package_source
+package_source/fast: package_source
+
+.PHONY : package_source/fast
+
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
+
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+
+.PHONY : list_install_components/fast
+
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -66,6 +123,17 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target package
+package: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool..."
+	/usr/bin/cpack --config ./CPackConfig.cmake
+.PHONY : package
+
+# Special rule for the target package
+package/fast: package
+
+.PHONY : package/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -123,6 +191,19 @@ AudioProcessingProject/fast:
 	$(MAKE) -f CMakeFiles/AudioProcessingProject.dir/build.make CMakeFiles/AudioProcessingProject.dir/build
 .PHONY : AudioProcessingProject/fast
 
+#=============================================================================
+# Target rules for targets named uninstall
+
+# Build rule for target.
+uninstall: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 uninstall
+.PHONY : uninstall
+
+# fast build rule for target.
+uninstall/fast:
+	$(MAKE) -f external/Crow/CMakeFiles/uninstall.dir/build.make external/Crow/CMakeFiles/uninstall.dir/build
+.PHONY : uninstall/fast
+
 Source/AudioFileReader.o: Source/AudioFileReader.cpp.o
 
 .PHONY : Source/AudioFileReader.o
@@ -149,6 +230,33 @@ Source/AudioFileReader.s: Source/AudioFileReader.cpp.s
 Source/AudioFileReader.cpp.s:
 	$(MAKE) -f CMakeFiles/AudioProcessingProject.dir/build.make CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.s
 .PHONY : Source/AudioFileReader.cpp.s
+
+Source/Host.o: Source/Host.cpp.o
+
+.PHONY : Source/Host.o
+
+# target to build an object file
+Source/Host.cpp.o:
+	$(MAKE) -f CMakeFiles/AudioProcessingProject.dir/build.make CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o
+.PHONY : Source/Host.cpp.o
+
+Source/Host.i: Source/Host.cpp.i
+
+.PHONY : Source/Host.i
+
+# target to preprocess a source file
+Source/Host.cpp.i:
+	$(MAKE) -f CMakeFiles/AudioProcessingProject.dir/build.make CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.i
+.PHONY : Source/Host.cpp.i
+
+Source/Host.s: Source/Host.cpp.s
+
+.PHONY : Source/Host.s
+
+# target to generate assembly for a file
+Source/Host.cpp.s:
+	$(MAKE) -f CMakeFiles/AudioProcessingProject.dir/build.make CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.s
+.PHONY : Source/Host.cpp.s
 
 Source/PluginHost.o: Source/PluginHost.cpp.o
 
@@ -210,12 +318,22 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
+	@echo "... install/strip"
+	@echo "... install/local"
+	@echo "... package_source"
+	@echo "... install"
+	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... package"
 	@echo "... edit_cache"
 	@echo "... AudioProcessingProject"
+	@echo "... uninstall"
 	@echo "... Source/AudioFileReader.o"
 	@echo "... Source/AudioFileReader.i"
 	@echo "... Source/AudioFileReader.s"
+	@echo "... Source/Host.o"
+	@echo "... Source/Host.i"
+	@echo "... Source/Host.s"
 	@echo "... Source/PluginHost.o"
 	@echo "... Source/PluginHost.i"
 	@echo "... Source/PluginHost.s"

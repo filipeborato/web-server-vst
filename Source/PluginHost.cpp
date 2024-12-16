@@ -1,26 +1,13 @@
-/*
-  ==============================================================================
-
-    PluginHost.cpp
-    Created: 8 Sep 2023 9:33:20am
-    Author:  Filipe Borato
-
-  ==============================================================================
-*/
 #include "PluginHost.h"
-//#include <windows.h>
-#include <dlfcn.h>  // Header for dynamic loading in Linux
+#include <dlfcn.h>  // Header para loading dinâmico no Linux
 
-//==============================================================================
 PluginHost::PluginHost(const char* pluginPath)
+    : effect(nullptr), pluginHandle(nullptr)
 {
-    effect = nullptr;
-
-    // Load the VST2 plugin
-    void* pluginHandle = dlopen(pluginPath, RTLD_LAZY);
+    pluginHandle = dlopen(pluginPath, RTLD_LAZY);
     if (!pluginHandle) {
         std::cerr << "Error loading plugin: " << dlerror() << std::endl;
-        return ;
+        return;
     }
     
     // Procura a função VSTPluginMain
@@ -28,107 +15,103 @@ PluginHost::PluginHost(const char* pluginPath)
     if (!vstPluginMain) {
         std::cerr << "Error: VSTPluginMain not found!" << std::endl;
         dlclose(pluginHandle);
+        pluginHandle = nullptr;
         return;
     }
-    
-      // Load the shared library
-    if (pluginHandle != nullptr)
-    {
-        // Get the address of the VST plugin main entry point
-        pluginFuncPtr create = (pluginFuncPtr)dlsym(pluginHandle, "VSTPluginMain");
 
-        if (create != nullptr)
-        {            
-            effect = create(hostCallback); // Instantiate the plugin                  
-            effect->dispatcher(effect, effOpen, 0, 0, nullptr, 0.0f); // Open the host            
-            PluginHost::pluginCategory(effect);
-        }
-        else
-        {
-            std::cerr << "Error: Failed to find VSTPluginMain function in plugin." << std::endl;
-            dlclose(pluginHandle);  // Close the plugin handle if function not found
-            return;
-        }
-    }
-    else
-    {
-        std::cerr << "Error: Unable to load plugin: " << dlerror() << std::endl;
+    // Cria o plugin
+    pluginFuncPtr create = (pluginFuncPtr)vstPluginMain;
+    effect = create(hostCallback); 
+    if (!effect) {
+        std::cerr << "Error: failed to create plugin instance." << std::endl;
+        dlclose(pluginHandle);
+        pluginHandle = nullptr;
         return;
     }
+
+    // Abre o plugin (chamada única)
+    effect->dispatcher(effect, effOpen, 0, 0, nullptr, 0.0f);
+    PluginHost::pluginCategory(effect);
 }
 
 PluginHost::~PluginHost()
 {
-    if (effect != nullptr)
-    {
+    if (effect != nullptr) {
+        // Antes de fechar, desligue o áudio se estiver ligado
         suspend();
-        effect->dispatcher(effect, effClose, 0, 0, NULL, 0.0f); // Close the plugin
-        delete plugin;
+
+        // Agora feche o plugin
+        effect->dispatcher(effect, effClose, 0, 0, NULL, 0.0f);
+        effect = nullptr;
+    }
+
+    if (pluginHandle) {
+        dlclose(pluginHandle);
+        pluginHandle = nullptr;
     }
 }
 
 void PluginHost::initialize()
 {
-    if (effect != nullptr)
-    {
-        effect->dispatcher(effect, effOpen, 0, 0, NULL, 0.0f);
-        effect->dispatcher(effect, effSetSampleRate, 0, 0, NULL, 44100.0);   // hard-coded for now
-        effect->dispatcher(effect, effSetBlockSize, 0, 512, NULL, 0.0f);   // hard-coded for now
-        effect->setParameter(effect, 0, 0.75f); // Example: Set parameter 0 to 75%
-        effect->setParameter(effect, 1, 0.5f);  // Example: Set parameter 1 to 50%        
+    if (effect != nullptr) {
+        // Ajuste sample rate e block size
+        effect->dispatcher(effect, effSetSampleRate, 0, 0, NULL, 44100.0f);
+        effect->dispatcher(effect, effSetBlockSize, 0, 512, NULL, 0.0f);
+
+        // Ajustar parâmetros iniciais do plugin, se desejado
+        effect->setParameter(effect, 0, 0.75f);
+        effect->setParameter(effect, 1, 0.5f);
+
+        // Se for necessário iniciar processamento (ligar áudio):
+        effect->dispatcher(effect, effMainsChanged, 0, 1, NULL, 0.0f); 
     }
 }
 
 void PluginHost::processAudio(float** inBuffer, float** outBuffer, int numSamples)
 {
-    if (effect != nullptr && inBuffer != nullptr)    
-    {   
-        // Log buffer information       
-        effect->processReplacing(effect, inBuffer, outBuffer, numSamples); // Process audio
+    if (effect != nullptr && inBuffer != nullptr) {
+        effect->processReplacing(effect, inBuffer, outBuffer, numSamples);
     }
 }
 
 void PluginHost::setParameter(int index, float value)
 {
-    if (effect != nullptr)
-    {
-        effect->setParameter(effect, index, value); // Set a plugin parameter
+    if (effect != nullptr) {
+        effect->setParameter(effect, index, value);
     }
 }
 
 void PluginHost::suspend()
 {
-	if (effect != nullptr)
-	{        
-		effect->dispatcher(effect, effMainsChanged, 0, 1, NULL, 0.0f); // Set a plugin program
-        effect->dispatcher(effect, effStopProcess, 0, 0, NULL, 0.0f);
-	}
+    if (effect != nullptr) {
+        // Desligar áudio (mains)
+        effect->dispatcher(effect, effMainsChanged, 0, 0, NULL, 0.0f);
+    }
 }
 
-std::string PluginHost::getEffectName() {
+std::string PluginHost::getEffectName()
+{
     if (effect == nullptr) {
         return "No Plugin Loaded";
     }
-    char effectName[256]; // Buffer para o nome do efeito
-    std::memset(effectName, 0, sizeof(effectName)); // Garante que o buffer seja inicializado com 0
+    char effectName[256];
+    std::memset(effectName, 0, sizeof(effectName));
 
-    // Chama o dispatcher do plugin para obter o nome do efeito
-    if (effect->dispatcher(effect, effGetEffectName, 0, 0, static_cast<void*>(effectName), 0.0f) != 0){
-        return std::string(effectName); // Retorna o nome do efeito
+    if (effect->dispatcher(effect, effGetEffectName, 0, 0, static_cast<void*>(effectName), 0.0f) != 0) {
+        return std::string(effectName);
     } else {
-        return "Unknown Effect"; // Caso a chamada falhe
+        return "Unknown Effect";
     }
 }
 
-
-void PluginHost::printParameterProperties() {
+void PluginHost::printParameterProperties()
+{
     if (!effect) {
         std::cerr << "Plugin not loaded!" << std::endl;
         return;
     }
 
-    for (int paramIndex = 0; paramIndex < effect->numParams; ++paramIndex)
-    {
+    for (int paramIndex = 0; paramIndex < effect->numParams; ++paramIndex) {
         char paramName[64];
         char paramLabel[64];
         char paramDisplay[64];
@@ -137,21 +120,19 @@ void PluginHost::printParameterProperties() {
         memset(paramName, 0, sizeof(paramName));
 
         effect->dispatcher(effect, effGetParamName, paramIndex, 0, paramName, 0.0f);
-        // Label da unidade (ex: "Hz", "dB")
         effect->dispatcher(effect, effGetParamLabel, paramIndex, 0, paramLabel, 0.0f);
-        // Valor do parâmetro formatado como string
         effect->dispatcher(effect, effGetParamDisplay, paramIndex, 0, paramDisplay, 0.0f);
 
         std::cout << "Parameter " << paramIndex << " name: " << paramName 
-                << ", Label: " << paramLabel 
-                << ", Display: " << paramDisplay << std::endl;
+                  << ", Label: " << paramLabel 
+                  << ", Display: " << paramDisplay << std::endl;
     }
 }
 
-
-void PluginHost::pluginCategory(AEffect* plugin) {
+void PluginHost::pluginCategory(AEffect* plugin)
+{
     printf("Category: ");
-    VstInt32 pluginCategory = plugin->dispatcher(plugin, effGetPlugCategory, 0, 0, NULL, 0.0f); // strangely enough this query returns either kPlugCategSynth or kPlugCategUnknown only so the rest of the switch statement is ineffective
+    VstInt32 pluginCategory = plugin->dispatcher(plugin, effGetPlugCategory, 0, 0, NULL, 0.0f);
     switch (pluginCategory) {
     case kPlugCategUnknown:
         printf("Unknown, category not implemented.\n");
@@ -201,24 +182,17 @@ extern "C" {
         switch (opcode) {
         case audioMasterVersion:
             return kVstVersion;
-
         case audioMasterCurrentId:
-            return effect->uniqueID;    // use the current plugin ID; needed by VST shell plugins to determine which sub-plugin to load
-
+            return effect->uniqueID;
         case audioMasterIdle:
-            return 1;   // ignore this call (as per Steinberg: "Give idle time to Host application, e.g. if plug-in editor is doing mouse tracking in a modal loop.") 
-
+            return 1;
         case __audioMasterWantMidiDeprecated:
             return 1;
-
         case audioMasterGetCurrentProcessLevel:
             return kVstProcessLevelRealtime;
-
         default:
             printf("\nPlugin requested value of opcode %d.\n", opcode);
         }
-        #if TRACE
-                printf("\nOpcode %d was requested by the plugin.\n", opcode);
-        #endif  // TRACE
+        return 0;
     }
 }

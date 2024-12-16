@@ -70,9 +70,22 @@ CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.s"
 	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /workspaces/web-server-vst/Source/main.cpp -o CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.s
 
+CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o: CMakeFiles/AudioProcessingProject.dir/flags.make
+CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o: ../Source/Host.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/workspaces/web-server-vst/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o"
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o -c /workspaces/web-server-vst/Source/Host.cpp
+
+CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.i"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /workspaces/web-server-vst/Source/Host.cpp > CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.i
+
+CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.s"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /workspaces/web-server-vst/Source/Host.cpp -o CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.s
+
 CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o: CMakeFiles/AudioProcessingProject.dir/flags.make
 CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o: ../Source/PluginHost.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/workspaces/web-server-vst/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/workspaces/web-server-vst/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o"
 	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o -c /workspaces/web-server-vst/Source/PluginHost.cpp
 
 CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.i: cmake_force
@@ -85,7 +98,7 @@ CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.s: cmake_force
 
 CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.o: CMakeFiles/AudioProcessingProject.dir/flags.make
 CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.o: ../Source/AudioFileReader.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/workspaces/web-server-vst/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/workspaces/web-server-vst/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.o"
 	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.o -c /workspaces/web-server-vst/Source/AudioFileReader.cpp
 
 CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.i: cmake_force
@@ -99,6 +112,7 @@ CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.s: cmake_force
 # Object files for target AudioProcessingProject
 AudioProcessingProject_OBJECTS = \
 "CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o" \
+"CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o" \
 "CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o" \
 "CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.o"
 
@@ -106,12 +120,13 @@ AudioProcessingProject_OBJECTS = \
 AudioProcessingProject_EXTERNAL_OBJECTS =
 
 bin/AudioProcessingProject: CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o
+bin/AudioProcessingProject: CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o
 bin/AudioProcessingProject: CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o
 bin/AudioProcessingProject: CMakeFiles/AudioProcessingProject.dir/Source/AudioFileReader.cpp.o
 bin/AudioProcessingProject: CMakeFiles/AudioProcessingProject.dir/build.make
 bin/AudioProcessingProject: /usr/lib/x86_64-linux-gnu/libsndfile.so
 bin/AudioProcessingProject: CMakeFiles/AudioProcessingProject.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/workspaces/web-server-vst/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable bin/AudioProcessingProject"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/workspaces/web-server-vst/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable bin/AudioProcessingProject"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/AudioProcessingProject.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

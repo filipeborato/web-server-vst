@@ -137,15 +137,15 @@ float* AudioFileReader::cpyTotalAudio(float* audio, float* buffer, int samples, 
     return audio;
 }
 
-void AudioFileReader::saveAudioToSNDFile(const std::string& filePath, const float* audioBuffer, int bufferSize) {
+bool AudioFileReader::saveAudioToSNDFile(const std::string& filePath, const float* audioBuffer, int bufferSize) {
     if (audioBuffer == nullptr) {
         std::cerr << "Audio buffer is null. Cannot write audio to file." << std::endl;
-        return;
+        return false;
     }
 
     if (bufferSize <= 0) {
         std::cerr << "Buffer size is invalid: " << bufferSize << std::endl;
-        return;
+        return false;
     }
 
     // Determinar a extensão com base no formato de áudio
@@ -168,7 +168,7 @@ void AudioFileReader::saveAudioToSNDFile(const std::string& filePath, const floa
             break;
         default:
             std::cerr << "Unsupported format: " << mainFormat << ". Cannot determine file extension." << std::endl;
-            return;
+            return false;
     }
 
 
@@ -183,14 +183,14 @@ void AudioFileReader::saveAudioToSNDFile(const std::string& filePath, const floa
     SNDFILE* file = sf_open(fullFilePath.c_str(), SFM_WRITE, &sfinfo);
     if (!file) {
         std::cerr << "Failed to open output file: " << sf_strerror(file) << std::endl;
-        return;
+        return false;
     }
 
     // Validar que o tamanho do buffer é consistente com o número de canais
     if (bufferSize % numChannels != 0) {
         std::cerr << "Buffer size is not aligned with the number of channels." << std::endl;
         sf_close(file);
-        return;
+        return false;
     }
 
     sf_count_t framesToWrite = bufferSize / numChannels; // Calcular número de frames
@@ -202,4 +202,5 @@ void AudioFileReader::saveAudioToSNDFile(const std::string& filePath, const floa
 
     sf_close(file);
     std::cout << "Audio file saved successfully: " << fullFilePath << std::endl;
+    return true;
 }
