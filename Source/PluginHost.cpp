@@ -99,20 +99,7 @@ void PluginHost::setParameter(int index, float value)
 void PluginHost::suspend()
 {
 	if (effect != nullptr)
-	{
-        for (int paramIndex = 0; paramIndex < effect->numParams; ++paramIndex)
-        {
-            char paramDisplay[32];
-            char paramLabel[32];
-
-            // Retrieve the display value of the parameter
-            effect->dispatcher(effect, effGetParamDisplay, paramIndex, 0, paramDisplay, 0.0f);
-
-            // Retrieve the unit/label of the parameter (e.g., "Hz", "dB")
-            effect->dispatcher(effect, effGetParamLabel, paramIndex, 0, paramLabel, 0.0f);
-
-            std::cout << "Parameter " << paramIndex << ": " << paramDisplay << " " << paramLabel << std::endl;
-        }
+	{        
 		effect->dispatcher(effect, effMainsChanged, 0, 1, NULL, 0.0f); // Set a plugin program
         effect->dispatcher(effect, effStopProcess, 0, 0, NULL, 0.0f);
 	}
@@ -140,23 +127,24 @@ void PluginHost::printParameterProperties() {
         return;
     }
 
-    for (int i = 0; i < effect->numParams; ++i) {
-        VstParameterProperties properties;
-        std::memset(&properties, 0, sizeof(VstParameterProperties)); // Certifique-se de inicializar
+    for (int paramIndex = 0; paramIndex < effect->numParams; ++paramIndex)
+    {
+        char paramName[64];
+        char paramLabel[64];
+        char paramDisplay[64];
+        memset(paramLabel, 0, sizeof(paramLabel));
+        memset(paramDisplay, 0, sizeof(paramDisplay));
+        memset(paramName, 0, sizeof(paramName));
 
-        // Chamada ao dispatcher para obter as propriedades
-        int result = effect->dispatcher(effect, effGetParameterProperties, i, 0, &properties, 0.0f);
+        effect->dispatcher(effect, effGetParamName, paramIndex, 0, paramName, 0.0f);
+        // Label da unidade (ex: "Hz", "dB")
+        effect->dispatcher(effect, effGetParamLabel, paramIndex, 0, paramLabel, 0.0f);
+        // Valor do parâmetro formatado como string
+        effect->dispatcher(effect, effGetParamDisplay, paramIndex, 0, paramDisplay, 0.0f);
 
-        if (result == 1) { // Verifica se a função retornou sucesso
-            std::cout << "Parameter " << i << ":" << std::endl;
-            std::cout << "  Label: " << properties.label << std::endl;
-            std::cout << "  Automatable: " << ((properties.flags & kVstParameterIsAutomatable) ? "Yes" : "No") << std::endl;
-            std::cout << "  Discrete: " << ((properties.flags & kVstParameterIsDiscrete) ? "Yes" : "No") << std::endl;
-            std::cout << "  Category: " << static_cast<int>(properties.category) << std::endl;
-            std::cout << "  Short Label: " << properties.shortLabel << std::endl;
-        } else {
-            std::cerr << "Failed to retrieve properties for parameter " << i << "." << std::endl;
-        }
+        std::cout << "Parameter " << paramIndex << " name: " << paramName 
+                << ", Label: " << paramLabel 
+                << ", Display: " << paramDisplay << std::endl;
     }
 }
 

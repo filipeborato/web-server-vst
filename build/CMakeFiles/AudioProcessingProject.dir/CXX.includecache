@@ -26,16 +26,10 @@ audioeffect.h
 pluginterfaces/vst2.x/aeffectx.h
 ../external/vstsdk2.4/public.sdk/source/vst2.x/pluginterfaces/vst2.x/aeffectx.h
 
-/workspaces/web-server-vst/Source/AudioFileReader.h
-iostream
--
-fstream
--
-vector
--
-sndfile.h
--
-cstring
+/workspaces/web-server-vst/Source/PluginHost.cpp
+PluginHost.h
+/workspaces/web-server-vst/Source/PluginHost.h
+dlfcn.h
 -
 
 /workspaces/web-server-vst/Source/PluginHost.h
@@ -49,16 +43,4 @@ iostream
 -
 cstring
 -
-
-/workspaces/web-server-vst/Source/main.cpp
-iostream
--
-string
--
-algorithm
--
-AudioFileReader.h
-/workspaces/web-server-vst/Source/AudioFileReader.h
-PluginHost.h
-/workspaces/web-server-vst/Source/PluginHost.h
 
