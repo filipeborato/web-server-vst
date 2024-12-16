@@ -29,12 +29,21 @@ bool isValidAudioExtension(const std::string& extension) {
     return std::find(supportedExtensions.begin(), supportedExtensions.end(), extLower) != supportedExtensions.end();
 }
 
+void add_cors_headers(crow::response& res) {
+    res.add_header("Access-Control-Allow-Origin", "*"); // Permite qualquer origem
+    res.add_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.add_header("Access-Control-Allow-Headers", "Content-Type, Cookie");
+    res.add_header("Access-Control-Allow-Credentials", "true");
+}
+
+
 int main(int argc, char* argv[]) {
     crow::SimpleApp app;
 
     CROW_ROUTE(app, "/process")
-        .methods("POST"_method)
+        .methods("POST"_method,"OPTIONS"_method)
     ([&](const crow::request& req) {
+        
         crow::multipart::message msg(req);
 
         // Verificar se há partes no multipart
@@ -156,9 +165,13 @@ int main(int argc, char* argv[]) {
 
         // Devolver o arquivo como resposta
         crow::response r;
+        if (req.method == "OPTIONS"_method) {                
+            add_cors_headers(r);               
+        }
         r.code = 200;
         r.set_header("Content-Type", contentType);
-        r.write(fileContent);
+        r.write(fileContent);      
+
         return r;
     });
 
