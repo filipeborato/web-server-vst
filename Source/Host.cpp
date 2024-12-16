@@ -33,8 +33,8 @@ bool Host::processAudioFile(const std::string& pluginPath,
     // Aloca buffers
     const int bufferSize = 512; 
     float* audio = new float[totalSamples * numChannels]; 
-    float* audioForProcess[2] = {new float[bufferSize], new float[bufferSize]};
-    float* processedAudio[2] = {new float[bufferSize], new float[bufferSize]};
+    float* audioForProcess[2] = {new float[bufferSize * numChannels], new float[bufferSize * numChannels]};
+    float* processedAudio[2] = {new float[bufferSize * numChannels], new float[bufferSize * numChannels]};
 
     int processedSamples = 0;
     while (processedSamples < totalSamples) {
@@ -65,8 +65,7 @@ bool Host::processAudioFile(const std::string& pluginPath,
 
     // Salvar áudio processado
     bool saved = audioReader.saveAudioToSNDFile(outputFilePath, audio, totalSamples * numChannels);
-
-    // Libera memória
+   
     delete[] audio;
     delete[] audioForProcess[0];
     delete[] audioForProcess[1];
