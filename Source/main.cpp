@@ -32,7 +32,7 @@ bool isValidAudioExtension(const std::string& extension) {
 void add_cors_headers(crow::response& res) {
     res.add_header("Access-Control-Allow-Origin", "*"); // Permite qualquer origem
     res.add_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    res.add_header("Access-Control-Allow-Headers", "Content-Type, Cookie");
+    res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     res.add_header("Access-Control-Allow-Credentials", "true");
 }
 
@@ -45,9 +45,17 @@ int main(int argc, char* argv[]) {
     ([&](const crow::request& req) {
         
         crow::multipart::message msg(req);
+        crow::response r;
+
+        if (req.method == "OPTIONS"_method) {
+            r.code = 204; // Pré-flight OPTIONS
+            r.end();
+            return r;
+        }
 
         // Verificar se há partes no multipart
         if (msg.parts.empty()) {
+            std::cerr << "No parts in the request " << std::endl;
             return crow::response(400, "No parts in the request");
         }
 
@@ -121,7 +129,7 @@ int main(int argc, char* argv[]) {
         }
 
         // Construir o caminho do plugin
-        std::string pluginPath = std::string(PROJECT_DIR) + "/vst/" + pluginName;
+        std::string pluginPath = std::string(PROJECT_DIR) + "/vst/" + pluginName + ".so";
 
         // Definir o caminho do arquivo de saída sem extensão
         std::string outputFile = std::string(PROJECT_DIR) + "/tmp/output_audio";
@@ -164,10 +172,7 @@ int main(int argc, char* argv[]) {
         }
 
         // Devolver o arquivo como resposta
-        crow::response r;
-        if (req.method == "OPTIONS"_method) {                
-            add_cors_headers(r);               
-        }
+        
         r.code = 200;
         r.set_header("Content-Type", contentType);
         r.write(fileContent);      
