@@ -47,4 +47,9 @@ echo "Configuração do $SERVICE_NAME concluída com sucesso!"
 export PROJECT_DIR=/workspaces/web-server-vst
 export DISPLAY=:99
 
+docker build -t xvfb-image .
+
+docker run -d --name xvfb-container -e DISPLAY=:99 xvfb-image
+sudo /etc/init.d/xvfb start
+
 
