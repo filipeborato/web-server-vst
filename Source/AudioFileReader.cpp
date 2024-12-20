@@ -99,6 +99,10 @@ int AudioFileReader::getNumChannels() const {
     return numChannels;
 }
 
+int AudioFileReader::getSampleRate() const{
+    return sampleRate;
+}
+
 void AudioFileReader::saveAudioToFile(const std::string& filePath, const float* buffer, int numSamples) {
     std::ofstream outputFile(filePath, std::ios::binary);
 

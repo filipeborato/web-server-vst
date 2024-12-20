@@ -14,6 +14,7 @@ public:
     void readSamples(float* buffer, int numSamples, int offset);
     int getTotalSamples() const;
     int getNumChannels() const;
+    int getSampleRate() const;
     bool verifyAudioType(const std::string& filePath );
     void saveAudioToFile(const std::string& filePath, const float* audioBuffer, int bufferSize);
     bool saveAudioToSNDFile(const std::string& filePath, const float* audioBuffer, int bufferSize);

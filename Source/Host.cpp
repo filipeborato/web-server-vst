@@ -5,7 +5,8 @@
 bool Host::processAudioFile(const std::string& pluginPath,
                             const std::vector<float>& params,
                             const std::string& inputFilePath,
-                            const std::string& outputFilePath) 
+                            const std::string& outputFilePath,
+                            bool isPreview) 
 {    
     // Carrega o plugin    
     PluginHost host(pluginPath.c_str());
@@ -18,16 +19,20 @@ bool Host::processAudioFile(const std::string& pluginPath,
     host.initialize();
     for (size_t i = 0; i < params.size(); ++i) {
         host.setParameter((int)i, params[i]);
-    }
+    }  
 
-    // Leitura do arquivo de entrada
     AudioFileReader audioReader(inputFilePath);
-    const int totalSamples = audioReader.getTotalSamples();
+    int totalSamples = audioReader.getTotalSamples();
+    const int sampleRate = audioReader.getSampleRate();
     const int numChannels = audioReader.getNumChannels();
 
     if (totalSamples <= 0 || numChannels <= 0) {
-        std::cerr << "Invalid audio file or metadata." << std::endl;
         return false;
+    }
+
+    if (isPreview) {
+        const int previewSamples = sampleRate * 5; // 5 segundos
+        totalSamples = std::min(totalSamples, previewSamples);
     }
 
     // Aloca buffers

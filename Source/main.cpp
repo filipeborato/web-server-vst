@@ -149,6 +149,12 @@ int main(int argc, char* argv[]) {
             } else {
                 return crow::response(400, "Missing parameter " + paramKey);
             }
+        }
+        // Obter o parâmetro preview
+        bool isPreview = false;
+        if (req.url_params.get("preview")) {
+            std::string previewParam = req.url_params.get("preview");
+            isPreview = (previewParam == "true");
         }        
 
         // Construir o caminho do plugin
@@ -159,7 +165,7 @@ int main(int argc, char* argv[]) {
 
         // Processar o arquivo de áudio
         Host host;
-        bool success = host.processAudioFile(pluginPath, params, inputFile, outputFile);
+        bool success = host.processAudioFile(pluginPath, params, inputFile, outputFile, isPreview);
         if (!success) {
             return crow::response(500, "Failed to process audio");
         }
@@ -220,6 +226,6 @@ void test(){
     params[6] = 1.0;
 
     Host host;
-    bool success = host.processAudioFile(std::string(PROJECT_DIR) + "/vst/" + pluginName, params, inputFile, outputFile);
+    bool success = host.processAudioFile(std::string(PROJECT_DIR) + "/vst/" + pluginName, params, inputFile, outputFile, false);
     return;
 }
