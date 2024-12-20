@@ -16,7 +16,8 @@ public:
     // outputFilePath: arquivo de áudio de saída (onde o resultado será salvo)
     // Retorna true se bem sucedido, false caso contrário.
     bool processAudioFile(const std::string& pluginPath,
-                          const std::vector<float>& params,
-                          const std::string& inputFilePath,
-                          const std::string& outputFilePath);
+                            const std::vector<float>& params,
+                            const std::string& inputFilePath,
+                            const std::string& outputFilePath,
+                            bool isPreview);
 };
