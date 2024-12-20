@@ -8,7 +8,14 @@
 #include <vector>
 
 // Diretório do projeto ajustado conforme seu ambiente
-static const char* PROJECT_DIR = "/home/filipec/projetos/web-server-vst";
+static const char* PROJECT_DIR = nullptr;
+
+void initializeProjectDir(const char* dir) {
+    static char buffer[1024];
+    std::strncpy(buffer, dir, sizeof(buffer) - 1);
+    buffer[sizeof(buffer) - 1] = '\0'; // Garante o null-terminator
+    PROJECT_DIR = buffer;
+}
 
 // Função auxiliar para extrair a extensão do nome do arquivo
 std::string getFileExtension(const std::string& filename) {
@@ -29,28 +36,24 @@ bool isValidAudioExtension(const std::string& extension) {
     return std::find(supportedExtensions.begin(), supportedExtensions.end(), extLower) != supportedExtensions.end();
 }
 
-void add_cors_headers(crow::response& res) {
-    res.add_header("Access-Control-Allow-Origin", "*"); // Permite qualquer origem
-    res.add_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.add_header("Access-Control-Allow-Credentials", "true");
-}
-
-
 int main(int argc, char* argv[]) {
     crow::SimpleApp app;
 
     CROW_ROUTE(app, "/process")
         .methods("POST"_method,"OPTIONS"_method)
-    ([&](const crow::request& req) {
-        
+    ([&](const crow::request& req) {        
         crow::multipart::message msg(req);
         crow::response r;
+       
+        r.add_header("Access-Control-Allow-Origin", "*");
+        r.add_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+        r.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        r.add_header("Access-Control-Allow-Credentials", "true");
 
         if (req.method == "OPTIONS"_method) {
             r.code = 204; // Pré-flight OPTIONS
             r.end();
-            return r;
+            return crow::response(204, "options");
         }
 
         // Verificar se há partes no multipart
@@ -95,6 +98,15 @@ int main(int argc, char* argv[]) {
             return crow::response(400, "Unsupported audio file extension");
         }
 
+        if (argc < 2) {
+            std::cerr << "Uso: " << argv[0] << " <project_dir>" << std::endl;
+            return crow::response(400, "Invalid project dir" );
+        }
+
+        initializeProjectDir(argv[1]);
+
+        std::cout << "Projeto inicializado em: " << PROJECT_DIR << std::endl;
+
         // Construir o caminho do arquivo de entrada com a extensão correta
         std::string inputFile = std::string(PROJECT_DIR) + "/tmp/input_audio." + extension;
 
@@ -126,7 +138,7 @@ int main(int argc, char* argv[]) {
             } else {
                 return crow::response(400, "Missing parameter " + paramKey);
             }
-        }
+        }        
 
         // Construir o caminho do plugin
         std::string pluginPath = std::string(PROJECT_DIR) + "/vst/" + pluginName + ".so";
