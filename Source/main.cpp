@@ -135,21 +135,31 @@ int main(int argc, char* argv[]) {
             return crow::response(400, "Missing plugin parameter");
         }
 
-        // Obter os parâmetros p0 a p5
-        std::vector<float> params(7, 0.0f);
-        for (int i = 0; i < 7; ++i) {
+       std::vector<float> params;
+        int i = 0;
+
+        while (true) {
             std::string paramKey = "p" + std::to_string(i);
             const char* val = req.url_params.get(paramKey);
-            if (val) {
-                try {
-                    params[i] = std::stof(val);
-                } catch (const std::invalid_argument&) {
-                    return crow::response(400, "Invalid parameter value for " + paramKey);
-                }
-            } else {
-                return crow::response(400, "Missing parameter " + paramKey);
+
+            if (!val) {
+                break; // Sai do loop quando não há mais parâmetros
             }
+
+            try {
+                params.push_back(std::stof(val));
+            } catch (const std::invalid_argument&) {
+                return crow::response(400, "Invalid parameter value for " + paramKey);
+            }
+
+            ++i;
         }
+
+        // Verificar se pelo menos um parâmetro foi encontrado
+        if (params.empty()) {
+            return crow::response(400, "No parameters provided");
+        }
+
         // Obter o parâmetro preview
         bool isPreview = false;
         if (req.url_params.get("preview")) {
