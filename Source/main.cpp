@@ -1,5 +1,4 @@
 #include "Host.h"
-#include "PluginHost.h"
 #include <algorithm>
 #include <iostream>
 #include <crow.h>
@@ -135,7 +134,7 @@ int main(int argc, char* argv[]) {
             return crow::response(400, "Missing plugin parameter");
         }
 
-       std::vector<float> params;
+        std::vector<float> params;
         int i = 0;
 
         while (true) {
@@ -167,15 +166,25 @@ int main(int argc, char* argv[]) {
             isPreview = (previewParam == "true");
         }        
 
+        // Obter o parâmetro fadeout
+        bool fadeOut = false;
+        if (req.url_params.get("fadeout")) {
+            std::string fadeOutParam = req.url_params.get("fadeout");
+            // Considera "true", "1", "yes" como ativando o fadeOut
+            if (fadeOutParam == "true" || fadeOutParam == "1" || fadeOutParam == "yes") {
+                fadeOut = true;
+            }
+        }
+
         // Construir o caminho do plugin
         std::string pluginPath = std::string(PROJECT_DIR) + "/vst/" + pluginName + ".so";
 
         // Definir o caminho do arquivo de saída sem extensão
-        std::string outputFile = std::string(PROJECT_DIR) + "/tmp/output_audio_" + job_id + "." + extension;
+        std::string outputFile = std::string(PROJECT_DIR) + "/tmp/output_audio_" + job_id;
 
-        // Processar o arquivo de áudio
+        // Processar o arquivo de áudio com o fadeOut
         Host host;
-        bool success = host.processAudioFile(pluginPath, params, inputFile, outputFile, isPreview);
+        bool success = host.processAudioFile(pluginPath, params, inputFile, outputFile, isPreview, fadeOut);
         if (!success) {
             return crow::response(500, "Failed to process audio");
         }
@@ -211,7 +220,6 @@ int main(int argc, char* argv[]) {
         }
 
         // Devolver o arquivo como resposta
-        
         r.code = 200;
         r.set_header("Content-Type", contentType);
         r.write(fileContent);      
@@ -220,22 +228,4 @@ int main(int argc, char* argv[]) {
     });
 
     app.port(18080).multithreaded().run();
-}
-
-void test(){
-    std::string inputFile = std::string(PROJECT_DIR) + "/Alesis-Sanctuary-QCard-Tines-Aahs-C4.wav";   
-    std::string outputFile =  std::string(PROJECT_DIR) + "/tmp/output_audio";
-    std::string pluginName = "TheFunction.so";
-    std::vector<float> params(7, 0.0f);
-    params[0] = 1.0;
-    params[1] = 1.0;
-    params[2] = 1.0;
-    params[3] = 0.5;
-    params[4] = 0.5;
-    params[5] = 0.0;
-    params[6] = 1.0;
-
-    Host host;
-    bool success = host.processAudioFile(std::string(PROJECT_DIR) + "/vst/" + pluginName, params, inputFile, outputFile, false);
-    return;
 }
