@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <uuid/uuid.h>
 
 // Diretório do projeto ajustado conforme seu ambiente
 static const char* PROJECT_DIR = nullptr;
@@ -34,6 +35,14 @@ bool isValidAudioExtension(const std::string& extension) {
     std::string extLower = extension;
     std::transform(extLower.begin(), extLower.end(), extLower.begin(), ::tolower);
     return std::find(supportedExtensions.begin(), supportedExtensions.end(), extLower) != supportedExtensions.end();
+}
+
+std::string generateUUID() {
+    uuid_t uuid;
+    uuid_generate(uuid);
+    char uuid_str[37]; // 36 caracteres + null terminator
+    uuid_unparse(uuid, uuid_str);
+    return std::string(uuid_str);
 }
 
 int main(int argc, char* argv[]) {
@@ -107,8 +116,10 @@ int main(int argc, char* argv[]) {
 
         std::cout << "Projeto inicializado em: " << PROJECT_DIR << std::endl;
 
+        std::string job_id = generateUUID();
+
         // Construir o caminho do arquivo de entrada com a extensão correta
-        std::string inputFile = std::string(PROJECT_DIR) + "/tmp/input_audio." + extension;
+        std::string inputFile = std::string(PROJECT_DIR) + "/tmp/input_audio_" + job_id + "." + extension;
 
         // Salvar o arquivo de áudio enviado no caminho definido
         std::ofstream ofs(inputFile, std::ios::binary);
@@ -144,7 +155,7 @@ int main(int argc, char* argv[]) {
         std::string pluginPath = std::string(PROJECT_DIR) + "/vst/" + pluginName + ".so";
 
         // Definir o caminho do arquivo de saída sem extensão
-        std::string outputFile = std::string(PROJECT_DIR) + "/tmp/output_audio";
+        std::string outputFile = std::string(PROJECT_DIR) + "/tmp/output_audio_" + job_id + "." + extension;
 
         // Processar o arquivo de áudio
         Host host;
