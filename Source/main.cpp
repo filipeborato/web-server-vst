@@ -8,7 +8,7 @@
 #include <vector>
 
 // Diretório do projeto ajustado conforme seu ambiente
-static const char* PROJECT_DIR = "/workspaces/web-server-vst";
+static const char* PROJECT_DIR = "/home/filipec/projetos/web-server-vst";
 
 // Função auxiliar para extrair a extensão do nome do arquivo
 std::string getFileExtension(const std::string& filename) {
