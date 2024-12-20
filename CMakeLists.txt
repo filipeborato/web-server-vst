@@ -18,14 +18,18 @@ add_executable(${PROJECT_NAME} Source/main.cpp Source/Host.cpp Source/PluginHost
 
 # Include directories for external libraries and VST SDK
 include_directories(${CMAKE_SOURCE_DIR}/external/vstsdk2.4)
+
 add_subdirectory(external/Crow)
 
 # Link libsndfile from the external directory
 find_library(SNDFILE_LIBRARY sndfile PATHS ${LIBSNDFILE_DIR}/lib REQUIRED)
 
-# Link libraries to the target
-target_link_libraries(${PROJECT_NAME} PRIVATE ${SNDFILE_LIBRARY} dl)
-# Liga a biblioteca Crow
-target_link_libraries(AudioProcessingProject PRIVATE Crow::Crow)
-# Adiciona a biblioteca pthread
-target_link_libraries(AudioProcessingProject  PRIVATE pthread)
+# Vincular as bibliotecas necessárias
+target_link_libraries(AudioProcessingProject PRIVATE 
+    ${SNDFILE_LIBRARY} 
+    dl 
+    pthread 
+    uuid 
+    Crow::Crow
+)
+

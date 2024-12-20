@@ -842,4 +842,5 @@ CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o: \
  /home/filipec/projetos/web-server-vst/external/Crow/include/crow/http_server.h \
  /home/filipec/projetos/web-server-vst/external/Crow/include/crow/version.h \
  /home/filipec/projetos/web-server-vst/external/Crow/include/crow/app.h \
- /usr/include/c++/11/thread /usr/include/c++/11/bits/this_thread_sleep.h
+ /usr/include/c++/11/thread /usr/include/c++/11/bits/this_thread_sleep.h \
+ /usr/include/uuid/uuid.h /usr/include/x86_64-linux-gnu/sys/time.h
