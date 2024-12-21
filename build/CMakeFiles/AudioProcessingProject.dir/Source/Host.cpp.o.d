@@ -134,7 +134,7 @@ CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o: \
  /usr/include/c++/11/bits/stl_vector.h \
  /usr/include/c++/11/bits/stl_bvector.h \
  /usr/include/c++/11/bits/vector.tcc \
- /home/filipec/projetos/web-server-vst/Source/AudioFileReader.h \
+ /home/filipec/projetos/web-server-vst/Source/PluginHost.h \
  /usr/include/c++/11/iostream /usr/include/c++/11/ostream \
  /usr/include/c++/11/ios /usr/include/c++/11/exception \
  /usr/include/c++/11/bits/exception_ptr.h \
@@ -156,15 +156,15 @@ CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o: \
  /usr/include/c++/11/bits/locale_facets.tcc \
  /usr/include/c++/11/bits/basic_ios.tcc \
  /usr/include/c++/11/bits/ostream.tcc /usr/include/c++/11/istream \
- /usr/include/c++/11/bits/istream.tcc /usr/include/c++/11/fstream \
- /usr/include/c++/11/bits/codecvt.h \
+ /usr/include/c++/11/bits/istream.tcc /usr/include/c++/11/cstring \
+ /usr/include/string.h /usr/include/strings.h \
+ /home/filipec/projetos/web-server-vst/external/vstsdk2.4/pluginterfaces/vst2.x/aeffectx.h \
+ /home/filipec/projetos/web-server-vst/external/vstsdk2.4/pluginterfaces/vst2.x/aeffect.h \
+ /home/filipec/projetos/web-server-vst/Source/AudioFileReader.h \
+ /usr/include/c++/11/fstream /usr/include/c++/11/bits/codecvt.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
  /usr/include/c++/11/bits/fstream.tcc /usr/include/sndfile.h \
- /usr/include/c++/11/cstring /usr/include/string.h /usr/include/strings.h \
- /home/filipec/projetos/web-server-vst/Source/PluginHost.h \
- /home/filipec/projetos/web-server-vst/external/vstsdk2.4/pluginterfaces/vst2.x/aeffectx.h \
- /home/filipec/projetos/web-server-vst/external/vstsdk2.4/pluginterfaces/vst2.x/aeffect.h \
  /usr/include/c++/11/algorithm /usr/include/c++/11/utility \
  /usr/include/c++/11/bits/stl_relops.h \
  /usr/include/c++/11/bits/stl_algo.h \
