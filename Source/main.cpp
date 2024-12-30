@@ -102,6 +102,10 @@ int main(int argc, char* argv[]) {
         std::string contentType = "audio/" + extension;
         if (extension == "mp3") contentType = "audio/mpeg";
         else if (extension == "aac") contentType = "audio/aac";
+        else if (extension == "wav") contentType = "audio/wav";
+        else if (extension == "ogg") contentType = "audio/ogg";
+        else if (extension == "flac") contentType = "audio/flac";
+        else if (extension == "aiff") contentType = "audio/aiff";
 
         r.code = 200;
         r.set_header("Content-Type", contentType);
