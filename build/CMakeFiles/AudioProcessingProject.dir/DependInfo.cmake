@@ -12,6 +12,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/filipec/projetos/web-server-vst/Source/Host.cpp" "CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o" "gcc" "CMakeFiles/AudioProcessingProject.dir/Source/Host.cpp.o.d"
   "/home/filipec/projetos/web-server-vst/Source/PluginHost.cpp" "CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o" "gcc" "CMakeFiles/AudioProcessingProject.dir/Source/PluginHost.cpp.o.d"
   "/home/filipec/projetos/web-server-vst/Source/main.cpp" "CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o" "gcc" "CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.o.d"
+  "/home/filipec/projetos/web-server-vst/Source/utils.cpp" "CMakeFiles/AudioProcessingProject.dir/Source/utils.cpp.o" "gcc" "CMakeFiles/AudioProcessingProject.dir/Source/utils.cpp.o.d"
   )
 
 # Targets to which this target links.
