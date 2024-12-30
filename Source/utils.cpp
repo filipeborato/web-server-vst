@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <iostream>
 #include <cstring>
+#include <cstdlib>  // Para system()
+#include <stdexcept>
 
 std::string PROJECT_DIR;
 
@@ -10,7 +12,7 @@ void initializeProjectDir(const char* dir) {
     if (dir == nullptr || std::strlen(dir) == 0) {
         throw std::invalid_argument("Invalid project directory provided");
     }
-    PROJECT_DIR = dir; // Atualiza a variável global
+    PROJECT_DIR = dir;
 }
 
 std::string getFileExtension(const std::string& filename) {
@@ -18,7 +20,7 @@ std::string getFileExtension(const std::string& filename) {
     if (dotPos == std::string::npos) {
         return ""; // Nenhuma extensão encontrada
     }
-    return filename.substr(dotPos + 1); // Retorna sem o ponto
+    return filename.substr(dotPos + 1);
 }
 
 bool isValidAudioExtension(const std::string& extension) {
@@ -62,4 +64,17 @@ std::vector<float> extractPluginParams(const crow::request& req) {
 
 bool validateProjectDir(const char* dir) {
     return dir != nullptr && std::strlen(dir) > 0;
+}
+
+// Função para converter MP3 para WAV usando FFmpeg
+std::string convertMp3ToWav(const std::string& mp3File) {
+    std::string wavFile = mp3File.substr(0, mp3File.find_last_of('.')) + ".wav";
+    std::string command = "ffmpeg -i " + mp3File + " -ar 44100 -ac 2 -f wav " + wavFile + " -loglevel error";
+
+    int result = std::system(command.c_str());
+    if (result != 0) {
+        throw std::runtime_error("Error converting MP3 to WAV. FFmpeg failed.");
+    }
+
+    return wavFile;
 }

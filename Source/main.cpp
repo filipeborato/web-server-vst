@@ -3,6 +3,7 @@
 #include <crow.h>
 #include <fstream>
 #include <vector>
+#include <iostream>
 
 int main(int argc, char* argv[]) {
     if (argc < 2 || !validateProjectDir(argv[1])) {
@@ -52,10 +53,10 @@ int main(int argc, char* argv[]) {
         if (!isValidAudioExtension(extension)) {
             return crow::response(400, "Unsupported audio file extension");
         }
-        
-        std::cout << "Project initialized at: " << PROJECT_DIR << std::endl;           
-        
-        std::string job_id = generateUUID();        
+
+        std::cout << "Project initialized at: " << PROJECT_DIR << std::endl;
+
+        std::string job_id = generateUUID();
         std::string inputFile = std::string(PROJECT_DIR) + "/tmp/input_audio_" + job_id + "." + extension;
 
         std::ofstream ofs(inputFile, std::ios::binary);
@@ -64,7 +65,17 @@ int main(int argc, char* argv[]) {
         }
         ofs.write(part.body.data(), static_cast<std::streamsize>(part.body.size()));
         ofs.close();
-       
+
+        // Conversão de MP3 para WAV
+        if (extension == "mp3") {
+            try {
+                inputFile = convertMp3ToWav(inputFile);
+                extension = "wav"; // Atualiza a extensão
+            } catch (const std::exception& e) {
+                return crow::response(500, e.what());
+            }
+        }
+
         std::string pluginName = req.url_params.get("plugin") ? req.url_params.get("plugin") : "";
         if (pluginName.empty()) {
             return crow::response(400, "Missing plugin parameter");
@@ -81,7 +92,6 @@ int main(int argc, char* argv[]) {
         std::string pluginPath = std::string(PROJECT_DIR) + "/vst/" + pluginName + ".so";
         std::string outputFile = std::string(PROJECT_DIR) + "/tmp/output_audio_" + job_id;
 
-        std::cout << "Vst path: " << pluginPath << std::endl;   
         Host host;
         bool success = host.processAudioFile(pluginPath, params, inputFile, outputFile, isPreview, fadeOut);
 
@@ -100,13 +110,6 @@ int main(int argc, char* argv[]) {
         ifs.close();
 
         std::string contentType = "audio/" + extension;
-        if (extension == "mp3") contentType = "audio/mpeg";
-        else if (extension == "aac") contentType = "audio/aac";
-        else if (extension == "wav") contentType = "audio/wav";
-        else if (extension == "ogg") contentType = "audio/ogg";
-        else if (extension == "flac") contentType = "audio/flac";
-        else if (extension == "aiff") contentType = "audio/aiff";
-
         r.code = 200;
         r.set_header("Content-Type", contentType);
         r.write(fileContent);

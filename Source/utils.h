@@ -25,4 +25,7 @@ std::vector<float> extractPluginParams(const crow::request& req);
 // Valida um caminho fornecido no argumento
 bool validateProjectDir(const char* dir);
 
+// Converte um arquivo MP3 para WAV
+std::string convertMp3ToWav(const std::string& mp3File);
+
 #endif // UTILS_H
