@@ -303,6 +303,30 @@ Source/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AudioProcessingProject.dir/build.make CMakeFiles/AudioProcessingProject.dir/Source/main.cpp.s
 .PHONY : Source/main.cpp.s
 
+Source/utils.o: Source/utils.cpp.o
+.PHONY : Source/utils.o
+
+# target to build an object file
+Source/utils.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AudioProcessingProject.dir/build.make CMakeFiles/AudioProcessingProject.dir/Source/utils.cpp.o
+.PHONY : Source/utils.cpp.o
+
+Source/utils.i: Source/utils.cpp.i
+.PHONY : Source/utils.i
+
+# target to preprocess a source file
+Source/utils.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AudioProcessingProject.dir/build.make CMakeFiles/AudioProcessingProject.dir/Source/utils.cpp.i
+.PHONY : Source/utils.cpp.i
+
+Source/utils.s: Source/utils.cpp.s
+.PHONY : Source/utils.s
+
+# target to generate assembly for a file
+Source/utils.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AudioProcessingProject.dir/build.make CMakeFiles/AudioProcessingProject.dir/Source/utils.cpp.s
+.PHONY : Source/utils.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -331,6 +355,9 @@ help:
 	@echo "... Source/main.o"
 	@echo "... Source/main.i"
 	@echo "... Source/main.s"
+	@echo "... Source/utils.o"
+	@echo "... Source/utils.i"
+	@echo "... Source/utils.s"
 .PHONY : help
 
 
