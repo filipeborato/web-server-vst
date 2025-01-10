@@ -1,28 +1,32 @@
-FROM debian:bullseye-slim
+# Use uma imagem base com suporte a C++
+FROM ubuntu:20.04
 
-# Instalar as dependências necessárias
+# Evitar interações durante a instalação
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Atualizar e instalar dependências
 RUN apt-get update && apt-get install -y \
     build-essential \
+    cmake \
     libsndfile1-dev \
-    libc6 \
-    wget
+    libssl-dev \
+    libboost-all-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Instalar o glibc 2.38
-WORKDIR /opt
-RUN wget http://ftp.gnu.org/gnu/libc/glibc-2.38.tar.gz \
-    && tar -xvf glibc-2.38.tar.gz \
-    && cd glibc-2.38 \
-    && mkdir build && cd build \
-    && ../configure --prefix=/opt/glibc-2.38 \
-    && make -j$(nproc) \
-    && make install
-
-# Configurar a variável de ambiente
-ENV LD_LIBRARY_PATH=/opt/glibc-2.38/lib:$LD_LIBRARY_PATH
-
-# Copiar os arquivos do projeto
+# Diretório de trabalho
 WORKDIR /app
-COPY . .
 
-# Comando para executar o programa
-CMD ["./bin/AudioProcessingProject"]
+# Copiar arquivos de configuração e código
+COPY CMakeLists.txt .
+COPY src/ ./src/
+
+# Construir o projeto
+RUN mkdir build && cd build && \
+    cmake -DCMAKE_BUILD_TYPE=Release .. && \
+    make
+
+# Expor a porta que o Crow utilizará
+EXPOSE 18080
+
+# Comando para rodar a aplicação
+CMD ["./build/AudioProcessingAPI"]
