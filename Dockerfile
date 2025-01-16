@@ -33,7 +33,7 @@ RUN mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 
 # Expor as portas necessárias
-EXPOSE 80
+EXPOSE 8080
 
 # Comando de entrada para inicializar serviços
 ENTRYPOINT ["/app/setup_environment_X.sh"]

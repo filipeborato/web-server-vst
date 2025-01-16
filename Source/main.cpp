@@ -117,5 +117,11 @@ int main(int argc, char* argv[]) {
         return r;
     });
 
+    CROW_ROUTE(app, "/")
+        .methods("POST"_method, "OPTIONS"_method)
+    ([&](const crow::request& req) {        
+        return crow::response(200, "alive");
+    });
+
     app.port(18080).multithreaded().run();
 }
