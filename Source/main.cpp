@@ -118,7 +118,7 @@ int main(int argc, char* argv[]) {
     });
 
     CROW_ROUTE(app, "/")
-        .methods("POST"_method, "OPTIONS"_method)
+        .methods("GET"_method)
     ([&](const crow::request& req) {        
         return crow::response(200, "alive");
     });
