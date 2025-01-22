@@ -20,7 +20,7 @@
 typedef AEffect* (*pluginFuncPtr)(audioMasterCallback host);
 
 constexpr int kVstParameterIsAutomatable = 1 << 2; // Automatable parameter flag
-constexpr int kVstParameterIsDiscrete = 1 << 6;    // Discrete parameter flag
+constexpr int kVstParameterIsDiscrete = 0;    // Discrete parameter flag
 
 class PluginHost
 {
