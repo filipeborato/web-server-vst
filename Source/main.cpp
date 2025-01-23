@@ -89,7 +89,7 @@ int main(int argc, char* argv[]) {
         bool isPreview = req.url_params.get("preview") ? (std::string(req.url_params.get("preview")) == "true") : false;
         bool fadeOut = req.url_params.get("fadeout") ? (std::string(req.url_params.get("fadeout")) == "true") : false;
 
-        std::string pluginPath = std::string(PROJECT_DIR) + "/vst/" + pluginName + ".so";
+        std::string pluginPath = std::string(PROJECT_DIR) + "/vst/" + pluginName + ".so";        
         std::string outputFile = std::string(PROJECT_DIR) + "/tmp/output_audio_" + job_id;
 
         Host host;
@@ -115,6 +115,12 @@ int main(int argc, char* argv[]) {
         r.write(fileContent);
 
         return r;
+    });
+
+    CROW_ROUTE(app, "/")
+        .methods("GET"_method)
+    ([&](const crow::request& req) {        
+        return crow::response(200, "alive");
     });
 
     app.port(18080).multithreaded().run();

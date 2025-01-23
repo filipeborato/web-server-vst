@@ -4,6 +4,7 @@
 PluginHost::PluginHost(const char* pluginPath)
     : effect(nullptr), pluginHandle(nullptr)
 {
+    std::cout << "PPath: " << pluginPath << std::endl;
     pluginHandle = dlopen(pluginPath, RTLD_LAZY);
     if (!pluginHandle) {
         std::cerr << "Error loading plugin: " << dlerror() << std::endl;
@@ -186,8 +187,8 @@ extern "C" {
             return 1;
         case audioMasterGetCurrentProcessLevel:
             return kVstProcessLevelRealtime;
-        default:
-            printf("\nPlugin requested value of opcode %d.\n", opcode);
+        //default:
+            //printf("\nPlugin requested value of opcode %d.\n", opcode);
         }
         return 0;
     }

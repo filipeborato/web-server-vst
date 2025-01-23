@@ -1,32 +1,39 @@
-# Use uma imagem base com suporte a C++
-FROM ubuntu:20.04
+# Base Ubuntu
+FROM ubuntu:22.04
 
-# Evitar interações durante a instalação
-ENV DEBIAN_FRONTEND=noninteractive
+RUN sed -i 's|http://archive.ubuntu.com/ubuntu|http://mirror.example.com/ubuntu|g' /etc/apt/sources.list && \
+    apt-get update -o Acquire::ForceIPv4=true
 
-# Atualizar e instalar dependências
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    cmake \
+# Instalar dependências necessárias
+RUN apt-get -o Acquire::ForceIPv4=true install -y \
+    xvfb \   
     libsndfile1-dev \
-    libssl-dev \
-    libboost-all-dev \
-    && rm -rf /var/lib/apt/lists/*
+    nginx \
+    supervisor \
+    cmake \
+    build-essential \
+    uuid-runtime \
+    curl    
 
-# Diretório de trabalho
+# Definir diretório de trabalho no contêiner
 WORKDIR /app
 
-# Copiar arquivos de configuração e código
-COPY CMakeLists.txt .
-COPY src/ ./src/
+# Copiar arquivos do projeto para o contêiner
+COPY . .
 
-# Construir o projeto
-RUN mkdir build && cd build && \
-    cmake -DCMAKE_BUILD_TYPE=Release .. && \
-    make
+# Configurar entrada do Nginx
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Expor a porta que o Crow utilizará
-EXPOSE 18080
+# Configurar script de inicialização
+COPY setup_environment_X.sh /app/setup_environment_X.sh
+RUN chmod +x /app/setup_environment_X.sh
 
-# Comando para rodar a aplicação
-CMD ["./build/AudioProcessingAPI"]
+# Configurar Supervisor para gerenciar serviços
+RUN mkdir -p /var/log/supervisor
+COPY supervisord.conf /etc/supervisor/supervisord.conf
+
+# Expor as portas necessárias
+EXPOSE 8080
+
+# Comando de entrada para inicializar serviços
+ENTRYPOINT ["/app/setup_environment_X.sh"]
