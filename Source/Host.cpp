@@ -23,7 +23,10 @@ bool Host::processAudioFile(const std::string& pluginPath,
     host.initialize();
     for (size_t i = 0; i < params.size(); ++i) {
         host.setParameter((int)i, params[i]);
-    }  
+    }
+
+    std::cout << "\nAfter Setting:" << std::endl;
+    host.printParameterProperties();  
 
     AudioFileReader audioReader(inputFilePath);
     int totalSamples = audioReader.getTotalSamples();
