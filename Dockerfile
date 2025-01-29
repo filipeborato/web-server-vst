@@ -13,6 +13,7 @@ RUN apt-get -o Acquire::ForceIPv4=true install -y \
     cmake \
     build-essential \
     uuid-runtime \
+    lsp-plugins-vst \
     curl    
 
 # Definir diretório de trabalho no contêiner
