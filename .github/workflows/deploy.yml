@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup SSH
-        uses: webfactory/[email protected] # ou outra action que você preferir
+        uses: webfactory/ssh-agent@v0.5.4 # ou outra action que você preferir
         with:
           ssh-private-key: ${{ secrets.DROPLET_KEY }}
 
