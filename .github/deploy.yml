@@ -1,0 +1,28 @@
+name: Deploy Production
+
+on:
+  push:
+    branches: [ "production" ]
+  # Se quiser também rodar no "pull_request", pode adicionar
+  # pull_request:
+  #   branches: [ "production" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Setup SSH
+        uses: webfactory/[email protected] # ou outra action que você preferir
+        with:
+          ssh-private-key: ${{ secrets.DROPLET_KEY }}
+
+      - name: Deploy to Droplet
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} 'bash /root/projects/deploy-audio_processing_api.sh'
+        # OU executar os comandos diretamente
+        # run: |
+        #   ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "cd /caminho/do/projeto && git pull && sudo systemctl daemon-reload && sudo systemctl restart audio_processing_api.service && sudo systemctl restart retro-vst-go.service"
