@@ -1,20 +1,20 @@
-# Base Ubuntu
 FROM ubuntu:22.04
 
-RUN sed -i 's|http://archive.ubuntu.com/ubuntu|http://mirror.example.com/ubuntu|g' /etc/apt/sources.list && \
-    apt-get update -o Acquire::ForceIPv4=true
-
-# Instalar dependências necessárias
-RUN apt-get -o Acquire::ForceIPv4=true install -y \
-    xvfb \   
+# Instalar dependências: apt-get update e instalar pacotes
+RUN apt-get update && apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    software-properties-common \
+    xvfb \
     libsndfile1-dev \
     nginx \
     supervisor \
     cmake \
     build-essential \
-    uuid-runtime \
+    # uuid-runtime pode estar em outro pacote (ver abaixo)
     lsp-plugins-vst \
-    curl    
+    curl \
+  && apt-get clean
 
 # Definir diretório de trabalho no contêiner
 WORKDIR /app
