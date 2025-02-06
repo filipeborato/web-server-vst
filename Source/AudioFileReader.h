@@ -11,7 +11,7 @@ public:
         readAudioMetadata();
     }
 
-    void readSamples(float* buffer, int numSamples, int offset);
+    void readSamples(float* buffer, int numFrames, int frameOffset, int channel);
     int getTotalSamples() const;
     int getNumChannels() const;
     int getSampleRate() const;
