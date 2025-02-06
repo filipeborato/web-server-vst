@@ -5,13 +5,20 @@
 #include <iostream>
 
 // Implementação da função processAudioFile
+// Nota: Adicionamos o parâmetro previewStartTime (em segundos) com valor default 0
 bool Host::processAudioFile(const std::string& pluginPath,
                             const std::vector<float>& params,
                             const std::string& inputFilePath,
                             const std::string& outputFilePath,
                             bool isPreview,
-                            bool fadeOut) 
+                            bool fadeOut,
+                            int previewStartTime /* em segundos, default = 0 */) 
 {    
+    // Se previewStartTime for negativo (ou "null" na lógica da aplicação), forçamos a zero
+    if (previewStartTime < 0) {
+        previewStartTime = 0;
+    }
+
     // Carrega o plugin    
     PluginHost host(pluginPath.c_str());
     // Obter e imprimir o nome do efeito
@@ -40,9 +47,25 @@ bool Host::processAudioFile(const std::string& pluginPath,
         return false;
     }
 
+    // Se for preview, vamos definir um trecho fixo de 10 segundos
+    int previewStartFrame = 0;
+    int previewDurationFrames = totalSamples; // valor padrão caso não seja preview
+
     if (isPreview) {
-        const int previewSamples = sampleRate * 5; // 5 segundos
-        totalSamples = std::min(totalSamples, previewSamples);
+        // Converte o instante de início (em segundos) para frames
+        previewStartFrame = previewStartTime * sampleRate;
+        if (previewStartFrame >= totalSamples) {
+            std::cerr << "Preview start time is outside the audio duration." << std::endl;
+            return false;
+        }
+        // Define 10 segundos de preview
+        previewDurationFrames = 10 * sampleRate;
+        // Se o trecho ultrapassar o final do áudio, ajusta para o restante disponível
+        if (previewStartFrame + previewDurationFrames > totalSamples) {
+            previewDurationFrames = totalSamples - previewStartFrame;
+        }
+        // Agora, totalSamples será o número de frames a serem processados no preview
+        totalSamples = previewDurationFrames;
     }
 
     // Calcula o número de frames para o fade-out
@@ -68,15 +91,17 @@ bool Host::processAudioFile(const std::string& pluginPath,
     int processedSamples = 0;
     while (processedSamples < totalSamples) {
         int samplesToRead = std::min(bufferSize, totalSamples - processedSamples);
+        // Se for preview, o offset para leitura é o previewStartFrame + processedSamples
+        int readOffset = isPreview ? (previewStartFrame + processedSamples) : processedSamples;
 
         // Ler os dados do canal 0 (deintercalados)
-        audioReader.readSamples(audioForProcess[0], samplesToRead, processedSamples, 0);
+        audioReader.readSamples(audioForProcess[0], samplesToRead, readOffset, 0);
 
         // Se for mono, copia os dados para o segundo buffer; se stereo, lê o canal 1
         if (numChannels == 1) {
             std::copy(audioForProcess[0], audioForProcess[0] + samplesToRead, audioForProcess[1]);
         } else {
-            audioReader.readSamples(audioForProcess[1], samplesToRead, processedSamples, 1);
+            audioReader.readSamples(audioForProcess[1], samplesToRead, readOffset, 1);
         }
 
         // Processa os dados (a função processAudio espera dois buffers: um por canal)
