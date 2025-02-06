@@ -52,11 +52,11 @@ PluginHost::~PluginHost()
     }
 }
 
-void PluginHost::initialize()
+void PluginHost::initialize(float sampleRate)
 {
     if (effect != nullptr) {
         // Ajuste sample rate e block size
-        effect->dispatcher(effect, effSetSampleRate, 0, 0, NULL, 44100.0f);
+        effect->dispatcher(effect, effSetSampleRate, 0, 0, NULL, sampleRate);
         effect->dispatcher(effect, effSetBlockSize, 0, 512, NULL, 0.0f);     
 
         // Se for necessário iniciar processamento (ligar áudio):

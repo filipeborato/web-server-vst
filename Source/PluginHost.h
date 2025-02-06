@@ -28,7 +28,7 @@ public:
     PluginHost(const char* pluginPath);
     ~PluginHost();
 
-    void initialize();
+    void initialize(float sampleRate);
     void suspend();
     void processAudio(float** inBuffer, float** outBuffer, int numSamples);
     void setParameter(int index, float value);
