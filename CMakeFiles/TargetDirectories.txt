@@ -1,3 +1,0 @@
-/workspaces/web-server-vst/CMakeFiles/rebuild_cache.dir
-/workspaces/web-server-vst/CMakeFiles/edit_cache.dir
-/workspaces/web-server-vst/CMakeFiles/AudioProcessingProject.dir

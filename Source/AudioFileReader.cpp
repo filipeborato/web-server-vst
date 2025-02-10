@@ -1,80 +1,134 @@
 #include "AudioFileReader.h"
+#include <sndfile.h>
+#include <cstring>
+#include <iostream>
+#include <fstream>
+#include <vector>
 
+// Lê os metadados do arquivo e inicializa as variáveis da classe
 void AudioFileReader::readAudioMetadata() {
-    std::ifstream inputFile(filePath, std::ios::binary);
+    SF_INFO sfinfo;
+    memset(&sfinfo, 0, sizeof(sfinfo)); // Inicializa a estrutura
 
-    if (inputFile.is_open()) {
-        // Assuming WAV format for simplicity
-        inputFile.seekg(40); // Skip header to reach Subchunk2Size field
-        int subchunk2Size;
-        inputFile.read(reinterpret_cast<char*>(&subchunk2Size), sizeof(subchunk2Size));
-
-        totalSamples = subchunk2Size / (bitDepth / 8) / numChannels;
-        // Read and analyze WAV header to find data chunk offset
-        inputFile.seekg(0, std::ios::end);
-        int fileSize = static_cast<int>(inputFile.tellg());
-
-        inputFile.seekg(0); // Move back to the beginning
-        char header[44];
-        inputFile.read(header, sizeof(header));
-
-        if (fileSize >= 44 && strncmp(header, "RIFF", 4) == 0 && strncmp(header + 8, "WAVE", 4) == 0) {
-            // Find "data" subchunk
-            for (int offset = 12; offset < 44; offset += 4) {
-                if (strncmp(header + offset, "data", 4) == 0) {
-                    dataChunkOffset = offset + 8; // Offset of data chunk
-                    break;
-                }
-            }
-
-            inputFile.close();
-        }
-        else {
-            std::cerr << "Failed to open audio file for reading metadata." << std::endl;
-        }
+    SNDFILE* file = sf_open(filePath.c_str(), SFM_READ, &sfinfo);
+    if (!file) {
+        std::cerr << "Failed to open audio file: " << sf_strerror(file) << std::endl;
+        std::cerr << "File path: " << filePath << std::endl;
+        exit(1);
     }
+
+    // Exibir informações para debug
+    std::cout << "Audio file opened successfully!" << std::endl;
+    std::cout << "Sample Rate: " << sfinfo.samplerate << std::endl;
+    std::cout << "Channels: " << sfinfo.channels << std::endl;
+    std::cout << "Frames: " << sfinfo.frames << std::endl;
+    std::cout << "Format: " << sfinfo.format << std::endl;
+
+    // Atribuir os valores às variáveis da classe
+    sampleRate = sfinfo.samplerate;
+    numChannels = sfinfo.channels;
+    totalSamples = sfinfo.frames;  // totalSamples representa o número de frames
+    format = sfinfo.format;
+
+    sf_close(file);
 }
 
+// Nova função readSamples que recebe também o número do canal desejado.
+// Ela lê os frames intercalados, deintercala e extrai somente os dados do canal indicado.
+void AudioFileReader::readSamples(float* buffer, int numFrames, int frameOffset, int channel) {
+    SF_INFO sfinfo;
+    std::memset(&sfinfo, 0, sizeof(sfinfo));
 
-    void AudioFileReader::readSamples(float* buffer, int numSamples, int offset){
-    std::ifstream inputFile(filePath, std::ios::binary);
+    SNDFILE* file = sf_open(filePath.c_str(), SFM_READ, &sfinfo);
+    if (!file) {
+        std::cerr << "Failed to open audio file: " << sf_strerror(file) << std::endl;
+        return;
+    }
 
-    if (inputFile.is_open()) {
-        // Assuming 16-bit PCM audio for simplicity
-        inputFile.seekg(dataChunkOffset + (offset*2)); // Seek to the beginning of audio data, why to X2
+    // Verifica se o canal solicitado é válido
+    if (channel < 0 || channel >= sfinfo.channels) {
+        std::cerr << "Invalid channel requested." << std::endl;
+        sf_close(file);
+        return;
+    }
 
-        // Read audio samples and convert to float (-1.0 to 1.0 range)
-        std::vector<short> sampleBuffer(numSamples * numChannels);
-        inputFile.read(reinterpret_cast<char*>(sampleBuffer.data()), sizeof(short) * numSamples * numChannels);
+    // Verifica se o frameOffset está dentro do intervalo válido
+    if (frameOffset < 0 || frameOffset >= sfinfo.frames) {
+        std::cerr << "Invalid frame offset." << std::endl;
+        sf_close(file);
+        return;
+    }
 
-        for (int i = 0; i < numSamples * numChannels; ++i) {
-            buffer[i] = static_cast<float>(sampleBuffer[i]) / 32768.0f; // Convert to float range
+    // Ajusta numFrames se a leitura extrapolar o final do arquivo
+    if (frameOffset + numFrames > sfinfo.frames) {
+        numFrames = sfinfo.frames - frameOffset;
+        if (numFrames <= 0) {
+            std::cerr << "Frame offset is beyond the end of the audio file." << std::endl;
+            sf_close(file);
+            return;
         }
+    }
 
-        inputFile.close();
+    // Posiciona o ponteiro no frame desejado
+    if (sf_seek(file, frameOffset, SEEK_SET) < 0) {
+        std::cerr << "Failed to seek in audio file: " << sf_strerror(file) << std::endl;
+        sf_close(file);
+        return;
     }
-    else {
-        std::cerr << "Failed to open audio file for reading samples." << std::endl;
+
+    // Aloca um buffer temporário para armazenar os frames intercalados
+    float* tempBuffer = new float[numFrames * sfinfo.channels];
+    sf_count_t readFrames = sf_readf_float(file, tempBuffer, numFrames);
+    if (readFrames != numFrames) {
+        std::cerr << "Warning: Number of frames read (" << readFrames 
+                  << ") is less than expected (" << numFrames << ")." << std::endl;
     }
+    
+    // Deintercala: para cada frame, extrai o sample do canal desejado
+    for (int i = 0; i < numFrames; i++) {
+        buffer[i] = tempBuffer[i * sfinfo.channels + channel];
+    }
+
+    delete[] tempBuffer;
+    sf_close(file);
+}
+
+// As demais funções permanecem inalteradas
+
+bool AudioFileReader::verifyAudioType(const std::string& filePath) {
+    SF_INFO sfinfo;
+    SNDFILE* file = sf_open(filePath.c_str(), SFM_READ, &sfinfo);
+    if (!file) {
+        return false; // Arquivo inválido
+    }
+    sf_close(file);
+    return true;
 }
 
 int AudioFileReader::getTotalSamples() const {
     return totalSamples;
 }
 
+int AudioFileReader::getNumChannels() const {
+    return numChannels;
+}
+
+int AudioFileReader::getSampleRate() const {
+    return sampleRate;
+}
+
 void AudioFileReader::saveAudioToFile(const std::string& filePath, const float* buffer, int numSamples) {
     std::ofstream outputFile(filePath, std::ios::binary);
 
     if (outputFile.is_open()) {
-        // Convert float audio samples to 16-bit PCM format
+        // Converte os samples float para 16-bit PCM
         std::vector<short> pcmSamples(numSamples * numChannels);
         for (int i = 0; i < numSamples * numChannels; ++i) {
-            pcmSamples[i] = static_cast<short>(buffer[i] * 32767.0f); // Convert to short range
+            pcmSamples[i] = static_cast<short>(buffer[i] * 32767.0f);
         }
 
-        // Write the PCM samples to the output file
+        // Escreve os samples no arquivo
         outputFile.write(reinterpret_cast<const char*>(pcmSamples.data()), sizeof(short) * numSamples * numChannels);
-
         outputFile.close();
         std::cout << "Saved audio to " << filePath << std::endl;
     }
@@ -83,7 +137,7 @@ void AudioFileReader::saveAudioToFile(const std::string& filePath, const float* 
     }
 }
 
-float* AudioFileReader::makeAudio(float *audio, const float* audioBuffer, int samples, int offset) {
+float* AudioFileReader::makeAudio(float* audio, const float* audioBuffer, int samples, int offset) {
     int j = 0;
     for (int i = offset; i < (offset + samples); i++) {
         audio[i] = audioBuffer[j];
@@ -93,32 +147,72 @@ float* AudioFileReader::makeAudio(float *audio, const float* audioBuffer, int sa
 }
 
 float* AudioFileReader::cpyTotalAudio(float* audio, float* buffer, int samples, int offset) {
-    // Verifique os limites dos arrays para evitar acessos inv�lidos
     if (audio && buffer && offset >= 0 && offset + samples <= totalSamples) {
         memcpy(audio + offset, buffer, samples * sizeof(float));
     }
     return audio;
 }
 
-void AudioFileReader::saveAudioToSNDFile(const std::string& filePath, const float* audio, int bufferSize) {
-    SF_INFO sfInfo;
-    sfInfo.channels = numChannels; // Mono audio
-    sfInfo.samplerate = sampleRate; // Sample rate (adjust as per your requirements)
-    sfInfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16; // 16-bit PCM WAV file format
+bool AudioFileReader::saveAudioToSNDFile(const std::string& filePath, const float* audioBuffer, int bufferSize) {
+    if (audioBuffer == nullptr) {
+        std::cerr << "Audio buffer is null. Cannot write audio to file." << std::endl;
+        return false;
+    }
 
-    SNDFILE* file = sf_open(filePath.c_str(), SFM_WRITE, &sfInfo);
+    if (bufferSize <= 0) {
+        std::cerr << "Buffer size is invalid: " << bufferSize << std::endl;
+        return false;
+    }
+
+    // Determina a extensão com base no formato de áudio
+    std::string extension;
+    int mainFormat = format & SF_FORMAT_TYPEMASK;
+
+    switch (mainFormat) {
+        case SF_FORMAT_WAV: 
+            extension = ".wav"; 
+            break;
+        case SF_FORMAT_AIFF: 
+            extension = ".aiff"; 
+            break;
+        case SF_FORMAT_FLAC: 
+            extension = ".flac"; 
+            break;
+        case SF_FORMAT_OGG: 
+            extension = ".OGG"; 
+            break;
+        default:
+            std::cerr << "Unsupported format: " << mainFormat << ". Cannot determine file extension." << std::endl;
+            return false;
+    }
+
+    std::string fullFilePath = filePath + extension;
+
+    SF_INFO sfinfo = {0};
+    sfinfo.samplerate = sampleRate;
+    sfinfo.channels = numChannels;
+    sfinfo.format = format;
+
+    SNDFILE* file = sf_open(fullFilePath.c_str(), SFM_WRITE, &sfinfo);
     if (!file) {
-        std::cerr << "Error opening the output file: " << filePath << std::endl;
-        return;
+        std::cerr << "Failed to open output file: " << sf_strerror(file) << std::endl;
+        return false;
     }
 
-    // Write the audio data to the file
-    sf_count_t framesWritten = sf_writef_float(file, audio, bufferSize);
-
-    if (framesWritten != bufferSize) {
-        std::cerr << "Error writing audio data to the file: " << filePath << std::endl;
+    if (bufferSize % numChannels != 0) {
+        std::cerr << "Buffer size is not aligned with the number of channels." << std::endl;
+        sf_close(file);
+        return false;
     }
 
-    // Close the file
+    sf_count_t framesToWrite = bufferSize / numChannels;
+    sf_count_t framesWritten = sf_writef_float(file, audioBuffer, framesToWrite);
+
+    if (framesWritten != framesToWrite) {
+        std::cerr << "Warning: Only " << framesWritten << " frames were written out of " << framesToWrite << "." << std::endl;
+    }
+
     sf_close(file);
+    std::cout << "Audio file saved successfully: " << fullFilePath << std::endl;
+    return true;
 }
