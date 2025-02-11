@@ -27,7 +27,7 @@ COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY setup_environment_X.sh /app/setup_environment_X.sh
 RUN chmod +x /app/setup_environment_X.sh
 
-RUN mkdir /app/tmp
+RUN mkdir -p /app/tmp 
 RUN chmod +x /app/tmp
 
 EXPOSE 8080
