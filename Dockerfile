@@ -9,9 +9,9 @@ RUN apt-get update && apt-get install -y \
     nginx \
     supervisor \
     cmake \
-    build-essential \
-    lsp-plugins-vst \
+    build-essential \   
     curl \
+    libxrandr2 \      
   && apt-get clean
 
 WORKDIR /app
@@ -29,6 +29,9 @@ RUN chmod +x /app/setup_environment_X.sh
 
 RUN mkdir -p /app/tmp 
 RUN chmod +x /app/tmp
+
+ENV LD_LIBRARY_PATH=""
+ENV LD_LIBRARY_PATH="/app/vst:${LD_LIBRARY_PATH}"
 
 EXPOSE 8080
 
