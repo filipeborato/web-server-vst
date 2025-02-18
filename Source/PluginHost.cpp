@@ -3,14 +3,7 @@
 
 PluginHost::PluginHost(const char* pluginPath)
     : effect(nullptr), pluginHandle(nullptr)
-{
-    // Pré-carrega a VST core library correta (liblsp-plugins-vst2.so)
-    void* vstCore = dlopen("/app/vst/liblsp-plugins-vst2.so", RTLD_LAZY | RTLD_GLOBAL);
-    if (!vstCore) {
-        std::cerr << "Failed to load VST core library: " << dlerror() << std::endl;
-        // Dependendo da criticidade, você pode optar por continuar ou abortar.
-    }
-
+{   
     std::cout << "PPath: " << pluginPath << std::endl;
     pluginHandle = dlopen(pluginPath, RTLD_LAZY);
     if (!pluginHandle) {

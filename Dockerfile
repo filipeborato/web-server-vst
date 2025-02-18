@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y \
     nginx \
     supervisor \
     cmake \
-    build-essential \   
+    build-essential \
+    lsp-plugins-vst \   
     curl \
     libxrandr2 \      
   && apt-get clean
