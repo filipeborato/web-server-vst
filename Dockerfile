@@ -10,8 +10,9 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     cmake \
     build-essential \
-    lsp-plugins-vst \
+    lsp-plugins-vst \   
     curl \
+    libxrandr2 \      
   && apt-get clean
 
 WORKDIR /app
@@ -27,8 +28,11 @@ COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY setup_environment_X.sh /app/setup_environment_X.sh
 RUN chmod +x /app/setup_environment_X.sh
 
-RUN mkdir /app/tmp
+RUN mkdir -p /app/tmp 
 RUN chmod +x /app/tmp
+
+ENV LD_LIBRARY_PATH=""
+ENV LD_LIBRARY_PATH="/app/vst:${LD_LIBRARY_PATH}"
 
 EXPOSE 8080
 

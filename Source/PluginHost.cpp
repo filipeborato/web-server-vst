@@ -3,7 +3,7 @@
 
 PluginHost::PluginHost(const char* pluginPath)
     : effect(nullptr), pluginHandle(nullptr)
-{
+{   
     std::cout << "PPath: " << pluginPath << std::endl;
     pluginHandle = dlopen(pluginPath, RTLD_LAZY);
     if (!pluginHandle) {
