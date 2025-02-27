@@ -88,12 +88,13 @@ int main(int argc, char* argv[]) {
 
         bool isPreview = req.url_params.get("preview") ? (std::string(req.url_params.get("preview")) == "true") : false;
         bool fadeOut = req.url_params.get("fadeout") ? (std::string(req.url_params.get("fadeout")) == "true") : false;
+        int previewStartTime = req.url_params.get("previewStartTime") ? std::stoi(std::string(req.url_params.get("previewStartTime"))) : 0;
 
-        std::string pluginPath = std::string(PROJECT_DIR) + "/vst/" + pluginName + ".so";
+        std::string pluginPath = std::string(PROJECT_DIR) + "/vst/" + pluginName + ".so";        
         std::string outputFile = std::string(PROJECT_DIR) + "/tmp/output_audio_" + job_id;
 
         Host host;
-        bool success = host.processAudioFile(pluginPath, params, inputFile, outputFile, isPreview, fadeOut);
+        bool success = host.processAudioFile(pluginPath, params, inputFile, outputFile, isPreview, fadeOut, previewStartTime);
 
         if (!success) {
             return crow::response(500, "Failed to process audio");
@@ -115,6 +116,12 @@ int main(int argc, char* argv[]) {
         r.write(fileContent);
 
         return r;
+    });
+
+    CROW_ROUTE(app, "/")
+        .methods("GET"_method)
+    ([&](const crow::request& req) {        
+        return crow::response(200, "alive");
     });
 
     app.port(18080).multithreaded().run();

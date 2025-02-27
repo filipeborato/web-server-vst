@@ -1,32 +1,39 @@
-# Use uma imagem base com suporte a C++
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
-# Evitar interações durante a instalação
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Atualizar e instalar dependências
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    cmake \
+    apt-transport-https \
+    ca-certificates \
+    software-properties-common \
+    xvfb \
     libsndfile1-dev \
-    libssl-dev \
-    libboost-all-dev \
-    && rm -rf /var/lib/apt/lists/*
+    nginx \
+    supervisor \
+    cmake \
+    build-essential \
+    lsp-plugins-vst \   
+    curl \
+    libxrandr2 \      
+  && apt-get clean
 
-# Diretório de trabalho
 WORKDIR /app
 
-# Copiar arquivos de configuração e código
-COPY CMakeLists.txt .
-COPY src/ ./src/
+COPY . .
 
-# Construir o projeto
-RUN mkdir build && cd build && \
-    cmake -DCMAKE_BUILD_TYPE=Release .. && \
-    make
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Expor a porta que o Crow utilizará
-EXPOSE 18080
+RUN mkdir -p /var/log/supervisor
+COPY supervisord.conf /etc/supervisor/supervisord.conf
 
-# Comando para rodar a aplicação
-CMD ["./build/AudioProcessingAPI"]
+# Configurar script de inicialização
+COPY setup_environment_X.sh /app/setup_environment_X.sh
+RUN chmod +x /app/setup_environment_X.sh
+
+RUN mkdir -p /app/tmp 
+RUN chmod +x /app/tmp
+
+ENV LD_LIBRARY_PATH=""
+ENV LD_LIBRARY_PATH="/app/vst:${LD_LIBRARY_PATH}"
+
+EXPOSE 8080
+
+ENTRYPOINT ["/app/setup_environment_X.sh"]
