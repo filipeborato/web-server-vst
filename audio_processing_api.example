@@ -1,0 +1,17 @@
+[Unit]
+Description=Audio Processing API Service
+After=network.target xvfb.service
+
+[Service]
+Type=simple
+Environment=DISPLAY=:99
+Environment="LD_LIBRARY_PATH=/root/projects/web-server-vst/vst:${LD_LIBRARY_PATH}"
+
+WorkingDirectory=/root/projects/web-server-vst
+ExecStart=/root/projects/web-server-vst/build/bin/AudioProcessingProject /root/projects/web-server-vst
+Restart=always
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
