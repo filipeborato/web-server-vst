@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     cmake \
     build-essential \
-    lsp-plugins-vst \   
+    lsp-plugins-vst \
+    ffmpeg \
     curl \
     libxrandr2 \      
   && apt-get clean
