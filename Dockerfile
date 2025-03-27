@@ -24,15 +24,15 @@ COPY supervisord.conf /etc/supervisor/supervisord.conf
 
 # Configurar script de inicialização
 COPY setup_environment_X.sh /app/setup_environment_X.sh
-RUN chmod +x /app/setup_environment_X.sh
+RUN chmod o+w /app/setup_environment_X.sh
 
 RUN mkdir -p /app/tmp 
-RUN chmod +x /app/tmp
+RUN chmod o+w /app/tmp
 
-ENV LD_LIBRARY_PATH=""
 ENV LD_LIBRARY_PATH="/app/vst:${LD_LIBRARY_PATH}"
 
 # Atualize para a porta correta onde sua aplicação está rodando
 EXPOSE 18080
 
-ENTRYPOINT ["/app/setup_environment_X.sh"]
+ENTRYPOINT ["bash", "/app/setup_environment_X.sh"]
+
