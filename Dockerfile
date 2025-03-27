@@ -1,26 +1,23 @@
 FROM ubuntu:22.04
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update
+RUN apt-get install -y \
     apt-transport-https \
     ca-certificates \
     software-properties-common \
     xvfb \
     libsndfile1-dev \
-    nginx \
     supervisor \
     cmake \
     build-essential \
-    lsp-plugins-vst \
     ffmpeg \
     curl \
-    libxrandr2 \      
+    libxrandr2 \
   && apt-get clean
 
 WORKDIR /app
 
 COPY . .
-
-COPY nginx.conf /etc/nginx/nginx.conf
 
 RUN mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisor/supervisord.conf
@@ -35,6 +32,7 @@ RUN chmod +x /app/tmp
 ENV LD_LIBRARY_PATH=""
 ENV LD_LIBRARY_PATH="/app/vst:${LD_LIBRARY_PATH}"
 
-EXPOSE 8080
+# Atualize para a porta correta onde sua aplicação está rodando
+EXPOSE 18080
 
 ENTRYPOINT ["/app/setup_environment_X.sh"]
