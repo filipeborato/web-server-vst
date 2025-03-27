@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - .:/app
+      - tmp_data:/app/tmp  
     expose:
       - "18080"
     environment:
@@ -19,3 +20,5 @@ services:
       - "80:80"
     depends_on:
       - app
+volumes:
+  tmp_data: 
