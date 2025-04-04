@@ -50,6 +50,13 @@ docker-compose up --build
 
 ### 2. Send Requests
 
-- Now, access via `http://localhost:80/process` (or the route you defined) and send the audio file.
-
-**Contact**: For more details, check service logs and startup scripts.
+- **Post** request to **/process**
+- parameter **plugin**: plugin name (string)
+- parameter **p[n]**: plugin paramter (string/float)
+- parameter **previewStartTime**: preview start time (string/float)
+- parameter **preview**: audio preview flag (string/bool)
+#### Curl example:
+```curl
+curl --location '127.0.0.1:18080/process?plugin=filter-stereo&preview=true&previewStartTime=0.08&p0=0.2&p1=0.444531&p2=0.444531&p3=0.66&p4=0.001000&p5=0.333302&p6=1.000000&p7=1&p8=1&p9=1&p10=1&p11=0.500000&p12=1&p13=1&p14=1&p15=0.001667&p16=0.250000&p17=0.500000&p18=0.200000' \
+--form 'audio_file=@"/home/xuxuzinho/Downloads/Alesis-Sanctuary-QCard-Tines-Aahs-C4.wav"'
+``` 
