@@ -41,75 +41,22 @@ This project consists of an audio processing service that loads VST2 plugins to 
 ---
 ## Execution via Docker
 
-### 1. Dockerfile
+### 1. Docker-compose
 
-Simplified example:
-```dockerfile
-FROM ubuntu:22.04
-
-# Enable repositories and install dependencies
-RUN apt-get update && apt-get install -y \
-libsndfile1-dev \
-# Packages to run LSP, Xvfb etc. plugins.
-xvfb \
-lsp-plugins-vst \
-# ... and any other libs
-&& apt-get clean
-
-WORKDIR /app
-
-COPY . .
-
-# Optional: Add Xvfb script
-# COPY setup_environment_X.sh /app/setup_environment_X.sh
-# RUN chmod +x /app/setup_environment_X.sh
-
-# Compile or copy the main binary
-RUN make # or cmake . && make
-
-EXPOSE 18080 # Or the port your project uses
-
-CMD ["./AudioProcessingProject"]
+Run:
+```
+docker-compose up --build
 ```
 
-### 2. Build the Image
+### 2. Send Requests
 
-```bash
-docker build -t web-server-vst . ```
-
-### 3. Run the Container
-
-```bash
-docker run -d --name audio_processing_api \
--p 80:18080 \ # maps host port 80 to container port 18080
-web-server-vst
-```
-
-- If your binary listens on port 18080 inside the container, map `-p 80:18080`.
-- If you need **Xvfb**, set up a script that starts Xvfb before running `AudioProcessingProject`.
-
-### 4. Send Requests
-
-- Now, access via `http://localhost:80/process` (or the route you defined) and send the audio file.
-
----
-
-## Step by Step
-
-1. **Install** Docker.
-2. **Create** a Dockerfile including all dependencies (libsndfile, vstsdk2.4, etc.).
-3. **Build** (or copy) the binary into the container.
-4. **Expose** the port of your service.
-5. **Run** the container with `docker run -d -p <host-port>:<container-port> image`.
-6. **Test** by sending audio to the endpoint.
-
----
-
-## Notes
-- External VST2 plugins (like LSP) may require graphical libraries (Cairo, Fontconfig) and be in `/usr/lib/lsp-plugins`. Adjust `LD_LIBRARY_PATH` if necessary.
-- If a plugin doesn't work, use `ldd plugin.so` or `strace` to see which libraries it tries to load.
-- Xvfb is useful if the plugin requires X for interfacing.
-
----
-
-**Contact**: For more details, check service logs and startup scripts.
+- **Post** request to **/process**
+- parameter **plugin**: plugin name (string)
+- parameter **p[n]**: plugin paramter (string/float)
+- parameter **previewStartTime**: preview start time (string/float)
+- parameter **preview**: audio preview flag (string/bool)
+#### Curl example:
+```curl
+curl --location '127.0.0.1:18080/process?plugin=filter-stereo&preview=true&previewStartTime=0.08&p0=0.2&p1=0.444531&p2=0.444531&p3=0.66&p4=0.001000&p5=0.333302&p6=1.000000&p7=1&p8=1&p9=1&p10=1&p11=0.500000&p12=1&p13=1&p14=1&p15=0.001667&p16=0.250000&p17=0.500000&p18=0.200000' \
+--form 'audio_file=@"/home/xuxuzinho/Downloads/Alesis-Sanctuary-QCard-Tines-Aahs-C4.wav"'
+``` 
