@@ -1,35 +1,32 @@
 FROM ubuntu:22.04
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update
+RUN apt-get install -y \
     apt-transport-https \
     ca-certificates \
     software-properties-common \
     xvfb \
     libsndfile1-dev \
-    nginx \
     supervisor \
     cmake \
     build-essential \
-    lsp-plugins-vst \
+    ffmpeg \
     curl \
+    libxrandr2 \
   && apt-get clean
 
 WORKDIR /app
 
 COPY . .
 
-COPY nginx.conf /etc/nginx/nginx.conf
-
 RUN mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 
 # Configurar script de inicialização
 COPY setup_environment_X.sh /app/setup_environment_X.sh
-RUN chmod +x /app/setup_environment_X.sh
 
-RUN mkdir -p /app/tmp 
-RUN chmod +x /app/tmp
+# Atualize para a porta correta onde sua aplicação está rodando
+EXPOSE 18080
 
-EXPOSE 8080
+ENTRYPOINT ["bash", "/app/setup_environment_X.sh"]
 
-ENTRYPOINT ["/app/setup_environment_X.sh"]
