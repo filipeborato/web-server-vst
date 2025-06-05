@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <stdexcept>
 
 // Lê os metadados do arquivo e inicializa as variáveis da classe
 void AudioFileReader::readAudioMetadata() {
@@ -12,9 +13,9 @@ void AudioFileReader::readAudioMetadata() {
 
     SNDFILE* file = sf_open(filePath.c_str(), SFM_READ, &sfinfo);
     if (!file) {
-        std::cerr << "Failed to open audio file: " << sf_strerror(file) << std::endl;
-        std::cerr << "File path: " << filePath << std::endl;
-        exit(1);
+        std::string err = std::string("Failed to open audio file: ") + sf_strerror(file) +
+                          "\nFile path: " + filePath;
+        throw std::runtime_error(err);
     }
 
     // Exibir informações para debug
