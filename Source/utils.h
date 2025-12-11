@@ -28,4 +28,7 @@ bool validateProjectDir(const char* dir);
 // Converte um arquivo MP3 para WAV
 std::string convertMp3ToWav(const std::string& mp3File);
 
+// Adiciona cabeçalhos CORS à resposta
+void addCorsHeaders(crow::response& response);
+
 #endif // UTILS_H

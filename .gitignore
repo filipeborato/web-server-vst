@@ -3,3 +3,4 @@ JuceLibraryCode/
 external/Crow/
 tmp/
 .github/
+build/

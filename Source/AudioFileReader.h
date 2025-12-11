@@ -23,6 +23,8 @@ public:
 
 private:
     void readAudioMetadata();
+    SF_INFO initSFInfo() const;
+    SNDFILE* openAudioFile(SF_INFO* sfinfo, int mode) const;
 
     std::string filePath;
     int format;

@@ -6,17 +6,28 @@
 #include <vector>
 #include <stdexcept>
 
-// Lê os metadados do arquivo e inicializa as variáveis da classe
-void AudioFileReader::readAudioMetadata() {
+// Helper method to initialize SF_INFO structure
+SF_INFO AudioFileReader::initSFInfo() const {
     SF_INFO sfinfo;
-    memset(&sfinfo, 0, sizeof(sfinfo)); // Inicializa a estrutura
+    std::memset(&sfinfo, 0, sizeof(sfinfo));
+    return sfinfo;
+}
 
-    SNDFILE* file = sf_open(filePath.c_str(), SFM_READ, &sfinfo);
+// Helper method to open audio file with error handling
+SNDFILE* AudioFileReader::openAudioFile(SF_INFO* sfinfo, int mode) const {
+    SNDFILE* file = sf_open(filePath.c_str(), mode, sfinfo);
     if (!file) {
         std::string err = std::string("Failed to open audio file: ") + sf_strerror(file) +
                           "\nFile path: " + filePath;
         throw std::runtime_error(err);
     }
+    return file;
+}
+
+// Lê os metadados do arquivo e inicializa as variáveis da classe
+void AudioFileReader::readAudioMetadata() {
+    SF_INFO sfinfo = initSFInfo();
+    SNDFILE* file = openAudioFile(&sfinfo, SFM_READ);
 
     // Exibir informações para debug
     std::cout << "Audio file opened successfully!" << std::endl;
@@ -37,12 +48,13 @@ void AudioFileReader::readAudioMetadata() {
 // Nova função readSamples que recebe também o número do canal desejado.
 // Ela lê os frames intercalados, deintercala e extrai somente os dados do canal indicado.
 void AudioFileReader::readSamples(float* buffer, int numFrames, int frameOffset, int channel) {
-    SF_INFO sfinfo;
-    std::memset(&sfinfo, 0, sizeof(sfinfo));
-
-    SNDFILE* file = sf_open(filePath.c_str(), SFM_READ, &sfinfo);
-    if (!file) {
-        std::cerr << "Failed to open audio file: " << sf_strerror(file) << std::endl;
+    SF_INFO sfinfo = initSFInfo();
+    SNDFILE* file = nullptr;
+    
+    try {
+        file = openAudioFile(&sfinfo, SFM_READ);
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
         return;
     }
 
@@ -97,7 +109,7 @@ void AudioFileReader::readSamples(float* buffer, int numFrames, int frameOffset,
 // As demais funções permanecem inalteradas
 
 bool AudioFileReader::verifyAudioType(const std::string& filePath) {
-    SF_INFO sfinfo;
+    SF_INFO sfinfo = initSFInfo();
     SNDFILE* file = sf_open(filePath.c_str(), SFM_READ, &sfinfo);
     if (!file) {
         return false; // Arquivo inválido

@@ -19,11 +19,7 @@ int main(int argc, char* argv[]) {
         .methods("POST"_method, "OPTIONS"_method)
     ([&](const crow::request& req) {
         crow::response r;
-
-        r.add_header("Access-Control-Allow-Origin", "*");
-        r.add_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-        r.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        r.add_header("Access-Control-Allow-Credentials", "true");
+        addCorsHeaders(r);
 
         if (req.method == "OPTIONS"_method) {
             return crow::response(204, "options");

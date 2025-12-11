@@ -78,3 +78,11 @@ std::string convertMp3ToWav(const std::string& mp3File) {
 
     return wavFile;
 }
+
+// Adiciona cabeçalhos CORS à resposta
+void addCorsHeaders(crow::response& response) {
+    response.add_header("Access-Control-Allow-Origin", "*");
+    response.add_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+    response.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    response.add_header("Access-Control-Allow-Credentials", "true");
+}

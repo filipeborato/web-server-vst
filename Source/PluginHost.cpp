@@ -1,6 +1,13 @@
 #include "PluginHost.h"
 #include <dlfcn.h>  // Header para loading dinâmico no Linux
 
+void PluginHost::cleanupPlugin() {
+    if (pluginHandle) {
+        dlclose(pluginHandle);
+        pluginHandle = nullptr;
+    }
+}
+
 PluginHost::PluginHost(const char* pluginPath)
     : effect(nullptr), pluginHandle(nullptr)
 {   
@@ -15,8 +22,7 @@ PluginHost::PluginHost(const char* pluginPath)
     auto vstPluginMain = (AEffect* (*)(audioMasterCallback))dlsym(pluginHandle, "VSTPluginMain");
     if (!vstPluginMain) {
         std::cerr << "Error: VSTPluginMain not found!" << std::endl;
-        dlclose(pluginHandle);
-        pluginHandle = nullptr;
+        cleanupPlugin();
         return;
     }
 
@@ -25,8 +31,7 @@ PluginHost::PluginHost(const char* pluginPath)
     effect = create(hostCallback); 
     if (!effect) {
         std::cerr << "Error: failed to create plugin instance." << std::endl;
-        dlclose(pluginHandle);
-        pluginHandle = nullptr;
+        cleanupPlugin();
         return;
     }
 
@@ -46,10 +51,7 @@ PluginHost::~PluginHost()
         effect = nullptr;
     }
 
-    if (pluginHandle) {
-        dlclose(pluginHandle);
-        pluginHandle = nullptr;
-    }
+    cleanupPlugin();
 }
 
 void PluginHost::initialize(float sampleRate)
@@ -109,12 +111,9 @@ void PluginHost::printParameterProperties()
     }
 
     for (int paramIndex = 0; paramIndex < effect->numParams; ++paramIndex) {
-        char paramName[64];
-        char paramLabel[64];
-        char paramDisplay[64];
-        memset(paramLabel, 0, sizeof(paramLabel));
-        memset(paramDisplay, 0, sizeof(paramDisplay));
-        memset(paramName, 0, sizeof(paramName));
+        char paramName[64] = {0};
+        char paramLabel[64] = {0};
+        char paramDisplay[64] = {0};
 
         effect->dispatcher(effect, effGetParamName, paramIndex, 0, paramName, 0.0f);
         effect->dispatcher(effect, effGetParamLabel, paramIndex, 0, paramLabel, 0.0f);

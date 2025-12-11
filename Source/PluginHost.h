@@ -40,6 +40,8 @@ public:
 private:
     AEffect* effect;
     void* pluginHandle; // Para armazenar o handle retornado por dlopen
+    
+    void cleanupPlugin();
 };
 
 extern "C" {

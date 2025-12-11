@@ -82,17 +82,22 @@ bool Host::processAudioFile(const std::string& pluginPath,
         fadeOutSamples = std::min(fadeOutSamples, totalSamples);
     }
 
-    // Aloca os buffers:
+    // Aloca os buffers usando RAII:
     const int bufferSize = 512; 
-    float* audio = new float[totalSamples * numChannels]; 
+    AudioBuffer audio(totalSamples * numChannels);
+    AudioBuffer audioForProcess0(bufferSize);
+    AudioBuffer audioForProcess1(bufferSize);
+    AudioBuffer processedAudio0(bufferSize);
+    AudioBuffer processedAudio1(bufferSize);
+    
     // Para processamento, cada canal terá um buffer com "bufferSize" frames
     float* audioForProcess[2] = {
-        new float[bufferSize], // Canal 0
-        new float[bufferSize]  // Canal 1
+        audioForProcess0.get(), // Canal 0
+        audioForProcess1.get()  // Canal 1
     };
     float* processedAudio[2] = {
-        new float[bufferSize],
-        new float[bufferSize]
+        processedAudio0.get(),
+        processedAudio1.get()
     };
 
     int processedSamples = 0;
@@ -124,9 +129,9 @@ bool Host::processAudioFile(const std::string& pluginPath,
                 multiplier = 1.0f - static_cast<float>(fadeSample) / fadeOutSamples;
             }
 
-            audio[currentSample * numChannels] = processedAudio[0][i] * multiplier;
+            audio.get()[currentSample * numChannels] = processedAudio[0][i] * multiplier;
             if (numChannels > 1) {
-                audio[currentSample * numChannels + 1] = processedAudio[1][i] * multiplier;
+                audio.get()[currentSample * numChannels + 1] = processedAudio[1][i] * multiplier;
             }
         }
 
@@ -134,13 +139,8 @@ bool Host::processAudioFile(const std::string& pluginPath,
     }
 
     // Salva o áudio processado
-    bool saved = audioReader.saveAudioToSNDFile(outputFilePath, audio, totalSamples * numChannels);
+    bool saved = audioReader.saveAudioToSNDFile(outputFilePath, audio.get(), totalSamples * numChannels);
    
-    delete[] audio;
-    delete[] audioForProcess[0];
-    delete[] audioForProcess[1];
-    delete[] processedAudio[0];
-    delete[] processedAudio[1];
     delete audioReaderPtr;
 
     return saved;
