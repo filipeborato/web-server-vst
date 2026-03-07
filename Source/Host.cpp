@@ -27,7 +27,14 @@ bool Host::processAudioFile(const std::string& pluginPath,
     host.printParameterProperties();
     
     // Cria o leitor de áudio e obtém a taxa de amostragem
-    AudioFileReader audioReader(inputFilePath);
+    AudioFileReader* audioReaderPtr = nullptr;
+    try {
+        audioReaderPtr = new AudioFileReader(inputFilePath);
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return false;
+    }
+    AudioFileReader& audioReader = *audioReaderPtr;
     const int sampleRate = audioReader.getSampleRate();
 
     // Inicializa o host e seta os parâmetros
@@ -134,6 +141,7 @@ bool Host::processAudioFile(const std::string& pluginPath,
     delete[] audioForProcess[1];
     delete[] processedAudio[0];
     delete[] processedAudio[1];
+    delete audioReaderPtr;
 
     return saved;
 }
