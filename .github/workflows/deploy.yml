@@ -46,7 +46,7 @@ jobs:
         run: |
           PROJECT_PATH=${{ secrets.DROPLET_PROJECT_PATH }}
           if [ -z "$PROJECT_PATH" ]; then
-            PROJECT_PATH="/opt/web-server-vst"
+            PROJECT_PATH="/root/projects/web-server-vst"
           fi
 
           echo "Ensuring directory structure exists on Droplet..."
