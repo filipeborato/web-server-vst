@@ -20,7 +20,9 @@ bool isValidAudioExtension(const std::string& extension);
 std::string generateUUID();
 
 // Processa os parâmetros do plugin enviados via URL
-std::vector<float> extractPluginParams(const crow::request& req);
+#include <utility>
+
+std::vector<std::pair<int, float>> extractPluginParams(const crow::request& req);
 
 // Valida um caminho fornecido no argumento
 bool validateProjectDir(const char* dir);
