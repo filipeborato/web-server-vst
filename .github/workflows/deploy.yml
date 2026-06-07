@@ -49,11 +49,19 @@ jobs:
             PROJECT_PATH="/root/projects/web-server-vst"
           fi
 
-          echo "Ensuring directory structure exists on Droplet..."
-          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "mkdir -p $PROJECT_PATH/build/bin"
-
           echo "Stopping service on Droplet to release file locks..."
           ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "sudo systemctl stop audio_processing_api.service || sudo systemctl stop web-server-vst.service || true"
+
+          echo "Running remote repository pull first to avoid file conflicts..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "
+            cd $PROJECT_PATH && \
+            git fetch --all && \
+            git checkout -f ${{ github.ref_name }} && \
+            git pull
+          "
+
+          echo "Ensuring directory structure exists on Droplet..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "mkdir -p $PROJECT_PATH/build/bin"
 
           echo "Uploading compiled VST Host binary..."
           # Copy to the standard build/bin/AudioProcessingProject location
@@ -66,12 +74,9 @@ jobs:
           scp -o StrictHostKeyChecking=no run_local.sh ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:$PROJECT_PATH/run_local.sh
           scp -o StrictHostKeyChecking=no test_api.py ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:$PROJECT_PATH/test_api.py
 
-          echo "Running remote repository pull and starting service..."
+          echo "Starting service..."
           ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "
             cd $PROJECT_PATH && \
-            git fetch --all && \
-            git checkout ${{ github.ref_name }} && \
-            git pull && \
             chmod +x run_local.sh && \
             sudo systemctl daemon-reload && \
             (sudo systemctl start audio_processing_api.service || sudo systemctl start web-server-vst.service || sudo systemctl start web-server-vst || true)
