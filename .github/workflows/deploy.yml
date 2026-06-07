@@ -2,10 +2,7 @@ name: Deploy Production
 
 on:
   push:
-    branches: [ "production" ]
-  # Se quiser também rodar no "pull_request", pode adicionar
-  # pull_request:
-  #   branches: [ "production" ]
+    branches: [ "production", "release/headless-vst-host" ]
 
 jobs:
   deploy:
@@ -15,14 +12,64 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsndfile1-dev cmake g++
+
+      - name: Clone Crow and Asio
+        run: |
+          git clone --depth 1 https://github.com/CrowCpp/Crow.git external/Crow
+          git clone --depth 1 https://github.com/chriskohlhoff/asio.git external/asio-src
+          git clone --depth 1 https://github.com/libsndfile/libsndfile.git external/libsndfile-src
+
+      - name: Build static libsndfile
+        run: |
+          mkdir -p external/libsndfile-src/build
+          cd external/libsndfile-src/build
+          cmake -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/external/libsndfile-install -DBUILD_PROGRAMS=OFF -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF -DENABLE_EXTERNAL_LIBS=OFF ..
+          cmake --build . --target install -j$(nproc)
+
+      - name: Configure and Compile Host
+        run: |
+          mkdir -p build
+          cd build
+          cmake -DLIBSNDFILE_DIR=${{ github.workspace }}/external/libsndfile-install -DASIO_INCLUDE_DIR=${{ github.workspace }}/external/asio-src/asio/include -DCMAKE_BUILD_TYPE=Release ..
+          make -j$(nproc)
+
       - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.5.4 # ou outra action que você preferir
+        uses: webfactory/ssh-agent@v0.5.4
         with:
           ssh-private-key: ${{ secrets.DROPLET_KEY }}
 
-      - name: Deploy to Droplet
+      - name: Deploy binary and run remote updates
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} 'bash /root/projects/deploy-audio_processing_api.sh'
-        # OU executar os comandos diretamente
-        # run: |
-        #   ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "cd /caminho/do/projeto && git pull && sudo systemctl daemon-reload && sudo systemctl restart audio_processing_api.service && sudo systemctl restart retro-vst-go.service"
+          PROJECT_PATH=${{ secrets.DROPLET_PROJECT_PATH }}
+          if [ -z "$PROJECT_PATH" ]; then
+            PROJECT_PATH="/opt/web-server-vst"
+          fi
+
+          echo "Ensuring directory structure exists on Droplet..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "mkdir -p $PROJECT_PATH/build/bin"
+
+          echo "Uploading compiled VST Host binary..."
+          # Copy to the standard build/bin/AudioProcessingProject location
+          scp -o StrictHostKeyChecking=no build/bin/AudioProcessingProject ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:$PROJECT_PATH/build/bin/AudioProcessingProject
+          
+          # Safeguard: also copy to build/web-server-vst in case systemd references this path
+          scp -o StrictHostKeyChecking=no build/bin/AudioProcessingProject ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:$PROJECT_PATH/build/web-server-vst
+
+          echo "Uploading run_local.sh and test_api.py..."
+          scp -o StrictHostKeyChecking=no run_local.sh ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:$PROJECT_PATH/run_local.sh
+          scp -o StrictHostKeyChecking=no test_api.py ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:$PROJECT_PATH/test_api.py
+
+          echo "Running remote repository pull and restarting service..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "
+            cd $PROJECT_PATH && \
+            git fetch --all && \
+            git checkout ${{ github.ref_name }} && \
+            git pull && \
+            chmod +x run_local.sh && \
+            sudo systemctl daemon-reload && \
+            (sudo systemctl restart audio_processing_api.service || sudo systemctl restart web-server-vst.service || sudo systemctl restart web-server-vst || true)
+          "
