@@ -52,6 +52,9 @@ jobs:
           echo "Ensuring directory structure exists on Droplet..."
           ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "mkdir -p $PROJECT_PATH/build/bin"
 
+          echo "Stopping service on Droplet to release file locks..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "sudo systemctl stop audio_processing_api.service || sudo systemctl stop web-server-vst.service || true"
+
           echo "Uploading compiled VST Host binary..."
           # Copy to the standard build/bin/AudioProcessingProject location
           scp -o StrictHostKeyChecking=no build/bin/AudioProcessingProject ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:$PROJECT_PATH/build/bin/AudioProcessingProject
@@ -63,7 +66,7 @@ jobs:
           scp -o StrictHostKeyChecking=no run_local.sh ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:$PROJECT_PATH/run_local.sh
           scp -o StrictHostKeyChecking=no test_api.py ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }}:$PROJECT_PATH/test_api.py
 
-          echo "Running remote repository pull and restarting service..."
+          echo "Running remote repository pull and starting service..."
           ssh -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_HOST }} "
             cd $PROJECT_PATH && \
             git fetch --all && \
@@ -71,5 +74,5 @@ jobs:
             git pull && \
             chmod +x run_local.sh && \
             sudo systemctl daemon-reload && \
-            (sudo systemctl restart audio_processing_api.service || sudo systemctl restart web-server-vst.service || sudo systemctl restart web-server-vst || true)
+            (sudo systemctl start audio_processing_api.service || sudo systemctl start web-server-vst.service || sudo systemctl start web-server-vst || true)
           "
