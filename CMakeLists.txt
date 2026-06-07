@@ -18,10 +18,14 @@ add_executable(${PROJECT_NAME} Source/main.cpp Source/Host.cpp Source/PluginHost
 
 # Include directories for external libraries and VST SDK
 include_directories(${CMAKE_SOURCE_DIR}/external/vstsdk2.4)
+include_directories(${CMAKE_SOURCE_DIR}/external/libsndfile-install/include)
 
 add_subdirectory(external/Crow)
 
 # Link libsndfile from the external directory
+if(NOT DEFINED LIBSNDFILE_DIR)
+    set(LIBSNDFILE_DIR ${CMAKE_SOURCE_DIR}/external/libsndfile-install)
+endif()
 find_library(SNDFILE_LIBRARY sndfile PATHS ${LIBSNDFILE_DIR}/lib REQUIRED)
 
 # Vincular as bibliotecas necessárias

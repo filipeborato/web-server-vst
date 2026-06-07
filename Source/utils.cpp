@@ -38,25 +38,20 @@ std::string generateUUID() {
     return std::string(uuid_str);
 }
 
-std::vector<float> extractPluginParams(const crow::request& req) {
-    std::vector<float> params;
-    int i = 0;
+std::vector<std::pair<int, float>> extractPluginParams(const crow::request& req) {
+    std::vector<std::pair<int, float>> params;
 
-    while (true) {
+    for (int i = 0; i < 256; ++i) {
         std::string paramKey = "p" + std::to_string(i);
         const char* val = req.url_params.get(paramKey);
 
-        if (!val) {
-            break; // Sai do loop quando não há mais parâmetros
+        if (val) {
+            try {
+                params.push_back({i, std::stof(val)});
+            } catch (const std::invalid_argument&) {
+                std::cerr << "Invalid parameter value for " << paramKey << std::endl;
+            }
         }
-
-        try {
-            params.push_back(std::stof(val));
-        } catch (const std::invalid_argument&) {
-            std::cerr << "Invalid parameter value for " << paramKey << std::endl;
-        }
-
-        ++i;
     }
 
     return params;

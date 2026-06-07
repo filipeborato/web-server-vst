@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
             return crow::response(400, "Missing plugin parameter");
         }
 
-        std::vector<float> params = extractPluginParams(req);
+        std::vector<std::pair<int, float>> params = extractPluginParams(req);
         if (params.empty()) {
             return crow::response(400, "No parameters provided");
         }

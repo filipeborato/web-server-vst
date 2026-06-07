@@ -7,7 +7,7 @@
 // Implementação da função processAudioFile
 // Nota: Adicionamos o parâmetro previewStartTime (em segundos) com valor default 0
 bool Host::processAudioFile(const std::string& pluginPath,
-                            const std::vector<float>& params,
+                            const std::vector<std::pair<int, float>>& params,
                             const std::string& inputFilePath,
                             const std::string& outputFilePath,
                             bool isPreview,
@@ -39,8 +39,8 @@ bool Host::processAudioFile(const std::string& pluginPath,
 
     // Inicializa o host e seta os parâmetros
     host.initialize(static_cast<float>(sampleRate));
-    for (size_t i = 0; i < params.size(); ++i) {
-        host.setParameter(static_cast<int>(i), params[i]);
+    for (const auto& param : params) {
+        host.setParameter(param.first, param.second);
     }
 
     std::cout << "\nAfter Setting:" << std::endl;

@@ -3,3 +3,12 @@ JuceLibraryCode/
 external/Crow/
 tmp/
 .github/
+
+# CMake build directory
+build/
+
+# Local dependencies and virtual environments
+external/libsndfile-src/
+external/libsndfile-install/
+external/asio-src/
+.venv/

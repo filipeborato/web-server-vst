@@ -4,10 +4,12 @@
 #include <string>
 #include <vector>
 
+#include <utility>
+
 class Host {
 public:
     bool processAudioFile(const std::string& pluginPath,
-                            const std::vector<float>& params,
+                            const std::vector<std::pair<int, float>>& params,
                             const std::string& inputFilePath,
                             const std::string& outputFilePath,
                             bool isPreview,
