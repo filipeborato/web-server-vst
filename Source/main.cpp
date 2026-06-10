@@ -1,9 +1,22 @@
 #include "Host.h"
 #include "utils.h"
 #include <crow.h>
+#include <algorithm>
+#include <cstdio>
 #include <fstream>
 #include <vector>
 #include <iostream>
+
+// Remove os arquivos temporários do request ao sair do handler (qualquer caminho)
+struct TempFileGuard {
+    std::vector<std::string> paths;
+    void add(const std::string& p) { paths.push_back(p); }
+    ~TempFileGuard() {
+        for (const auto& p : paths) {
+            std::remove(p.c_str());
+        }
+    }
+};
 
 int main(int argc, char* argv[]) {
     if (argc < 2 || !validateProjectDir(argv[1])) {
@@ -49,6 +62,8 @@ int main(int argc, char* argv[]) {
 
         std::string originalFilename = filenameIt->second;
         std::string extension = getFileExtension(originalFilename);
+        // Normaliza para minúsculo: "musica.MP3" precisa entrar no fluxo de conversão
+        std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 
         if (!isValidAudioExtension(extension)) {
             return crow::response(400, "Unsupported audio file extension");
@@ -59,6 +74,9 @@ int main(int argc, char* argv[]) {
         std::string job_id = generateUUID();
         std::string inputFile = std::string(PROJECT_DIR) + "/tmp/input_audio_" + job_id + "." + extension;
 
+        TempFileGuard tempFiles;
+        tempFiles.add(inputFile);
+
         std::ofstream ofs(inputFile, std::ios::binary);
         if (!ofs.is_open()) {
             return crow::response(500, "Failed to create temporary input file");
@@ -66,19 +84,29 @@ int main(int argc, char* argv[]) {
         ofs.write(part.body.data(), static_cast<std::streamsize>(part.body.size()));
         ofs.close();
 
-        // Conversão de MP3 para WAV
-        if (extension == "mp3") {
+        // Formatos que o libsndfile não lê são convertidos para WAV via ffmpeg.
+        // (MP3/AAC sempre; OGG porque o libsndfile vendorizado foi compilado sem Vorbis.)
+        if (extension == "mp3" || extension == "aac" || extension == "ogg") {
             try {
-                inputFile = convertMp3ToWav(inputFile);
+                inputFile = convertToWav(inputFile);
                 extension = "wav"; // Atualiza a extensão
+                tempFiles.add(inputFile);
             } catch (const std::exception& e) {
-                return crow::response(500, e.what());
+                return crow::response(500, "Failed to convert audio to WAV");
             }
         }
 
         std::string pluginName = req.url_params.get("plugin") ? req.url_params.get("plugin") : "";
         if (pluginName.empty()) {
             return crow::response(400, "Missing plugin parameter");
+        }
+        if (!isValidPluginName(pluginName)) {
+            return crow::response(400, "Invalid plugin name");
+        }
+
+        std::string pluginPath = std::string(PROJECT_DIR) + "/vst/" + pluginName + ".so";
+        if (!std::ifstream(pluginPath).good()) {
+            return crow::response(400, "Unknown plugin");
         }
 
         std::vector<std::pair<int, float>> params = extractPluginParams(req);
@@ -88,19 +116,27 @@ int main(int argc, char* argv[]) {
 
         bool isPreview = req.url_params.get("preview") ? (std::string(req.url_params.get("preview")) == "true") : false;
         bool fadeOut = req.url_params.get("fadeout") ? (std::string(req.url_params.get("fadeout")) == "true") : false;
-        int previewStartTime = req.url_params.get("previewStartTime") ? std::stoi(std::string(req.url_params.get("previewStartTime"))) : 0;
 
-        std::string pluginPath = std::string(PROJECT_DIR) + "/vst/" + pluginName + ".so";        
-        std::string outputFile = std::string(PROJECT_DIR) + "/tmp/output_audio_" + job_id;
+        // Aceita fração de segundo (o front manda ex.: 0.08); valor inválido vira 400
+        float previewStartTime = 0.0f;
+        if (const char* pst = req.url_params.get("previewStartTime")) {
+            try {
+                previewStartTime = std::stof(std::string(pst));
+            } catch (const std::exception&) {
+                return crow::response(400, "Invalid previewStartTime");
+            }
+        }
+
+        std::string outputFileWithExt = std::string(PROJECT_DIR) + "/tmp/output_audio_" + job_id + "." + extension;
+        tempFiles.add(outputFileWithExt);
 
         Host host;
-        bool success = host.processAudioFile(pluginPath, params, inputFile, outputFile, isPreview, fadeOut, previewStartTime);
+        bool success = host.processAudioFile(pluginPath, params, inputFile, outputFileWithExt, isPreview, fadeOut, previewStartTime);
 
         if (!success) {
             return crow::response(500, "Failed to process audio");
         }
 
-        std::string outputFileWithExt = outputFile + "." + extension;
         std::ifstream ifs(outputFileWithExt, std::ios::binary);
 
         if (!ifs.is_open()) {

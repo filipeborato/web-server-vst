@@ -28,6 +28,9 @@ public:
     PluginHost(const char* pluginPath);
     ~PluginHost();
 
+    // true se dlopen/VSTPluginMain tiveram sucesso e o plugin está utilizável
+    bool isLoaded() const { return effect != nullptr; }
+
     void initialize(float sampleRate);
     void suspend();
     void processAudio(float** inBuffer, float** outBuffer, int numSamples);

@@ -1,35 +1,47 @@
 #include "Host.h"
 #include "PluginHost.h"
 #include "AudioFileReader.h" // Classe para leitura de arquivos de áudio
+#include <sndfile.h>
 #include <algorithm>
+#include <cstring>
 #include <iostream>
+#include <memory>
+#include <vector>
 
 // Implementação da função processAudioFile
-// Nota: Adicionamos o parâmetro previewStartTime (em segundos) com valor default 0
+// O áudio é processado em blocos e escrito em streaming no arquivo de saída:
+// o uso de memória é constante (~alguns KB), independente da duração do arquivo.
 bool Host::processAudioFile(const std::string& pluginPath,
                             const std::vector<std::pair<int, float>>& params,
                             const std::string& inputFilePath,
                             const std::string& outputFilePath,
                             bool isPreview,
                             bool fadeOut,
-                            int previewStartTime /* em segundos, default = 0 */) 
-{    
+                            float previewStartTime /* em segundos */)
+{
     // Se previewStartTime for negativo (ou "null" na lógica da aplicação), forçamos a zero
-    if (previewStartTime < 0) {
-        previewStartTime = 0;
+    if (previewStartTime < 0.0f) {
+        previewStartTime = 0.0f;
     }
 
-    // Carrega o plugin    
+    // Carrega o plugin
     PluginHost host(pluginPath.c_str());
+    if (!host.isLoaded()) {
+        // Sem esta guarda, o processamento seguiria como no-op e devolveria
+        // buffers não inicializados (lixo de memória) como áudio "processado".
+        std::cerr << "Failed to load plugin: " << pluginPath << std::endl;
+        return false;
+    }
+
     // Obter e imprimir o nome do efeito
     std::string effectName = host.getEffectName();
     std::cout << "Loaded Effect: " << effectName << std::endl;
     host.printParameterProperties();
-    
-    // Cria o leitor de áudio e obtém a taxa de amostragem
-    AudioFileReader* audioReaderPtr = nullptr;
+
+    // Cria o leitor de áudio (unique_ptr: liberado em qualquer caminho de saída)
+    std::unique_ptr<AudioFileReader> audioReaderPtr;
     try {
-        audioReaderPtr = new AudioFileReader(inputFilePath);
+        audioReaderPtr = std::make_unique<AudioFileReader>(inputFilePath);
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
         return false;
@@ -44,7 +56,7 @@ bool Host::processAudioFile(const std::string& pluginPath,
     }
 
     std::cout << "\nAfter Setting:" << std::endl;
-    host.printParameterProperties();  
+    host.printParameterProperties();
 
     // Obtém o total de frames e o número de canais
     int totalSamples = audioReader.getTotalSamples(); // totalSamples representa frames
@@ -53,14 +65,20 @@ bool Host::processAudioFile(const std::string& pluginPath,
     if (totalSamples <= 0 || numChannels <= 0) {
         return false;
     }
+    if (numChannels > 2) {
+        // O pipeline de processamento só suporta mono/estéreo; com mais canais
+        // os canais extras sairiam com lixo de memória.
+        std::cerr << "Unsupported channel count: " << numChannels << std::endl;
+        return false;
+    }
 
     // Se for preview, vamos definir um trecho fixo de 10 segundos
     int previewStartFrame = 0;
     int previewDurationFrames = totalSamples; // valor padrão caso não seja preview
 
     if (isPreview) {
-        // Converte o instante de início (em segundos) para frames
-        previewStartFrame = previewStartTime * sampleRate;
+        // Converte o instante de início (em segundos, com fração) para frames
+        previewStartFrame = static_cast<int>(previewStartTime * sampleRate);
         if (previewStartFrame >= totalSamples) {
             std::cerr << "Preview start time is outside the audio duration." << std::endl;
             return false;
@@ -82,18 +100,26 @@ bool Host::processAudioFile(const std::string& pluginPath,
         fadeOutSamples = std::min(fadeOutSamples, totalSamples);
     }
 
-    // Aloca os buffers:
-    const int bufferSize = 512; 
-    float* audio = new float[totalSamples * numChannels]; 
-    // Para processamento, cada canal terá um buffer com "bufferSize" frames
-    float* audioForProcess[2] = {
-        new float[bufferSize], // Canal 0
-        new float[bufferSize]  // Canal 1
-    };
-    float* processedAudio[2] = {
-        new float[bufferSize],
-        new float[bufferSize]
-    };
+    // Buffers por bloco (vector zera a memória — nunca devolvemos lixo)
+    const int bufferSize = 512;
+    std::vector<float> in0(bufferSize), in1(bufferSize);
+    std::vector<float> out0(bufferSize), out1(bufferSize);
+    float* audioForProcess[2] = { in0.data(), in1.data() };
+    float* processedAudio[2] = { out0.data(), out1.data() };
+    std::vector<float> interleaved(static_cast<size_t>(bufferSize) * numChannels);
+
+    // Abre o arquivo de saída antes do loop — escrita em streaming, bloco a bloco.
+    SF_INFO outInfo;
+    std::memset(&outInfo, 0, sizeof(outInfo));
+    outInfo.samplerate = sampleRate;
+    outInfo.channels = numChannels;
+    outInfo.format = audioReader.getFormat();
+
+    SNDFILE* outFile = sf_open(outputFilePath.c_str(), SFM_WRITE, &outInfo);
+    if (!outFile) {
+        std::cerr << "Failed to open output file: " << sf_strerror(nullptr) << std::endl;
+        return false;
+    }
 
     int processedSamples = 0;
     while (processedSamples < totalSamples) {
@@ -114,7 +140,7 @@ bool Host::processAudioFile(const std::string& pluginPath,
         // Processa os dados (a função processAudio espera dois buffers: um por canal)
         host.processAudio(audioForProcess, processedAudio, samplesToRead);
 
-        // Copia os dados processados para o buffer principal com o fade-out se necessário
+        // Intercala o bloco processado aplicando o fade-out se necessário
         for (int i = 0; i < samplesToRead; ++i) {
             int currentSample = processedSamples + i;
             float multiplier = 1.0f; // Valor padrão
@@ -124,24 +150,24 @@ bool Host::processAudioFile(const std::string& pluginPath,
                 multiplier = 1.0f - static_cast<float>(fadeSample) / fadeOutSamples;
             }
 
-            audio[currentSample * numChannels] = processedAudio[0][i] * multiplier;
+            interleaved[i * numChannels] = processedAudio[0][i] * multiplier;
             if (numChannels > 1) {
-                audio[currentSample * numChannels + 1] = processedAudio[1][i] * multiplier;
+                interleaved[i * numChannels + 1] = processedAudio[1][i] * multiplier;
             }
+        }
+
+        // Escreve o bloco direto no arquivo de saída
+        sf_count_t written = sf_writef_float(outFile, interleaved.data(), samplesToRead);
+        if (written != samplesToRead) {
+            std::cerr << "Failed to write audio block: " << sf_strerror(outFile) << std::endl;
+            sf_close(outFile);
+            return false;
         }
 
         processedSamples += samplesToRead;
     }
 
-    // Salva o áudio processado
-    bool saved = audioReader.saveAudioToSNDFile(outputFilePath, audio, totalSamples * numChannels);
-   
-    delete[] audio;
-    delete[] audioForProcess[0];
-    delete[] audioForProcess[1];
-    delete[] processedAudio[0];
-    delete[] processedAudio[1];
-    delete audioReaderPtr;
-
-    return saved;
+    sf_close(outFile);
+    std::cout << "Audio file saved successfully: " << outputFilePath << std::endl;
+    return true;
 }

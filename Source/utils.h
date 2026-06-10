@@ -27,7 +27,10 @@ std::vector<std::pair<int, float>> extractPluginParams(const crow::request& req)
 // Valida um caminho fornecido no argumento
 bool validateProjectDir(const char* dir);
 
-// Converte um arquivo MP3 para WAV
-std::string convertMp3ToWav(const std::string& mp3File);
+// Valida o nome do plugin vindo da query string (bloqueia path traversal)
+bool isValidPluginName(const std::string& name);
+
+// Converte um arquivo de áudio (MP3/AAC) para WAV via ffmpeg
+std::string convertToWav(const std::string& inputFile);
 
 #endif // UTILS_H
