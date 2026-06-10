@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstring>
 #include <cstdlib>  // Para system()
+#include <cctype>
 #include <stdexcept>
 
 std::string PROJECT_DIR;
@@ -61,14 +62,31 @@ bool validateProjectDir(const char* dir) {
     return dir != nullptr && std::strlen(dir) > 0;
 }
 
-// Função para converter MP3 para WAV usando FFmpeg
-std::string convertMp3ToWav(const std::string& mp3File) {
-    std::string wavFile = mp3File.substr(0, mp3File.find_last_of('.')) + ".wav";
-    std::string command = "ffmpeg -i " + mp3File + " -ar 44100 -ac 2 -f wav " + wavFile + " -loglevel error";
+// Valida o nome do plugin vindo da query string: apenas [A-Za-z0-9._-],
+// sem ".." — impede path traversal no dlopen (ex.: plugin=../../lib/x).
+bool isValidPluginName(const std::string& name) {
+    if (name.empty() || name.front() == '.' || name.find("..") != std::string::npos) {
+        return false;
+    }
+    for (char c : name) {
+        if (!std::isalnum(static_cast<unsigned char>(c)) && c != '-' && c != '_' && c != '.') {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Converte um arquivo de áudio (MP3/AAC) para WAV usando FFmpeg.
+// -y: sobrescreve sem perguntar (sem -y, o ffmpeg trava esperando stdin se o .wav já existir);
+// </dev/null: garante que nunca há prompt interativo; caminhos entre aspas.
+std::string convertToWav(const std::string& inputFile) {
+    std::string wavFile = inputFile.substr(0, inputFile.find_last_of('.')) + ".wav";
+    std::string command = "ffmpeg -y -i \"" + inputFile + "\" -ar 44100 -ac 2 -f wav \"" +
+                          wavFile + "\" -loglevel error </dev/null";
 
     int result = std::system(command.c_str());
     if (result != 0) {
-        throw std::runtime_error("Error converting MP3 to WAV. FFmpeg failed.");
+        throw std::runtime_error("Error converting audio to WAV. FFmpeg failed.");
     }
 
     return wavFile;

@@ -5,15 +5,16 @@
 #include <fstream>
 #include <vector>
 #include <stdexcept>
+#include <algorithm>
 
-// Lê os metadados do arquivo e inicializa as variáveis da classe
+// Lê os metadados do arquivo e mantém o handle aberto para leitura sequencial.
 void AudioFileReader::readAudioMetadata() {
     SF_INFO sfinfo;
     memset(&sfinfo, 0, sizeof(sfinfo)); // Inicializa a estrutura
 
-    SNDFILE* file = sf_open(filePath.c_str(), SFM_READ, &sfinfo);
-    if (!file) {
-        std::string err = std::string("Failed to open audio file: ") + sf_strerror(file) +
+    sndFile = sf_open(filePath.c_str(), SFM_READ, &sfinfo);
+    if (!sndFile) {
+        std::string err = std::string("Failed to open audio file: ") + sf_strerror(sndFile) +
                           "\nFile path: " + filePath;
         throw std::runtime_error(err);
     }
@@ -31,67 +32,79 @@ void AudioFileReader::readAudioMetadata() {
     totalSamples = sfinfo.frames;  // totalSamples representa o número de frames
     format = sfinfo.format;
 
-    sf_close(file);
+    // Arquivo continua aberto (sndFile); fechado no destrutor.
+    currentFrame = 0;
 }
 
-// Nova função readSamples que recebe também o número do canal desejado.
-// Ela lê os frames intercalados, deintercala e extrai somente os dados do canal indicado.
-void AudioFileReader::readSamples(float* buffer, int numFrames, int frameOffset, int channel) {
-    SF_INFO sfinfo;
-    std::memset(&sfinfo, 0, sizeof(sfinfo));
+AudioFileReader::~AudioFileReader() {
+    if (sndFile) {
+        sf_close(sndFile);
+        sndFile = nullptr;
+    }
+}
 
-    SNDFILE* file = sf_open(filePath.c_str(), SFM_READ, &sfinfo);
-    if (!file) {
-        std::cerr << "Failed to open audio file: " << sf_strerror(file) << std::endl;
+// readSamples deintercala o canal solicitado a partir de um bloco intercalado.
+// O arquivo é aberto uma única vez (no construtor) e lido sequencialmente; o último
+// bloco fica em cache, de modo que as duas chamadas por iteração (canal 0 e canal 1,
+// com mesmo offset) compartilham uma única leitura — sem reabrir/seek por bloco.
+void AudioFileReader::readSamples(float* buffer, int numFrames, int frameOffset, int channel) {
+    if (!sndFile) {
+        std::cerr << "Audio file is not open." << std::endl;
         return;
     }
 
     // Verifica se o canal solicitado é válido
-    if (channel < 0 || channel >= sfinfo.channels) {
+    if (channel < 0 || channel >= numChannels) {
         std::cerr << "Invalid channel requested." << std::endl;
-        sf_close(file);
         return;
     }
 
     // Verifica se o frameOffset está dentro do intervalo válido
-    if (frameOffset < 0 || frameOffset >= sfinfo.frames) {
+    if (frameOffset < 0 || frameOffset >= totalSamples) {
         std::cerr << "Invalid frame offset." << std::endl;
-        sf_close(file);
         return;
     }
 
     // Ajusta numFrames se a leitura extrapolar o final do arquivo
-    if (frameOffset + numFrames > sfinfo.frames) {
-        numFrames = sfinfo.frames - frameOffset;
+    if (frameOffset + numFrames > totalSamples) {
+        numFrames = totalSamples - frameOffset;
         if (numFrames <= 0) {
             std::cerr << "Frame offset is beyond the end of the audio file." << std::endl;
-            sf_close(file);
             return;
         }
     }
 
-    // Posiciona o ponteiro no frame desejado
-    if (sf_seek(file, frameOffset, SEEK_SET) < 0) {
-        std::cerr << "Failed to seek in audio file: " << sf_strerror(file) << std::endl;
-        sf_close(file);
-        return;
+    // (Re)carrega o bloco intercalado apenas quando o offset/tamanho pedido difere do cache.
+    if (blockStartFrame != frameOffset || blockFrames != numFrames) {
+        // Faz seek somente se o ponteiro não estiver já na posição certa (caso comum: leitura sequencial).
+        if (currentFrame != frameOffset) {
+            if (sf_seek(sndFile, frameOffset, SEEK_SET) < 0) {
+                std::cerr << "Failed to seek in audio file: " << sf_strerror(sndFile) << std::endl;
+                return;
+            }
+            currentFrame = frameOffset;
+        }
+
+        blockBuffer.resize(static_cast<size_t>(numFrames) * numChannels);
+        sf_count_t readFrames = sf_readf_float(sndFile, blockBuffer.data(), numFrames);
+        currentFrame += readFrames;
+
+        // Se leu menos que o esperado (fim do arquivo), zera o restante para evitar lixo.
+        if (readFrames < numFrames) {
+            std::cerr << "Warning: Number of frames read (" << readFrames
+                      << ") is less than expected (" << numFrames << ")." << std::endl;
+            std::fill(blockBuffer.begin() + readFrames * numChannels,
+                      blockBuffer.end(), 0.0f);
+        }
+
+        blockStartFrame = frameOffset;
+        blockFrames = numFrames;
     }
 
-    // Aloca um buffer temporário para armazenar os frames intercalados
-    float* tempBuffer = new float[numFrames * sfinfo.channels];
-    sf_count_t readFrames = sf_readf_float(file, tempBuffer, numFrames);
-    if (readFrames != numFrames) {
-        std::cerr << "Warning: Number of frames read (" << readFrames 
-                  << ") is less than expected (" << numFrames << ")." << std::endl;
-    }
-    
     // Deintercala: para cada frame, extrai o sample do canal desejado
     for (int i = 0; i < numFrames; i++) {
-        buffer[i] = tempBuffer[i * sfinfo.channels + channel];
+        buffer[i] = blockBuffer[i * numChannels + channel];
     }
-
-    delete[] tempBuffer;
-    sf_close(file);
 }
 
 // As demais funções permanecem inalteradas
@@ -116,6 +129,10 @@ int AudioFileReader::getNumChannels() const {
 
 int AudioFileReader::getSampleRate() const {
     return sampleRate;
+}
+
+int AudioFileReader::getFormat() const {
+    return format;
 }
 
 void AudioFileReader::saveAudioToFile(const std::string& filePath, const float* buffer, int numSamples) {
@@ -179,8 +196,8 @@ bool AudioFileReader::saveAudioToSNDFile(const std::string& filePath, const floa
         case SF_FORMAT_FLAC: 
             extension = ".flac"; 
             break;
-        case SF_FORMAT_OGG: 
-            extension = ".OGG"; 
+        case SF_FORMAT_OGG:
+            extension = ".ogg"; // minúsculo: filesystem é case-sensitive e o main procura ".ogg"
             break;
         default:
             std::cerr << "Unsupported format: " << mainFormat << ". Cannot determine file extension." << std::endl;
