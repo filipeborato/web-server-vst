@@ -120,9 +120,11 @@ void PluginHost::printParameterProperties()
         effect->dispatcher(effect, effGetParamLabel, paramIndex, 0, paramLabel, 0.0f);
         effect->dispatcher(effect, effGetParamDisplay, paramIndex, 0, paramDisplay, 0.0f);
 
+        float rawValue = effect->getParameter(effect, paramIndex);
         std::cout << "Parameter " << paramIndex << " name: " << paramName 
                   << ", Label: " << paramLabel 
-                  << ", Display: " << paramDisplay << std::endl;
+                  << ", Display: " << paramDisplay 
+                  << ", Raw: " << rawValue << std::endl;
     }
 }
 
