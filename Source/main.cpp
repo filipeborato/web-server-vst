@@ -105,14 +105,7 @@ int main(int argc, char* argv[]) {
         }
 
         std::string pluginPath = std::string(PROJECT_DIR) + "/vst/" + pluginName + ".so";
-        if (!std::ifstream(pluginPath).good()) {
-            return crow::response(400, "Unknown plugin");
-        }
-
-        std::vector<std::pair<int, float>> params = extractPluginParams(req);
-        if (params.empty()) {
-            return crow::response(400, "No parameters provided");
-        }
+        bool pluginExists = std::ifstream(pluginPath).good();
 
         bool isPreview = req.url_params.get("preview") ? (std::string(req.url_params.get("preview")) == "true") : false;
         bool fadeOut = req.url_params.get("fadeout") ? (std::string(req.url_params.get("fadeout")) == "true") : false;
@@ -130,8 +123,25 @@ int main(int argc, char* argv[]) {
         std::string outputFileWithExt = std::string(PROJECT_DIR) + "/tmp/output_audio_" + job_id + "." + extension;
         tempFiles.add(outputFileWithExt);
 
-        Host host;
-        bool success = host.processAudioFile(pluginPath, params, inputFile, outputFileWithExt, isPreview, fadeOut, previewStartTime);
+        bool success = false;
+        if (!pluginExists) {
+            std::cout << "Plugin " << pluginName << " not found. Falling back to pass-through." << std::endl;
+            std::ifstream src(inputFile, std::ios::binary);
+            std::ofstream dst(outputFileWithExt, std::ios::binary);
+            if (src.is_open() && dst.is_open()) {
+                dst << src.rdbuf();
+                success = true;
+            } else {
+                success = false;
+            }
+        } else {
+            std::vector<std::pair<int, float>> params = extractPluginParams(req);
+            if (params.empty()) {
+                return crow::response(400, "No parameters provided");
+            }
+            Host host;
+            success = host.processAudioFile(pluginPath, params, inputFile, outputFileWithExt, isPreview, fadeOut, previewStartTime);
+        }
 
         if (!success) {
             return crow::response(500, "Failed to process audio");
