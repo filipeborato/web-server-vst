@@ -51,8 +51,19 @@ bool Host::processAudioFile(const std::string& pluginPath,
 
     // Inicializa o host e seta os parâmetros
     host.initialize(static_cast<float>(sampleRate));
+    bool isPitchedDelay = (effectName == "PitchedDelay" || pluginPath.find("PitchedDelay") != std::string::npos);
     for (const auto& param : params) {
-        host.setParameter(param.first, param.second);
+        int idx = param.first;
+        float val = param.second;
+        if (isPitchedDelay) {
+            // Clampa delay (6, 22, 38, 54, 70) e predelay (4, 20, 36, 52, 68) para no máximo 0.5 (2.0s)
+            if (idx == 4 || idx == 6 || idx == 20 || idx == 22 || idx == 36 || idx == 38 || idx == 52 || idx == 54 || idx == 68 || idx == 70) {
+                if (val > 0.5f) {
+                    val = 0.5f;
+                }
+            }
+        }
+        host.setParameter(idx, val);
     }
 
     std::cout << "\nAfter Setting:" << std::endl;
