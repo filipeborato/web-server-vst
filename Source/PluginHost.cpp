@@ -73,7 +73,7 @@ void PluginHost::processAudio(float** inBuffer, float** outBuffer, int numSample
 
 void PluginHost::setParameter(int index, float value)
 {
-    if (effect != nullptr) {
+    if (effect != nullptr && index >= 0 && index < effect->numParams) {
         effect->setParameter(effect, index, value);
     }
 }
