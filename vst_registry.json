@@ -1,0 +1,2411 @@
+[
+    {
+      "id": 1,
+      "name": "TheFunction",
+      "label": "The Function",
+      "description": "Advanced spatiality plugin",
+      "parameters": [
+        {
+          "name": "Gain",
+          "label": "Master Gain",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.01,
+          "defaultValue": 1.0
+        },
+        {
+          "name": "Gain L",
+          "label": "Left Channel Gain",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.01,
+          "defaultValue": 1.0
+        },
+        {
+          "name": "Gain R",
+          "label": "Right Channel Gain",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.01,
+          "defaultValue": 1.0
+        },
+        {
+          "name": "Phase L",
+          "label": "Left Phase Shift",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.01,
+          "defaultValue": 0.5
+        },
+        {
+          "name": "Phase R",
+          "label": "Right Phase Shift",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.01,
+          "defaultValue": 0.5
+        },
+        {
+          "name": "Pan L",
+          "label": "Left Stereo Pan",
+          "type": "slider",
+          "min": -1.0,
+          "max": 1.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "Pan R",
+          "label": "Right Stereo Pan",
+          "type": "slider",
+          "min": -1.0,
+          "max": 1.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "filter-stereo",
+      "label": "Filter Stereo",
+      "description": "Simple Effect",
+      "parameters": [
+        {
+          "name": "bypass",
+          "label": "Bypass Filter",
+          "type": "toggle",
+          "defaultValue": 0.0
+        },
+        {
+          "name": "g_in",
+          "label": "Input Gain (dB)",
+          "type": "slider",
+          "min": -70.05,
+          "max": 20.00,
+          "step": 0.1,
+          "defaultValue": 2.0
+        },
+        {
+          "name": "g_out",
+          "label": "Output Gain (dB)",
+          "type": "slider",
+          "min": -70.05,
+          "max": 20.00,
+          "step": 0.1,
+          "defaultValue": 2.0
+        },
+        {
+          "name": "mode",
+          "label": "Filter Type",
+          "type": "select",
+          "options": [
+            { "label": "IIR", "value": 0.0 },
+            { "label": "FIR", "value": 0.33 },
+            { "label": "FFT", "value": 0.66 },
+            { "label": "SPM", "value": 1.0 }
+          ],
+          "defaultValue": 0.66
+        },
+        {
+          "name": "react",
+          "label": "Reaction Time (ms)",
+          "type": "slider",
+          "min": 0.000,
+          "max": 1.000,
+          "step": 0.001,
+          "defaultValue": 0.001
+        },
+        {
+          "name": "shift",
+          "label": "Gain Offset (dB)",
+          "type": "slider",
+          "min": -68.04,
+          "max": 40.00,
+          "step": 0.1,
+          "defaultValue": 4.0
+        },
+        {
+          "name": "zoom",
+          "label": "Dynamic Range (dB)",
+          "type": "slider",
+          "min": -42.00,
+          "max": 0.00,
+          "step": 0.1,
+          "defaultValue": 0.00
+        },
+        {
+          "name": "ife_l",
+          "label": "Left Input Active",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "ofe_l",
+          "label": "Left Output Active",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "ife_r",
+          "label": "Right Input Active",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "ofe_r",
+          "label": "Right Output Active",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "bal",
+          "label": "Stereo Balance (%)",
+          "type": "slider",
+          "min": -100.0,
+          "max": 100.0,
+          "step": 0.1,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "ft",
+          "label": "Frequency Filter Type",
+          "type": "select",
+          "options": [
+            { "label": "Lo-pass", "value": 0.0 },
+            { "label": "Hi-pass", "value": 0.1 },
+            { "label": "Lo-shel", "value": 0.2 },
+            { "label": "Hi-shel", "value": 0.3 },
+            { "label": "Bell", "value": 0.4 },
+            { "label": "Bandpass", "value": 0.5 },
+            { "label": "Notch", "value": 0.6 },
+            { "label": "Resonant", "value": 0.7 },
+            { "label": "Ladder", "value": 0.8 },
+            { "label": "Allpass", "value": 1.0 }
+          ],
+          "defaultValue": 0.0
+        },
+        {
+          "name": "fm",
+          "label": "Filter Circuit",
+          "type": "select",
+          "options": [
+            { "label": "RLC (BT)", "value": 0.0 },
+            { "label": "RLC (MT)", "value": 0.25 },
+            { "label": "BWC (BT)", "value": 0.5 },
+            { "label": "LRX (BT)", "value": 0.75 },
+            { "label": "APO (DR)", "value": 1.0 }
+          ],
+          "defaultValue": 1.0
+        },
+        {
+          "name": "s",
+          "label": "Filter Intensity",
+          "type": "select",
+          "options": [
+            { "label": "x1", "value": 0.0 },
+            { "label": "x2", "value": 0.2 },
+            { "label": "x3", "value": 0.4 },
+            { "label": "x4", "value": 0.5 },
+            { "label": "x6", "value": 0.6 },
+            { "label": "x8", "value": 0.8 },
+            { "label": "x12", "value": 0.9 },
+            { "label": "x16", "value": 1.0 }
+          ],
+          "defaultValue": 1.0
+        },
+        {
+          "name": "f",
+          "label": "Cutoff Frequency (Hz)",
+          "type": "slider",
+          "min": 10.0,
+          "max": 24000.0,
+          "step": 10.0,
+          "defaultValue": 15454.7
+        },
+        {
+          "name": "w",
+          "label": "Bandwidth (octaves)",
+          "type": "slider",
+          "min": 0.0,
+          "max": 12.0,
+          "step": 0.1,
+          "defaultValue": 3.0
+        },
+        {
+          "name": "g",
+          "label": "Filter Gain (dB)",
+          "type": "slider",
+          "min": -36.0,
+          "max": 36.0,
+          "step": 0.1,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "q",
+          "label": "Q Factor",
+          "type": "slider",
+          "min": 0.0,
+          "max": 100.0,
+          "step": 0.1,
+          "defaultValue": 20.0
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "label": "Compressor Stereo",
+      "name": "compressor-stereo",
+      "description": "Advanced stereo compressor with multiple toggles and dB ranges",
+      "parameters": [
+        {
+          "name": "bypass",
+          "label": "Bypass",
+          "type": "toggle",
+          "defaultValue": 0.0
+        },
+        {
+          "name": "g_in",
+          "label": "Input Gain (dB)",
+          "type": "slider",
+          "min": -60.0,
+          "max": 60.0,
+          "step": 0.01,
+          "defaultValue": 8.59
+        },
+        {
+          "name": "g_out",
+          "label": "Output Gain (dB)",
+          "type": "slider",
+          "min": -60.0,
+          "max": 60.0,
+          "step": 0.01,
+          "defaultValue": 8.59
+        },
+        {
+          "name": "pause",
+          "label": "Pause",
+          "type": "toggle",
+          "defaultValue": 0.0
+        },
+        {
+          "name": "clear",
+          "label": "Reset",
+          "type": "toggle",
+          "defaultValue": 0.0
+        },
+        {
+          "name": "ssplit",
+          "label": "Stereo Split",
+          "type": "toggle",
+          "defaultValue": 0.0
+        },
+        {
+          "name": "sscs",
+          "label": "Stereo Channel Select",
+          "type": "select",
+          "options": [
+            { "label": "Left/Ri", "value": 0.0 },
+            { "label": "Right/L", "value": 0.2 },
+            { "label": "Mid/Sid", "value": 0.4 },
+            { "label": "Side/Mi", "value": 0.6 },
+            { "label": "Min", "value": 0.8 },
+            { "label": "Max", "value": 1.0 }
+          ],
+          "defaultValue": 1.0
+        },
+        {
+          "name": "sct",
+          "label": "Compression Curve Type",
+          "type": "select",
+          "options": [
+            { "label": "Feed-fo", "value": 0.0 },
+            { "label": "Feed-ba", "value": 0.5 },
+            { "label": "Link", "value": 1.0 }
+          ],
+          "defaultValue": 1.0
+        },
+        {
+          "name": "scm",
+          "label": "Metering Mode",
+          "type": "select",
+          "options": [
+            { "label": "Peak", "value": 0.0 },
+            { "label": "RMS", "value": 0.4 },
+            { "label": "LPF", "value": 0.7 },
+            { "label": "SMA", "value": 1.0 }
+          ],
+          "defaultValue": 1.0
+        },
+        {
+          "name": "sla",
+          "label": "Side Latency (ms)",
+          "type": "slider",
+          "min": 0.0,
+          "max": 20.0,
+          "step": 0.1,
+          "defaultValue": 2.0
+        },
+        {
+          "name": "scl",
+          "label": "Reset Side Chain",
+          "type": "toggle",
+          "defaultValue": 0.0
+        },
+        {
+          "name": "scs",
+          "label": "Side Chain Channel",
+          "type": "select",
+          "options": [
+            { "label": "Middle", "value": 0.0 },
+            { "label": "Side", "value": 0.2 },
+            { "label": "Left", "value": 0.4 },
+            { "label": "Right", "value": 0.6 },
+            { "label": "Min", "value": 0.8 },
+            { "label": "Max", "value": 1.0 }
+          ],
+          "defaultValue": 1.0
+        },
+        {
+          "name": "scr",
+          "label": "Side Chain Delay (ms)",
+          "type": "slider",
+          "min": 0.0,
+          "max": 250.0,
+          "step": 0.1,
+          "defaultValue": 100.0
+        },
+        {
+          "name": "scp",
+          "label": "Side Chain Threshold (dB)",
+          "type": "slider",
+          "min": -60.0,
+          "max": 40.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "shpm",
+          "label": "High-pass Mode",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.1,
+          "defaultValue": 1.0
+        },
+        {
+          "name": "shpf",
+          "label": "High-pass Frequency (Hz)",
+          "type": "slider",
+          "min": 10.0,
+          "max": 20000.0,
+          "step": 1.0,
+          "defaultValue": 10.0
+        },
+        {
+          "name": "slpm",
+          "label": "Low-pass Mode",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.1,
+          "defaultValue": 1.0
+        },
+        {
+          "name": "slpf",
+          "label": "Low-pass Frequency (Hz)",
+          "type": "slider",
+          "min": 10.0,
+          "max": 20000.0,
+          "step": 1.0,
+          "defaultValue": 20000.0
+        },
+        {
+          "name": "cm",
+          "label": "Compression Direction",
+          "type": "select",
+          "options": [
+            { "label": "Down", "value": 0.0 },
+            { "label": "Up", "value": 0.5 },
+            { "label": "Boot", "value": 1.0 }
+          ],
+          "defaultValue": 1.0
+        },
+        {
+          "name": "al",
+          "label": "Level Adjustment (dB)",
+          "type": "slider",
+          "min": -60.0,
+          "max": 0.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "at",
+          "label": "Attack Time (ms)",
+          "type": "slider",
+          "min": 0.0,
+          "max": 2000.0,
+          "step": 0.1,
+          "defaultValue": 50.0
+        },
+        {
+          "name": "rrl",
+          "label": "Release Level (dB)",
+          "type": "slider",
+          "min": -60.0,
+          "max": 0.0,
+          "step": 0.01,
+          "defaultValue": -6.0
+        },
+        {
+          "name": "rt",
+          "label": "Release Time (ms)",
+          "type": "slider",
+          "min": 0.0,
+          "max": 5000.0,
+          "step": 1.0,
+          "defaultValue": 150.0
+        },
+        {
+          "name": "hold",
+          "label": "Hold Time (ms)",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1000.0,
+          "step": 10.0,
+          "defaultValue": 100.0
+        },
+        {
+          "name": "cr",
+          "label": "Compression Ratio",
+          "type": "slider",
+          "min": 1.0,
+          "max": 100.0,
+          "step": 0.1,
+          "defaultValue": 30.8
+        },
+        {
+          "name": "kn",
+          "label": "Knee (dB)",
+          "type": "slider",
+          "min": -24.0,
+          "max": 0.0,
+          "step": 0.01,
+          "defaultValue": -12.0
+        },
+        {
+          "name": "bth",
+          "label": "Threshold (dB)",
+          "type": "slider",
+          "min": -120.0,
+          "max": -1.0,
+          "step": 0.01,
+          "defaultValue": -20.0
+        },
+        {
+          "name": "bsa",
+          "label": "Boost Amount (dB)",
+          "type": "slider",
+          "min": -72.0,
+          "max": 72.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "mk",
+          "label": "Output Level Offset (dB)",
+          "type": "slider",
+          "min": -60.0,
+          "max": 60.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "cdr",
+          "label": "Compression Drive (dB)",
+          "type": "slider",
+          "min": -120,
+          "max": 20.0,
+          "step": 1.0,
+          "defaultValue": -120.0
+        },
+        {
+          "name": "cwt",
+          "label": "Compression Mix (dB)",
+          "type": "slider",
+          "min": -120,
+          "max": 20.0,
+          "step": 1.0,
+          "defaultValue": -8.0
+        },
+        {
+          "name": "cdw",
+          "label": "Compression Depth (%)",
+          "type": "slider",
+          "min": 0.0,
+          "max": 100.0,
+          "step": 1.0,
+          "defaultValue": 80.0
+        },
+        {
+          "name": "slv_l",
+          "label": "Left Side Level Active",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "elv_l",
+          "label": "Left EQ Active",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "grv_l",
+          "label": "Left Gain Reduction Active",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "ilv_l",
+          "label": "Left Input Active",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "olv_l",
+          "label": "Left Output Active",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "slv_r",
+          "label": "Right Side Level Active",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "elv_r",
+          "label": "Right EQ Active",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "grv_r",
+          "label": "Right Gain Reduction Active",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "ilv_r",
+          "label": "Right Input Active",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "olv_r",
+          "label": "Right Output Active",
+          "type": "toggle",
+          "defaultValue": 1.0
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "label": "Para-Equalizer X8 Stereo",
+      "name": "para-equalizer-x8-stereo",
+      "description": "Loaded Effect: Equalizer Stereo",
+      "parameters": [
+        {
+          "name": "bypass",
+          "label": "Bypass",
+          "type": "toggle",
+          "defaultValue": 0.0
+        },
+        {
+          "name": "g_in",
+          "label": "dB",
+          "type": "slider",
+          "min": -120.0,
+          "max": 60.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "g_out",
+          "label": "dB",
+          "type": "slider",
+          "min": -120.0,
+          "max": 60.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "mode",
+          "label": "Filter Mode",
+          "type": "select",
+          "options": [
+            { "label": "IIR", "value": 0.0 },
+            { "label": "FIR", "value": 0.4 },
+            { "label": "FFT", "value": 0.7 },
+            { "label": "SPM", "value": 1.0 }
+          ],
+          "defaultValue": 0.7
+        },
+        {
+          "name": "react",
+          "label": "ms",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.001,
+          "defaultValue": 0.001
+        },
+        {
+          "name": "shift",
+          "label": "dB",
+          "type": "slider",
+          "min": -120.0,
+          "max": 40.0,
+          "step": 0.01,
+          "defaultValue": -12.03
+        },
+        {
+          "name": "zoom",
+          "label": "dB",
+          "type": "slider",
+          "min": -42.0,
+          "max": 0.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "fsel",
+          "label": "Filters",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "insp_id",
+          "label": "Preset ID",
+          "type": "slider",
+          "min": -1.0,
+          "max": 7.0,
+          "step": 1.0,
+          "defaultValue": 7.0
+        },
+        {
+          "name": "insp_r",
+          "label": "oct",
+          "type": "slider",
+          "min": 0.0,
+          "max": 5.0,
+          "step": 0.5,
+          "defaultValue": 5.0
+        },
+        {
+          "name": "insp_on",
+          "label": "Preset On",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "ife_l",
+          "label": "Left Input EQ",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "ofe_l",
+          "label": "Left Output EQ",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "rfe_l",
+          "label": "Left Routing EQ",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "ife_r",
+          "label": "Right Input EQ",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "ofe_r",
+          "label": "Right Output EQ",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "rfe_r",
+          "label": "Right Routing EQ",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "bal",
+          "label": "%",
+          "type": "slider",
+          "min": -100.0,
+          "max": 100.0,
+          "step": 1.0,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "frqs",
+          "label": "st",
+          "type": "slider",
+          "min": -120.0,
+          "max": 120.0,
+          "step": 1.0,
+          "defaultValue": 120.0
+        },     
+        {
+          "name": "ft_0",
+          "label": "Band0 Filter Type",
+          "type": "select",
+          "options": [
+            { "label": "Off",      "value": 0.0 },
+            { "label": "Bell",     "value": 0.1 },
+            { "label": "Hi-pass",  "value": 0.2 },
+            { "label": "Hi-shel",  "value": 0.3 },
+            { "label": "Lo-pass",  "value": 0.4 },
+            { "label": "Lo-shel",  "value": 0.5 },
+            { "label": "Notch",    "value": 0.6 },
+            { "label": "Resonan",  "value": 0.7 },
+            { "label": "Allpass",  "value": 0.8 },
+            { "label": "Bandpas",  "value": 0.9 },
+            { "label": "Ladder-",  "value": 1.0 }
+          ],
+          "defaultValue": 0.4
+        },
+        {
+          "name": "fm_0",
+          "label": "Band0 Mode",
+          "type": "select",
+          "options": [
+            { "label": "RLC (BT)", "value": 0.0 },
+            { "label": "RLC (MT)", "value": 0.2 },
+            { "label": "BWC (BT)", "value": 0.4 },
+            { "label": "BWC (MT)", "value": 0.5 },
+            { "label": "LRX (BT)", "value": 0.7 },
+            { "label": "LRX (MT)", "value": 0.9 },
+            { "label": "APO (DR)", "value": 1.0 }
+          ],
+          "defaultValue": 0.4
+        },
+        {
+          "name": "s_0",
+          "label": "Band0 Scale",
+          "type": "select",
+          "options": [
+            { "label": "x1", "value": 0.0 },
+            { "label": "x2", "value": 0.4 },
+            { "label": "x3", "value": 0.7 },
+            { "label": "x4", "value": 1.0 }
+          ],
+          "defaultValue": 1.0
+        },
+        {
+          "name": "xs_0",
+          "label": "Band0 Extra Switch",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "xm_0",
+          "label": "Band0 Mute",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "f_0",
+          "label": "Band0 Frequency (Hz)",
+          "type": "slider",
+          "min": 10.0,
+          "max": 24000.0,
+          "step": 1.0,
+          "defaultValue": 100.0
+        },
+        {
+          "name": "w_0",
+          "label": "Band0 Bandwidth (oct)",
+          "type": "slider",
+          "min": 0.0,
+          "max": 12.0,
+          "step": 0.1,
+          "defaultValue": 6.0
+        },
+        {
+          "name": "g_0",
+          "label": "Band0 Gain (dB)",
+          "type": "slider",
+          "min": -36.0,
+          "max": 36.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "q_0",
+          "label": "Band0 Q",
+          "type": "slider",
+          "min": 0.0,
+          "max": 100.0,
+          "step": 0.1,
+          "defaultValue": 50.0
+        },
+        {
+          "name": "hue_0",
+          "label": "Band0 Hue",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.0001,
+          "defaultValue": 1.0
+        },    
+        {
+          "name": "ft_1",
+          "label": "Band1 Filter Type",
+          "type": "select",
+          "options": [
+            { "label": "Off", "value": 0.0 },
+            { "label": "Bell", "value": 0.1 },
+            { "label": "Hi-pass", "value": 0.2 },
+            { "label": "Hi-shel", "value": 0.3 },
+            { "label": "Lo-pass", "value": 0.4 },
+            { "label": "Lo-shel", "value": 0.5 },
+            { "label": "Notch", "value": 0.6 },
+            { "label": "Resonan", "value": 0.7 },
+            { "label": "Allpass", "value": 0.8 },
+            { "label": "Bandpas", "value": 0.9 },
+            { "label": "Ladder-", "value": 1.0 }
+          ],
+          "defaultValue": 0.5
+        },
+        {
+          "name": "fm_1",
+          "label": "Band1 Mode",
+          "type": "select",
+          "options": [
+            { "label": "RLC (BT)", "value": 0.0 },
+            { "label": "RLC (MT)", "value": 0.2 },
+            { "label": "BWC (BT)", "value": 0.4 },
+            { "label": "BWC (MT)", "value": 0.5 },
+            { "label": "LRX (BT)", "value": 0.7 },
+            { "label": "LRX (MT)", "value": 0.9 },
+            { "label": "APO (DR)", "value": 1.0 }
+          ],
+          "defaultValue": 0.0
+        },
+        {
+          "name": "s_1",
+          "label": "Band1 Scale",
+          "type": "select",
+          "options": [
+            { "label": "x1", "value": 0.0 },
+            { "label": "x2", "value": 0.4 },
+            { "label": "x3", "value": 0.7 },
+            { "label": "x4", "value": 1.0 }
+          ],
+          "defaultValue": 1.0
+        },
+        {
+          "name": "xs_1",
+          "label": "Band1 Extra Switch",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "xm_1",
+          "label": "Band1 Mute",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "f_1",
+          "label": "Band1 Frequency (Hz)",
+          "type": "slider",
+          "min": 10.0,
+          "max": 24000.0,
+          "step": 1.0,
+          "defaultValue": 300.0
+        },
+        {
+          "name": "w_1",
+          "label": "Band1 Bandwidth (oct)",
+          "type": "slider",
+          "min": 0.0,
+          "max": 12.0,
+          "step": 0.1,
+          "defaultValue": 4.0
+        },
+        {
+          "name": "g_1",
+          "label": "Band1 Gain (dB)",
+          "type": "slider",
+          "min": -36.0,
+          "max": 36.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "q_1",
+          "label": "Band1 Q",
+          "type": "slider",
+          "min": 0.0,
+          "max": 100.0,
+          "step": 0.1,
+          "defaultValue": 50.0
+        },
+        {
+          "name": "hue_1",
+          "label": "Band1 Hue",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.0001,
+          "defaultValue": 1.0
+        },
+        {
+          "name": "ft_2",
+          "label": "Band2 Filter Type",
+          "type": "select",
+          "options": [
+            { "label": "Off",      "value": 0.0 },
+            { "label": "Bell",     "value": 0.1 },
+            { "label": "Hi-pass",  "value": 0.2 },
+            { "label": "Hi-shel",  "value": 0.3 },
+            { "label": "Lo-pass",  "value": 0.4 },
+            { "label": "Lo-shel",  "value": 0.5 },
+            { "label": "Notch",    "value": 0.6 },
+            { "label": "Resonan",  "value": 0.7 },
+            { "label": "Allpass",  "value": 0.8 },
+            { "label": "Bandpas",  "value": 0.9 },
+            { "label": "Ladder-",  "value": 1.0 }
+          ],
+          "defaultValue": 0.6
+        },
+        {
+          "name": "fm_2",
+          "label": "Band2 Mode",
+          "type": "select",
+          "options": [
+            { "label": "RLC (BT)", "value": 0.0 },
+            { "label": "RLC (MT)", "value": 0.2 },
+            { "label": "BWC (BT)", "value": 0.4 },
+            { "label": "BWC (MT)", "value": 0.5 },
+            { "label": "LRX (BT)", "value": 0.7 },
+            { "label": "LRX (MT)", "value": 0.9 },
+            { "label": "APO (DR)", "value": 1.0 }
+          ],
+          "defaultValue": 0.2
+        },
+        {
+          "name": "s_2",
+          "label": "Band2 Scale",
+          "type": "select",
+          "options": [
+            { "label": "x1", "value": 0.0 },
+            { "label": "x2", "value": 0.4 },
+            { "label": "x3", "value": 0.7 },
+            { "label": "x4", "value": 1.0 }
+          ],
+          "defaultValue": 1.0
+        },
+        {
+          "name": "xs_2",
+          "label": "Band2 Extra Switch",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "xm_2",
+          "label": "Band2 Mute",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "f_2",
+          "label": "Band2 Frequency (Hz)",
+          "type": "slider",
+          "min": 10.0,
+          "max": 24000.0,
+          "step": 1.0,
+          "defaultValue": 700.0
+        },
+        {
+          "name": "w_2",
+          "label": "Band2 Bandwidth (oct)",
+          "type": "slider",
+          "min": 0.0,
+          "max": 12.0,
+          "step": 0.1,
+          "defaultValue": 8.0
+        },
+        {
+          "name": "g_2",
+          "label": "Band2 Gain (dB)",
+          "type": "slider",
+          "min": -36.0,
+          "max": 36.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "q_2",
+          "label": "Band2 Q",
+          "type": "slider",
+          "min": 0.0,
+          "max": 100.0,
+          "step": 0.1,
+          "defaultValue": 50.0
+        },
+        {
+          "name": "hue_2",
+          "label": "Band2 Hue",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.0001,
+          "defaultValue": 0.220
+        },
+        {
+          "name": "ft_3",
+          "label": "Band3 Filter Type",
+          "type": "select",
+          "options": [
+            { "label": "Off",      "value": 0.0 },
+            { "label": "Bell",     "value": 0.1 },
+            { "label": "Hi-pass",  "value": 0.2 },
+            { "label": "Hi-shel",  "value": 0.3 },
+            { "label": "Lo-pass",  "value": 0.4 },
+            { "label": "Lo-shel",  "value": 0.5 },
+            { "label": "Notch",    "value": 0.6 },
+            { "label": "Resonan",  "value": 0.7 },
+            { "label": "Allpass",  "value": 0.8 },
+            { "label": "Bandpas",  "value": 0.9 },
+            { "label": "Ladder-",  "value": 1.0 }
+          ],
+          "defaultValue": 0.1
+        },
+        {
+          "name": "fm_3",
+          "label": "Band3 Mode",
+          "type": "select",
+          "options": [
+            { "label": "RLC (BT)", "value": 0.0 },
+            { "label": "RLC (MT)", "value": 0.2 },
+            { "label": "BWC (BT)", "value": 0.4 },
+            { "label": "BWC (MT)", "value": 0.5 },
+            { "label": "LRX (BT)", "value": 0.7 },
+            { "label": "LRX (MT)", "value": 0.9 },
+            { "label": "APO (DR)", "value": 1.0 }
+          ],
+          "defaultValue": 0.7
+        },
+        {
+          "name": "s_3",
+          "label": "Band3 Scale",
+          "type": "select",
+          "options": [
+            { "label": "x1", "value": 0.0 },
+            { "label": "x2", "value": 0.4 },
+            { "label": "x3", "value": 0.7 },
+            { "label": "x4", "value": 1.0 }
+          ],
+          "defaultValue": 1.0
+        },
+        {
+          "name": "xs_3",
+          "label": "Band3 Extra Switch",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "xm_3",
+          "label": "Band3 Mute",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "f_3",
+          "label": "Band3 Frequency (Hz)",
+          "type": "slider",
+          "min": 10.0,
+          "max": 24000.0,
+          "step": 1.0,
+          "defaultValue": 1000.0
+        },
+        {
+          "name": "w_3",
+          "label": "Band3 Bandwidth (oct)",
+          "type": "slider",
+          "min": 0.0,
+          "max": 12.0,
+          "step": 0.1,
+          "defaultValue": 8.0
+        },
+        {
+          "name": "g_3",
+          "label": "Band3 Gain (dB)",
+          "type": "slider",
+          "min": -36.0,
+          "max": 36.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "q_3",
+          "label": "Band3 Q",
+          "type": "slider",
+          "min": 0.0,
+          "max": 100.0,
+          "step": 0.1,
+          "defaultValue": 20.0
+        },
+        {
+          "name": "hue_3",
+          "label": "Band3 Hue",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.0001,
+          "defaultValue": 1.0
+        },        
+        {
+          "name": "ft_4",
+          "label": "Band4 Filter Type",
+          "type": "select",
+          "options": [
+            { "label": "Off",      "value": 0.0 },
+            { "label": "Bell",     "value": 0.1 },
+            { "label": "Hi-pass",  "value": 0.2 },
+            { "label": "Hi-shel",  "value": 0.3 },
+            { "label": "Lo-pass",  "value": 0.4 },
+            { "label": "Lo-shel",  "value": 0.5 },
+            { "label": "Notch",    "value": 0.6 },
+            { "label": "Resonan",  "value": 0.7 },
+            { "label": "Allpass",  "value": 0.8 },
+            { "label": "Bandpas",  "value": 0.9 },
+            { "label": "Ladder-",  "value": 1.0 }
+          ],
+          "defaultValue": 0.1
+        },
+        {
+          "name": "fm_4",
+          "label": "Band4 Mode",
+          "type": "select",
+          "options": [
+            { "label": "RLC (BT)", "value": 0.0 },
+            { "label": "RLC (MT)", "value": 0.2 },
+            { "label": "BWC (BT)", "value": 0.4 },
+            { "label": "BWC (MT)", "value": 0.5 },
+            { "label": "LRX (BT)", "value": 0.7 },
+            { "label": "LRX (MT)", "value": 0.9 },
+            { "label": "APO (DR)", "value": 1.0 }
+          ],
+          "defaultValue": 0.4
+        },
+        {
+          "name": "s_4",
+          "label": "Band4 Scale",
+          "type": "select",
+          "options": [
+            { "label": "x1", "value": 0.0 },
+            { "label": "x2", "value": 0.4 },
+            { "label": "x3", "value": 0.7 },
+            { "label": "x4", "value": 1.0 }
+          ],
+          "defaultValue": 1.0
+        },
+        {
+          "name": "xs_4",
+          "label": "Band4 Extra Switch",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "xm_4",
+          "label": "Band4 Mute",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "f_4",
+          "label": "Band4 Frequency (Hz)",
+          "type": "slider",
+          "min": 10.0,
+          "max": 24000.0,
+          "step": 1.0,
+          "defaultValue": 2000.0
+        },
+        {
+          "name": "w_4",
+          "label": "Band4 Bandwidth (oct)",
+          "type": "slider",
+          "min": 0.0,
+          "max": 12.0,
+          "step": 0.1,
+          "defaultValue": 12.0
+        },
+        {
+          "name": "g_4",
+          "label": "Band4 Gain (dB)",
+          "type": "slider",
+          "min": -36.0,
+          "max": 36.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "q_4",
+          "label": "Band4 Q",
+          "type": "slider",
+          "min": 0.0,
+          "max": 100.0,
+          "step": 0.1,
+          "defaultValue": 80.0
+        },
+        {
+          "name": "hue_4",
+          "label": "Band4 Hue",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.0001,
+          "defaultValue": 1.0
+        },
+        {
+          "name": "ft_5",
+          "label": "Band5 Filter Type",
+          "type": "select",
+          "options": [
+            { "label": "Off",      "value": 0.0 },
+            { "label": "Bell",     "value": 0.1 },
+            { "label": "Hi-pass",  "value": 0.2 },
+            { "label": "Hi-shel",  "value": 0.3 },
+            { "label": "Lo-pass",  "value": 0.4 },
+            { "label": "Lo-shel",  "value": 0.5 },
+            { "label": "Notch",    "value": 0.6 },
+            { "label": "Resonan",  "value": 0.7 },
+            { "label": "Allpass",  "value": 0.8 },
+            { "label": "Bandpas",  "value": 0.9 },
+            { "label": "Ladder-",  "value": 1.0 }
+          ],
+          "defaultValue": 0.6
+        },
+        {
+          "name": "fm_5",
+          "label": "Band5 Mode",
+          "type": "select",
+          "options": [
+            { "label": "RLC (BT)", "value": 0.0 },
+            { "label": "RLC (MT)", "value": 0.2 },
+            { "label": "BWC (BT)", "value": 0.4 },
+            { "label": "BWC (MT)", "value": 0.5 },
+            { "label": "LRX (BT)", "value": 0.7 },
+            { "label": "LRX (MT)", "value": 0.9 },
+            { "label": "APO (DR)", "value": 1.0 }
+          ],
+          "defaultValue": 0.9
+        },
+        {
+          "name": "s_5",
+          "label": "Band5 Scale",
+          "type": "select",
+          "options": [
+            { "label": "x1", "value": 0.0 },
+            { "label": "x2", "value": 0.4 },
+            { "label": "x3", "value": 0.7 },
+            { "label": "x4", "value": 1.0 }
+          ],
+          "defaultValue": 1.0
+        },
+        {
+          "name": "xs_5",
+          "label": "Band5 Extra Switch",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "xm_5",
+          "label": "Band5 Mute",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "f_5",
+          "label": "Band5 Frequency (Hz)",
+          "type": "slider",
+          "min": 10.0,
+          "max": 24000.0,
+          "step": 1.0,
+          "defaultValue": 4000.0
+        },
+        {
+          "name": "w_5",
+          "label": "Band5 Bandwidth (oct)",
+          "type": "slider",
+          "min": 0.0,
+          "max": 12.0,
+          "step": 0.1,
+          "defaultValue": 3.0
+        },
+        {
+          "name": "g_5",
+          "label": "Band5 Gain (dB)",
+          "type": "slider",
+          "min": -36.0,
+          "max": 36.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "q_5",
+          "label": "Band5 Q",
+          "type": "slider",
+          "min": 0.0,
+          "max": 100.0,
+          "step": 0.1,
+          "defaultValue": 50.0
+        },
+        {
+          "name": "hue_5",
+          "label": "Band5 Hue",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.0001,
+          "defaultValue": 1.0
+        },
+        {
+          "name": "ft_6",
+          "label": "Band6 Filter Type",
+          "type": "select",
+          "options": [
+            { "label": "Off",      "value": 0.0 },
+            { "label": "Bell",     "value": 0.1 },
+            { "label": "Hi-pass",  "value": 0.2 },
+            { "label": "Hi-shel",  "value": 0.3 },
+            { "label": "Lo-pass",  "value": 0.4 },
+            { "label": "Lo-shel",  "value": 0.5 },
+            { "label": "Notch",    "value": 0.6 },
+            { "label": "Resonan",  "value": 0.7 },
+            { "label": "Allpass",  "value": 0.8 },
+            { "label": "Bandpas",  "value": 0.9 },
+            { "label": "Ladder-",  "value": 1.0 }
+          ],
+          "defaultValue": 0.3
+        },
+        {
+          "name": "fm_6",
+          "label": "Band6 Mode",
+          "type": "select",
+          "options": [
+            { "label": "RLC (BT)", "value": 0.0 },
+            { "label": "RLC (MT)", "value": 0.2 },
+            { "label": "BWC (BT)", "value": 0.4 },
+            { "label": "BWC (MT)", "value": 0.5 },
+            { "label": "LRX (BT)", "value": 0.7 },
+            { "label": "LRX (MT)", "value": 0.9 },
+            { "label": "APO (DR)", "value": 1.0 }
+          ],
+          "defaultValue": 1.0
+        },
+        {
+          "name": "s_6",
+          "label": "Band6 Scale",
+          "type": "select",
+          "options": [
+            { "label": "x1", "value": 0.0 },
+            { "label": "x2", "value": 0.4 },
+            { "label": "x3", "value": 0.7 },
+            { "label": "x4", "value": 1.0 }
+          ],
+          "defaultValue": 1.0
+        },
+        {
+          "name": "xs_6",
+          "label": "Band6 Extra Switch",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "xm_6",
+          "label": "Band6 Mute",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "f_6",
+          "label": "Band6 Frequency (Hz)",
+          "type": "slider",
+          "min": 10.0,
+          "max": 24000.0,
+          "step": 1.0,
+          "defaultValue": 10000.0
+        },
+        {
+          "name": "w_6",
+          "label": "Band6 Bandwidth (oct)",
+          "type": "slider",
+          "min": 0.0,
+          "max": 12.0,
+          "step": 0.1,
+          "defaultValue": 8.0
+        },
+        {
+          "name": "g_6",
+          "label": "Band6 Gain (dB)",
+          "type": "slider",
+          "min": -36.0,
+          "max": 36.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "q_6",
+          "label": "Band6 Q",
+          "type": "slider",
+          "min": 0.0,
+          "max": 100.0,
+          "step": 0.1,
+          "defaultValue": 100.0
+        },
+        {
+          "name": "hue_6",
+          "label": "Band6 Hue",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.0001,
+          "defaultValue": 0.05
+        },
+        {
+          "name": "ft_7",
+          "label": "Band7 Filter Type",
+          "type": "select",
+          "options": [
+            { "label": "Off",      "value": 0.0 },
+            { "label": "Bell",     "value": 0.1 },
+            { "label": "Hi-pass",  "value": 0.2 },
+            { "label": "Hi-shel",  "value": 0.3 },
+            { "label": "Lo-pass",  "value": 0.4 },
+            { "label": "Lo-shel",  "value": 0.5 },
+            { "label": "Notch",    "value": 0.6 },
+            { "label": "Resonan",  "value": 0.7 },
+            { "label": "Allpass",  "value": 0.8 },
+            { "label": "Bandpas",  "value": 0.9 },
+            { "label": "Ladder-",  "value": 1.0 }
+          ],
+          "defaultValue": 0.2
+        },
+        {
+          "name": "fm_7",
+          "label": "Band7 Mode",
+          "type": "select",
+          "options": [
+            { "label": "RLC (BT)", "value": 0.0 },
+            { "label": "RLC (MT)", "value": 0.2 },
+            { "label": "BWC (BT)", "value": 0.4 },
+            { "label": "BWC (MT)", "value": 0.5 },
+            { "label": "LRX (BT)", "value": 0.7 },
+            { "label": "LRX (MT)", "value": 0.9 },
+            { "label": "APO (DR)", "value": 1.0 }
+          ],
+          "defaultValue": 0.9
+        },
+        {
+          "name": "s_7",
+          "label": "Band7 Scale",
+          "type": "select",
+          "options": [
+            { "label": "x1", "value": 0.0 },
+            { "label": "x2", "value": 0.4 },
+            { "label": "x3", "value": 0.7 },
+            { "label": "x4", "value": 1.0 }
+          ],
+          "defaultValue": 1.0
+        },
+        {
+          "name": "xs_7",
+          "label": "Band7 Extra Switch",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "xm_7",
+          "label": "Band7 Mute",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+        {
+          "name": "f_7",
+          "label": "Band7 Frequency (Hz)",
+          "type": "slider",
+          "min": 10.0,
+          "max": 24000.0,
+          "step": 1.0,
+          "defaultValue": 12000.0
+        },
+        {
+          "name": "w_7",
+          "label": "Band7 Bandwidth (oct)",
+          "type": "slider",
+          "min": 0.0,
+          "max": 12.0,
+          "step": 0.1,
+          "defaultValue": 6.0
+        },
+        {
+          "name": "g_7",
+          "label": "Band7 Gain (dB)",
+          "type": "slider",
+          "min": -36.0,
+          "max": 36.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "q_7",
+          "label": "Band7 Q",
+          "type": "slider",
+          "min": 0.0,
+          "max": 100.0,
+          "step": 0.1,
+          "defaultValue": 100.0
+        },
+        {
+          "name": "hue_7",
+          "label": "Band7 Hue",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.0001,
+          "defaultValue": 1.0
+        }               
+      ]
+    },
+    
+    {
+      "id": 5,
+      "label": "Pitched Delay",
+      "name": "PitchedDelay",
+      "description": "Pitch and Delay effect with multi‑tab modulation",
+      "parameters": [
+        {
+          "name": "Tab1-Pitch",
+          "label": "Tab 1 Pitch",
+          "type": "slider",
+          "min": -12.0,
+          "max": 12.0,
+          "step": 0.01,
+          "defaultValue": 0
+        },
+        {
+          "name": "Tab1-Sync",
+          "label": "Tab 1 Sync",
+          "type": "slider",
+          "min": 0.0,
+          "max": 9.0,
+          "step": 0.1,
+          "defaultValue": 4.5
+        },
+        {
+          "name": "Tab1-PitchType",
+          "label": "Tab 1 PitchType",
+          "type": "slider",
+          "min": 0.0,
+          "max": 3.0,
+          "step": 1.0,
+          "defaultValue": 2.0
+        },
+        {
+          "name": "Tab1-PrePitch",
+          "label": "Tab 1 PrePitch",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.1,
+          "defaultValue": 1.0
+        },
+        {
+          "name": "Tab1-Predelay",
+          "label": "Tab 1 Predelay",
+          "type": "slider",
+          "min": 0.0,
+          "max": 4.0,
+          "step": 0.1,
+          "defaultValue": 0.8,
+          "safe_clamp_max": 0.5
+        },
+        {
+          "name": "Tab1-Pre-Volume",
+          "label": "Tab 1 PreVolume",
+          "type": "slider",
+          "min": -60.0,
+          "max": 0.0,
+          "step": 0.1,
+          "defaultValue": -36.0
+        },
+        {
+          "name": "Tab1-Delay",
+          "label": "Tab 1 Delay",
+          "type": "slider",
+          "min": 0.0,
+          "max": 4.0,
+          "step": 0.1,
+          "defaultValue": 4.0,
+          "safe_clamp_max": 0.5
+        },
+        {
+          "name": "Tab1-Feedback",
+          "label": "Tab 1 Feedback",
+          "type": "slider",
+          "min": 0.0,
+          "max": 100.0,
+          "step": 1.0,
+          "defaultValue": 30.0
+        },
+        {
+          "name": "Tab1-EQ-Type",
+          "label": "Tab 1 EQ Type",
+          "type": "slider",
+          "min": 0.0,
+          "max": 7.0,
+          "step": 1.0,
+          "defaultValue": 5.0
+        },
+        {
+          "name": "Tab1-EQ-Freq",
+          "label": "Tab 1 EQ Frequency",
+          "type": "slider",
+          "min": 20.0,
+          "max": 20000.0,
+          "step": 1.0,
+          "defaultValue": 100.0
+        },
+        {
+          "name": "Tab1-EQ-Q",
+          "label": "Tab 1 EQ Q",
+          "type": "slider",
+          "min": 0.3,
+          "max": 10.0,
+          "step": 0.1,
+          "defaultValue": 5.0
+        },
+        {
+          "name": "Tab1-EQ-Gain",
+          "label": "Tab 1 EQ Gain",
+          "type": "slider",
+          "min": -24.0,
+          "max": 24.0,
+          "step": 0.1,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "Tab1-Mode",
+          "label": "Tab 1 Mode",
+          "type": "slider",
+          "min": 0.0,
+          "max": 2.0,
+          "step": 1.0,
+          "defaultValue": 2.0
+        },
+        {
+          "name": "Tab1-Volume",
+          "label": "Tab 1 Volume",
+          "type": "slider",
+          "min": -60.0,
+          "max": 0.0,
+          "step": 0.1,
+          "defaultValue": -6.0
+        },
+        {
+          "name": "Tab1-Pan",
+          "label": "Tab 1 Pan",
+          "type": "slider",
+          "min": -100.0,
+          "max": 100.0,
+          "step": 1.0,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "Tab1-Enabled",
+          "label": "Tab 1 Enabled",
+          "type": "toggle",
+          "defaultValue": 1.0
+        },
+    
+        {
+          "name": "Tab2-Pitch",
+          "label": "Tab 2 Pitch",
+          "type": "slider",
+          "min": -12.0,
+          "max": 12.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "Tab2-Sync",
+          "label": "Tab 2 Sync",
+          "type": "slider",
+          "min": 0.0,
+          "max": 9.0,
+          "step": 0.1,
+          "defaultValue": 5.0
+        },
+        {
+          "name": "Tab2-PitchType",
+          "label": "Tab 2 PitchType",
+          "type": "slider",
+          "min": 0.0,
+          "max": 3.0,
+          "step": 1.0,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "Tab2-PrePitch",
+          "label": "Tab 2 PrePitch",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.1,
+          "defaultValue": 1.0
+        },
+        {
+          "name": "Tab2-Predelay",
+          "label": "Tab 2 Predelay",
+          "type": "slider",
+          "min": 0.0,
+          "max": 4.0,
+          "step": 0.1,
+          "defaultValue": 4.0,
+          "safe_clamp_max": 0.5
+        },
+        {
+          "name": "Tab2-Pre-Volume",
+          "label": "Tab 2 PreVolume",
+          "type": "slider",
+          "min": -60.0,
+          "max": 0.0,
+          "step": 0.1,
+          "defaultValue": -36.0
+        },
+        {
+          "name": "Tab2-Delay",
+          "label": "Tab 2 Delay",
+          "type": "slider",
+          "min": 0.0,
+          "max": 4.0,
+          "step": 0.1,
+          "defaultValue": 4.0,
+          "safe_clamp_max": 0.5
+        },
+        {
+          "name": "Tab2-Feedback",
+          "label": "Tab 2 Feedback",
+          "type": "slider",
+          "min": 0.0,
+          "max": 100.0,
+          "step": 1.0,
+          "defaultValue": 20.0
+        },
+        {
+          "name": "Tab2-EQ-Type",
+          "label": "Tab 2 EQ Type",
+          "type": "slider",
+          "min": 0.0,
+          "max": 7.0,
+          "step": 1.0,
+          "defaultValue": 3.0
+        },
+        {
+          "name": "Tab2-EQ-Freq",
+          "label": "Tab 2 EQ Frequency",
+          "type": "slider",
+          "min": 20.0,
+          "max": 20000.0,
+          "step": 1.0,
+          "defaultValue": 300.0
+        },
+        {
+          "name": "Tab2-EQ-Q",
+          "label": "Tab 2 EQ Q",
+          "type": "slider",
+          "min": 0.3,
+          "max": 10.0,
+          "step": 0.1,
+          "defaultValue": 5.0
+        },
+        {
+          "name": "Tab2-EQ-Gain",
+          "label": "Tab 2 EQ Gain",
+          "type": "slider",
+          "min": -24.0,
+          "max": 24.0,
+          "step": 0.1,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "Tab2-Mode",
+          "label": "Tab 2 Mode",
+          "type": "slider",
+          "min": 0.0,
+          "max": 2.0,
+          "step": 1.0,
+          "defaultValue": 2.0
+        },
+        {
+          "name": "Tab2-Volume",
+          "label": "Tab 2 Volume",
+          "type": "slider",
+          "min": -60.0,
+          "max": 0.0,
+          "step": 0.1,
+          "defaultValue": -12.0
+        },
+        {
+          "name": "Tab2-Pan",
+          "label": "Tab 2 Pan",
+          "type": "slider",
+          "min": -100.0,
+          "max": 100.0,
+          "step": 1.0,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "Tab2-Enabled",
+          "label": "Tab 2 Enabled",
+          "type": "toggle",
+          "defaultValue": 0.0
+        },
+    
+        {
+          "name": "Tab3-Pitch",
+          "label": "Tab 3 Pitch",
+          "type": "slider",
+          "min": -12.0,
+          "max": 12.0,
+          "step": 0.01,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "Tab3-Sync",
+          "label": "Tab 3 Sync",
+          "type": "slider",
+          "min": 0.0,
+          "max": 9.0,
+          "step": 0.1,
+          "defaultValue": 2.0
+        },
+        {
+          "name": "Tab3-PitchType",
+          "label": "Tab 3 PitchType",
+          "type": "slider",
+          "min": 0.0,
+          "max": 3.0,
+          "step": 1.0,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "Tab3-PrePitch",
+          "label": "Tab 3 PrePitch",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.1,
+          "defaultValue": 1.0
+        },
+        {
+          "name": "Tab3-Predelay",
+          "label": "Tab 3 Predelay",
+          "type": "slider",
+          "min": 0.0,
+          "max": 4.0,
+          "step": 0.1,
+          "defaultValue": 4.0,
+          "safe_clamp_max": 0.5
+        },
+        {
+          "name": "Tab3-Pre-Volume",
+          "label": "Tab 3 PreVolume",
+          "type": "slider",
+          "min": -60.0,
+          "max": 0.0,
+          "step": 0.1,
+          "defaultValue": -36.0
+        },
+        {
+          "name": "Tab3-Delay",
+          "label": "Tab 3 Delay",
+          "type": "slider",
+          "min": 0.0,
+          "max": 4.0,
+          "step": 0.1,
+          "defaultValue": 4.0,
+          "safe_clamp_max": 0.5
+        },
+        {
+          "name": "Tab3-Feedback",
+          "label": "Tab 3 Feedback",
+          "type": "slider",
+          "min": 0.0,
+          "max": 100.0,
+          "step": 1.0,
+          "defaultValue": 20.0
+        },
+        {
+          "name": "Tab3-EQ-Type",
+          "label": "Tab 3 EQ Type",
+          "type": "slider",
+          "min": 0.0,
+          "max": 7.0,
+          "step": 1.0,
+          "defaultValue": 7.0
+        },
+        {
+          "name": "Tab3-EQ-Freq",
+          "label": "Tab 3 EQ Frequency",
+          "type": "slider",
+          "min": 20.0,
+          "max": 20000.0,
+          "step": 1.0,
+          "defaultValue": 2000.0
+        },
+        {
+          "name": "Tab3-EQ-Q",
+          "label": "Tab 3 EQ Q",
+          "type": "slider",
+          "min": 0.3,
+          "max": 10.0,
+          "step": 0.1,
+          "defaultValue": 10.0
+        },
+        {
+          "name": "Tab3-EQ-Gain",
+          "label": "Tab 3 EQ Gain",
+          "type": "slider",
+          "min": -24.0,
+          "max": 24.0,
+          "step": 0.1,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "Tab3-Mode",
+          "label": "Tab 3 Mode",
+          "type": "slider",
+          "min": 0.0,
+          "max": 2.0,
+          "step": 1.0,
+          "defaultValue": 2.0
+        },
+        {
+          "name": "Tab3-Volume",
+          "label": "Tab 3 Volume",
+          "type": "slider",
+          "min": -60.0,
+          "max": 0.0,
+          "step": 0.1,
+          "defaultValue": -12.0
+        },
+        {
+          "name": "Tab3-Pan",
+          "label": "Tab 3 Pan",
+          "type": "slider",
+          "min": -100.0,
+          "max": 100.0,
+          "step": 1.0,
+          "defaultValue": 10.0
+        },
+        {
+          "name": "Tab3-Enabled",
+          "label": "Tab 3 Enabled",
+          "type": "toggle",
+          "defaultValue": 0.0
+        },
+    
+        {
+          "name": "Tab4-Pitch",
+          "label": "Tab 4 Pitch",
+          "type": "slider",
+          "min": -12.0,
+          "max": 12.0,
+          "step": 0.01,
+          "defaultValue": -6.0
+        },
+        {
+          "name": "Tab4-Sync",
+          "label": "Tab 4 Sync",
+          "type": "slider",
+          "min": 0.0,
+          "max": 9.0,
+          "step": 0.1,
+          "defaultValue": 5.0
+        },
+        {
+          "name": "Tab4-PitchType",
+          "label": "Tab 4 PitchType",
+          "type": "slider",
+          "min": 0.0,
+          "max": 3.0,
+          "step": 1.0,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "Tab4-PrePitch",
+          "label": "Tab 4 PrePitch",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.1,
+          "defaultValue": 1.0
+        },
+        {
+          "name": "Tab4-Predelay",
+          "label": "Tab 4 Predelay",
+          "type": "slider",
+          "min": 0.0,
+          "max": 4.0,
+          "step": 0.1,
+          "defaultValue": 4.0,
+          "safe_clamp_max": 0.5
+        },
+        {
+          "name": "Tab4-Pre-Volume",
+          "label": "Tab 4 PreVolume",
+          "type": "slider",
+          "min": -60.0,
+          "max": 0.0,
+          "step": 0.1,
+          "defaultValue": -36.0
+        },
+        {
+          "name": "Tab4-Delay",
+          "label": "Tab 4 Delay",
+          "type": "slider",
+          "min": 0.0,
+          "max": 4.0,
+          "step": 0.1,
+          "defaultValue": 4.0,
+          "safe_clamp_max": 0.5
+        },
+        {
+          "name": "Tab4-Feedback",
+          "label": "Tab 4 Feedback",
+          "type": "slider",
+          "min": 0.0,
+          "max": 100.0,
+          "step": 1.0,
+          "defaultValue": 30.0
+        },
+        {
+          "name": "Tab4-EQ-Type",
+          "label": "Tab 4 EQ Type",
+          "type": "slider",
+          "min": 0.0,
+          "max": 7.0,
+          "step": 1.0,
+          "defaultValue": 7.0
+        },
+        {
+          "name": "Tab4-EQ-Freq",
+          "label": "Tab 4 EQ Frequency",
+          "type": "slider",
+          "min": 20.0,
+          "max": 20000.0,
+          "step": 1.0,
+          "defaultValue": 6000.0
+        },
+        {
+          "name": "Tab4-EQ-Q",
+          "label": "Tab 4 EQ Q",
+          "type": "slider",
+          "min": 0.3,
+          "max": 10.0,
+          "step": 0.1,
+          "defaultValue": 2.0
+        },
+        {
+          "name": "Tab4-EQ-Gain",
+          "label": "Tab 4 EQ Gain",
+          "type": "slider",
+          "min": -24.0,
+          "max": 24.0,
+          "step": 0.1,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "Tab4-Mode",
+          "label": "Tab 4 Mode",
+          "type": "slider",
+          "min": 0.0,
+          "max": 2.0,
+          "step": 1.0,
+          "defaultValue": 2.0
+        },
+        {
+          "name": "Tab4-Volume",
+          "label": "Tab 4 Volume",
+          "type": "slider",
+          "min": -60.0,
+          "max": 0.0,
+          "step": 0.1,
+          "defaultValue": -12.0
+        },
+        {
+          "name": "Tab4-Pan",
+          "label": "Tab 4 Pan",
+          "type": "slider",
+          "min": -100.0,
+          "max": 100.0,
+          "step": 1.0,
+          "defaultValue": -20.0
+        },
+        {
+          "name": "Tab4-Enabled",
+          "label": "Tab 4 Enabled",
+          "type": "toggle",
+          "defaultValue": 0.0
+        },
+    
+        {
+          "name": "Tab5-Pitch",
+          "label": "Tab 5 Pitch",
+          "type": "slider",
+          "min": -12.0,
+          "max": 12.0,
+          "step": 0.01,
+          "defaultValue": 2.0
+        },
+        {
+          "name": "Tab5-Sync",
+          "label": "Tab 5 Sync",
+          "type": "slider",
+          "min": 0.0,
+          "max": 9.0,
+          "step": 0.1,
+          "defaultValue": 1.0
+        },
+        {
+          "name": "Tab5-PitchType",
+          "label": "Tab 5 PitchType",
+          "type": "slider",
+          "min": 0.0,
+          "max": 3.0,
+          "step": 1.0,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "Tab5-PrePitch",
+          "label": "Tab 5 PrePitch",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.1,
+          "defaultValue": 1.0
+        },
+        {
+          "name": "Tab5-Predelay",
+          "label": "Tab 5 Predelay",
+          "type": "slider",
+          "min": 0.0,
+          "max": 4.0,
+          "step": 0.1,
+          "defaultValue": 4.0,
+          "safe_clamp_max": 0.5
+        },
+        {
+          "name": "Tab5-Pre-Volume",
+          "label": "Tab 5 PreVolume",
+          "type": "slider",
+          "min": -60.0,
+          "max": 0.0,
+          "step": 0.1,
+          "defaultValue": -36.0
+        },
+        {
+          "name": "Tab5-Delay",
+          "label": "Tab 5 Delay",
+          "type": "slider",
+          "min": 0.0,
+          "max": 4.0,
+          "step": 0.1,
+          "defaultValue": 4.0,
+          "safe_clamp_max": 0.5
+        },
+        {
+          "name": "Tab5-Feedback",
+          "label": "Tab 5 Feedback",
+          "type": "slider",
+          "min": 0.0,
+          "max": 100.0,
+          "step": 1.0,
+          "defaultValue": 20.0
+        },
+        {
+          "name": "Tab5-EQ-Type",
+          "label": "Tab 5 EQ Type",
+          "type": "slider",
+          "min": 0.0,
+          "max": 7.0,
+          "step": 1.0,
+          "defaultValue": 7.0
+        },
+        {
+          "name": "Tab5-EQ-Freq",
+          "label": "Tab 5 EQ Frequency",
+          "type": "slider",
+          "min": 20.0,
+          "max": 20000.0,
+          "step": 1.0,
+          "defaultValue": 8000.0
+        },
+        {
+          "name": "Tab5-EQ-Q",
+          "label": "Tab 5 EQ Q",
+          "type": "slider",
+          "min": 0.3,
+          "max": 10.0,
+          "step": 0.1,
+          "defaultValue": 10.0
+        },
+        {
+          "name": "Tab5-EQ-Gain",
+          "label": "Tab 5 EQ Gain",
+          "type": "slider",
+          "min": -24.0,
+          "max": 24.0,
+          "step": 0.1,
+          "defaultValue": 0.0
+        },
+        {
+          "name": "Tab5-Mode",
+          "label": "Tab 5 Mode",
+          "type": "slider",
+          "min": 0.0,
+          "max": 2.0,
+          "step": 1.0,
+          "defaultValue": 2.0
+        },
+        {
+          "name": "Tab5-Volume",
+          "label": "Tab 5 Volume",
+          "type": "slider",
+          "min": -60.0,
+          "max": 0.0,
+          "step": 0.1,
+          "defaultValue": -12.0
+        },
+        {
+          "name": "Tab5-Pan",
+          "label": "Tab 5 Pan",
+          "type": "slider",
+          "min": -100.0,
+          "max": 100.0,
+          "step": 1.0,
+          "defaultValue": 30.0
+        },
+        {
+          "name": "Tab5-Enabled",
+          "label": "Tab 5 Enabled",
+          "type": "toggle",
+          "defaultValue": 0.0
+        },
+    
+        {
+          "name": "DryVolume",
+          "label": "Dry Volume",
+          "type": "slider",
+          "min": -100.0,
+          "max": 0.0,
+          "step": 0.1,
+          "defaultValue": -12.0,
+          "scale": "db_to_linear"
+        },
+        {
+          "name": "MasterVolume",
+          "label": "Master Volume",
+          "type": "slider",
+          "min": -100.0,
+          "max": 0.0,
+          "step": 0.1,
+          "defaultValue": -12.0,
+          "scale": "db_to_linear"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "label": "Distor Pro",
+      "name": "DistortPro",
+      "description": "Add advanced distortion control",
+      "parameters": [
+        {
+          "name": "Drive",
+          "label": "Distortion Drive",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.01,
+          "defaultValue": 0.5
+        },
+        {
+          "name": "Tone",
+          "label": "Tone Control",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.01,
+          "defaultValue": 0.5
+        },
+        {
+          "name": "Mix",
+          "label": "Dry/Wet Mix",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.01,
+          "defaultValue": 0.5
+        },
+        {
+          "name": "Level",
+          "label": "Output Level",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.01,
+          "defaultValue": 0.8
+        },
+        {
+          "name": "Bias",
+          "label": "Bias Control",
+          "type": "slider",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 0.01,
+          "defaultValue": 0.2
+        },
+        {
+          "name": "Color",
+          "label": "Distortion Character",
+          "type": "select",
+          "options": [
+            { "label": "Warm", "value": 0.4 },
+            { "label": "Bright", "value": 0.7 },
+            { "label": "Dark", "value": 0.2 }
+          ],
+          "defaultValue": 0.4
+        }
+      ]
+    }
+  ]
+  

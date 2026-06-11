@@ -1,7 +1,12 @@
 #include "Host.h"
 #include "PluginHost.h"
 #include "AudioFileReader.h" // Classe para leitura de arquivos de áudio
+#include "utils.h"
 #include <sndfile.h>
+#include <crow/json.h>
+#include <fstream>
+#include <sstream>
+#include <cmath>
 #include <algorithm>
 #include <cstring>
 #include <iostream>
@@ -49,20 +54,95 @@ bool Host::processAudioFile(const std::string& pluginPath,
     AudioFileReader& audioReader = *audioReaderPtr;
     const int sampleRate = audioReader.getSampleRate();
 
-    // Inicializa o host e seta os parâmetros
+    // Inicializa o host
     host.initialize(static_cast<float>(sampleRate));
+
+    // Carrega o registro de plugins para validação e escala dinâmica
+    std::string registryPath = PROJECT_DIR + "/vst_registry.json";
+    crow::json::rvalue registry;
+    bool hasRegistry = false;
+    
+    std::ifstream ifs(registryPath);
+    if (ifs.is_open()) {
+        std::stringstream ss;
+        ss << ifs.rdbuf();
+        std::string json_str = ss.str();
+        auto parsed = crow::json::load(json_str);
+        if (parsed) {
+            registry = std::move(parsed);
+            hasRegistry = true;
+        } else {
+            std::cerr << "Failed to parse vst_registry.json" << std::endl;
+        }
+    } else {
+        std::cerr << "Failed to open vst_registry.json at: " << registryPath << std::endl;
+    }
+
+    const crow::json::rvalue* activePlugin = nullptr;
+    if (hasRegistry) {
+        for (size_t i = 0; i < registry.size(); ++i) {
+            if (registry[i]["name"].s() == effectName) {
+                activePlugin = &registry[i];
+                break;
+            }
+        }
+    }
+
+    const crow::json::rvalue* parameters = nullptr;
+    if (activePlugin && activePlugin->has("parameters")) {
+        parameters = &((*activePlugin)["parameters"]);
+    }
+
     bool isPitchedDelay = (effectName == "PitchedDelay" || pluginPath.find("PitchedDelay") != std::string::npos);
+
     for (const auto& param : params) {
         int idx = param.first;
         float val = param.second;
-        if (isPitchedDelay) {
-            // Clampa delay (6, 22, 38, 54, 70) e predelay (4, 20, 36, 52, 68) para no máximo 0.5 (2.0s)
+
+        bool appliedDynamic = false;
+        if (parameters && idx >= 0 && idx < static_cast<int>(parameters->size())) {
+            auto& paramMeta = (*parameters)[idx];
+            
+            // 1. Mapeamento de escala (conversão de dB para ganho linear)
+            if (paramMeta.has("scale") && paramMeta["scale"].s() == "db_to_linear") {
+                float min_db = -100.0f;
+                float max_db = 0.0f;
+                if (paramMeta.has("min")) min_db = static_cast<float>(paramMeta["min"].d());
+                if (paramMeta.has("max")) max_db = static_cast<float>(paramMeta["max"].d());
+                
+                float val_db = min_db + val * (max_db - min_db);
+                float val_linear = 0.0f;
+                if (val_db > -99.0f) {
+                    val_linear = std::pow(10.0f, val_db / 20.0f);
+                }
+                val = val_linear;
+            }
+
+            // 2. Clamping de segurança
+            if (paramMeta.has("safe_clamp_max")) {
+                float max_clamp = static_cast<float>(paramMeta["safe_clamp_max"].d());
+                if (val > max_clamp) {
+                    val = max_clamp;
+                }
+            }
+            if (paramMeta.has("safe_clamp_min")) {
+                float min_clamp = static_cast<float>(paramMeta["safe_clamp_min"].d());
+                if (val < min_clamp) {
+                    val = min_clamp;
+                }
+            }
+            appliedDynamic = true;
+        }
+
+        // Fallback hardcoded para segurança caso o registro não esteja disponível
+        if (!appliedDynamic && isPitchedDelay) {
             if (idx == 4 || idx == 6 || idx == 20 || idx == 22 || idx == 36 || idx == 38 || idx == 52 || idx == 54 || idx == 68 || idx == 70) {
                 if (val > 0.5f) {
                     val = 0.5f;
                 }
             }
         }
+
         host.setParameter(idx, val);
     }
 

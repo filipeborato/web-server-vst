@@ -164,6 +164,36 @@ int main(int argc, char* argv[]) {
         return r;
     });
 
+    CROW_ROUTE(app, "/plugins")
+        .methods("GET"_method, "OPTIONS"_method)
+    ([&](const crow::request& req) {
+        crow::response r;
+        r.add_header("Access-Control-Allow-Origin", "*");
+        r.add_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+        r.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        r.add_header("Access-Control-Allow-Credentials", "true");
+
+        if (req.method == "OPTIONS"_method) {
+            return crow::response(204, "options");
+        }
+
+        std::string registryPath = std::string(PROJECT_DIR) + "/vst_registry.json";
+        std::ifstream ifs(registryPath, std::ios::binary);
+        if (!ifs.is_open()) {
+            r.code = 404;
+            r.write("vst_registry.json not found");
+            return r;
+        }
+
+        std::string content((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+        ifs.close();
+
+        r.code = 200;
+        r.set_header("Content-Type", "application/json");
+        r.write(content);
+        return r;
+    });
+
     CROW_ROUTE(app, "/")
         .methods("GET"_method)
     ([&](const crow::request& req) {        
